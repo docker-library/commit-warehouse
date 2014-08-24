@@ -58,8 +58,8 @@ Note: don't trust the remote copy of the LIVE database folder unless the server 
 `docker run -d --name orientdb_databases -v /opt/orientdb/databases nesrait/btsync /opt/orientdb/databases <DATABASES_FOLDER_SECRET>`
 `docker run -d --name orientdb_backup -v /opt/orientdb/backup nesrait/btsync /opt/orientdb/backup <BACKUP_FOLDER_SECRET>`
 
-3. Wait a bit and then confirm that the config files have magically appeared inside your orientdb_config container:
-`docker run -i -t --volumes-from orientdb_config ubuntu ls /opt/orientdb/config`
+3. Wait until all files have magically appeared inside your BTSync data volumes:
+`docker run --rm -i -t --volumes-from orientdb_config --volumes-from orientdb_databases --volumes-from orientdb_backup ubuntu du -h /opt/orientdb/config /opt/orientdb/databases /opt/orientdb/backup`
 
 4. Finally you're ready to start your OrientDB server
 `docker run --name orientdb -d \

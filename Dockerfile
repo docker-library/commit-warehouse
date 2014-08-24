@@ -1,10 +1,10 @@
 ############################################################
 # Dockerfile to run an OrientDB (Graph) Container
-# Based on Ubuntu Image
+# http://crosbymichael.com/dockerfile-best-practices.html
+# http://crosbymichael.com/dockerfile-best-practices-take-2.html
 ############################################################
 
-# Set the base image to use to Ubuntu
-FROM ubuntu
+FROM debian:jessie
 
 MAINTAINER Davide Marquês (nesrait@gmail.com)
 
@@ -15,18 +15,19 @@ RUN apt-get update
 RUN apt-get -y install supervisor
 RUN mkdir -p /var/log/supervisor
 
-# Install OrientDB
+# Install OrientDB dependencies
 # https://www.digitalocean.com/community/tutorials/how-to-install-and-use-orientdb-on-an-ubuntu-12-04-vps
 RUN apt-get -y install openjdk-7-jdk git ant
-RUN cd
-RUN git clone https://github.com/orientechnologies/orientdb.git --single-branch --branch 1.7.8
-RUN cd orientdb && ant clean installg
-RUN mv /releases/orientdb-community-* /opt/orientdb
 
-# open the image to configuration and storage via volumes
-VOLUME /etc/orientdb/config
-VOLUME /opt/orientdb/databases
-VOLUME /opt/orientdb/backup
+ENV ORIENTDB_VERSION 1.7.8
+
+# Build OrientDB cleaning up afterwards
+RUN cd && \
+    git clone https://github.com/orientechnologies/orientdb.git --single-branch --branch $ORIENTDB_VERSION && \
+    cd orientdb && \
+    ant clean installg && \
+    mv /releases/orientdb-community-* /opt/orientdb && \
+    rm -rf ~/orientdb
 
 # use supervisord to start orientdb
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf

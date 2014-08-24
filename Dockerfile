@@ -27,7 +27,7 @@ RUN cd && \
     cd orientdb && \
     ant clean installg && \
     mv /releases/orientdb-community-* /opt/orientdb && \
-    rm -rf ~/orientdb
+    rm -rf /opt/orientdb/databases/* ~/orientdb
 
 # use supervisord to start orientdb
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf

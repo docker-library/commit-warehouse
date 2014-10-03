@@ -3,7 +3,7 @@ orientdb-docker
 
 A dockerfile for creating an orientdb image with :
 
-  - explicit orientdb version (1.7.8) for image cache stability
+  - explicit orientdb version (orientdb-2.0-M2) for image cache stability
   - init by supervisord
   - config, databases and backup folders expected to be mounted as volumes
 
@@ -17,15 +17,15 @@ Building the image on your own
 
 2. Build the image:
   ```bash
-docker built -t <YOUR_DOCKER_HUB_USER>/orientdb-1.7.8 .
+docker built -t <YOUR_DOCKER_HUB_USER>/orientdb-2.0 .
 ```
 
 3. Push it to your Docker Hub repository (it will ask for your login credentials):
   ```bash
-docker push <YOUR_DOCKER_HUB_USER>/orientdb-1.7.8
+docker push <YOUR_DOCKER_HUB_USER>/orientdb-2.0
 ```
 
-All examples below are using my own image nesrait/orientdb-1.7.8. If you build your own image please find/replace "nesrait" with your Docker Hub user.
+All examples below are using my own image nesrait/orientdb-2.0. If you build your own image please find/replace "nesrait" with your Docker Hub user.
 
 
 Running orientdb
@@ -34,7 +34,7 @@ Running orientdb
 To run the image, run:
 
 ```bash
-docker run --name orientdb -d -v <config_path>:/opt/orientdb/config -v <databases_path>:/opt/orientdb/databases -v <backup_path>:/opt/orientdb/backup -p 2424 -p 2480 nesrait/orientdb-1.7.8
+docker run --name orientdb -d -v <config_path>:/opt/orientdb/config -v <databases_path>:/opt/orientdb/databases -v <backup_path>:/opt/orientdb/backup -p 2424 -p 2480 nesrait/orientdb-2.0
 ```
 
 The docker image contains a unconfigured orientdb installation and for running it you need to provide your own config folder from which OrientDB will read its startup settings.
@@ -81,7 +81,7 @@ docker run --name orientdb -d \
             --volumes-from orientdb_databases \
             --volumes-from orientdb_backup \
             -p 2424 -p 2480 \
-            nesrait/orientdb-1.7.8
+            nesrait/orientdb-2.0
 ```
 
 
@@ -96,16 +96,16 @@ If you're running OrientDB distributed* you won't have the problem of losing the
 Ad-hoc backups
 --------------
 
-With orientdb 1.7.8 we can now create ad-hoc backups by taking advantage of [the new backup.sh script](https://github.com/orientechnologies/orientdb/wiki/Backup-and-Restore#backup-database):
+With orientdb 2.0 we can now create ad-hoc backups by taking advantage of [the new backup.sh script](https://github.com/orientechnologies/orientdb/wiki/Backup-and-Restore#backup-database):
 
   - Using the orientdb_backup data container that was created above:
     ```bash
-    docker run -i -t --volumes-from orientdb_config --volumes-from orientdb_backup nesrait/orientdb-1.7.8 ./backup.sh <dburl> <user> <password> /opt/orientdb/backup/<backup_file> [<type>]
+    docker run -i -t --volumes-from orientdb_config --volumes-from orientdb_backup nesrait/orientdb-2.0 ./backup.sh <dburl> <user> <password> /opt/orientdb/backup/<backup_file> [<type>]
     ```
 
   - Or using a host folder:
 
-    `docker run -i -t --volumes-from orientdb_config -v <host_backup_path>:/backup nesrait/orientdb-1.7.8 ./backup.sh <dburl> <user> <password> /backup/<backup_file> [<type>]`
+    `docker run -i -t --volumes-from orientdb_config -v <host_backup_path>:/backup nesrait/orientdb-2.0 ./backup.sh <dburl> <user> <password> /backup/<backup_file> [<type>]`
 
 Either way, when the backup completes you will have the backup file located outside of the OrientDB container and read for safekeeping.
 
@@ -120,6 +120,7 @@ docker run --rm -it \
             --volumes-from orientdb_config \
             --volumes-from orientdb_databases \
             --volumes-from orientdb_backup \
-            nesrait/orientdb-1.7.8 \
+            nesrait/orientdb-2.0 \
             /opt/orientdb/bin/console.sh
 ```
+

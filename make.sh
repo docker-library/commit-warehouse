@@ -13,9 +13,9 @@ docker run \
 	-v $(pwd)/media:/mnt/media \
 	cruxbuild
 
-git branch -D 3.1
-git branch 3.1 origin/dist
-git checkout 3.1
+git branch -D ${version}
+git branch ${version} origin/dist
+git checkout ${version}
 
 docker cp cruxbuild:/rootfs.tar.xz .
 docker rm -f cruxbuild

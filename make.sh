@@ -13,7 +13,7 @@ docker run \
 	cruxbuild
 
 hg update -C dist
-@docker cp cruxbuild:/rootfs.tar.xz .
+docker cp cruxbuild:/rootfs.tar.xz .
 docker rm -f cruxbuild
 
 hg add rootfs.tar.xz

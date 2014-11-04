@@ -8,4 +8,4 @@ if [[ ! -f $MEDIA/$NAME-$VERSION.iso ]]; then
 fi
 
 echo "Creating Root FS ..."
-sudo ./mkrootfs.sh $MEDIA/$NAME-$VERSION.iso
+./mkrootfs.sh $MEDIA/$NAME-$VERSION.iso

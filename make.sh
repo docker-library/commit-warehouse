@@ -1,7 +1,8 @@
 #!/bin/bash
 
-version=${1:-3.1}
+set -e
 
+version=${1:-3.1}
 
 docker build -t cruxbuild build
 

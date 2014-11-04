@@ -16,8 +16,9 @@ hg update -C dist
 docker cp cruxbuild:/rootfs.tar.xz .
 docker rm -f cruxbuild
 
-hg add rootfs.tar.xz
-hg commit -m "${version}"
+dist=$(hg id -i -r dist)
+hg commit -A -m "${version}"
 hg bookmark -f ${version}
+hg bookmark -f -r ${dist} dist
 
 docker build -t crux:${version} .

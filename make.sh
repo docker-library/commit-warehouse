@@ -12,13 +12,14 @@ docker run \
 	-v $(pwd)/media:/mnt/media \
 	cruxbuild
 
-hg update -C dist
+git branch -D 3.1
+git branch 3.1 origin/dist
+git checkout 3.1
+
 docker cp cruxbuild:/rootfs.tar.xz .
 docker rm -f cruxbuild
 
-dist=$(hg id -i -r dist)
-hg commit -A -m "${version}"
-hg bookmark -f ${version}
-hg bookmark -f -r ${dist} dist
+git add rootfs.tar.xz
+git commit -m "${version}"
 
 docker build -t crux:${version} .

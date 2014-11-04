@@ -14,11 +14,10 @@ crux:
 		-e VERSION=$(version) \
 		-v $(ROOT_DIR)/media:/mnt/media \
 		cruxbuild
-	@hg bookmark -d -f $(version)
 	@hg update -C dist
 	@@docker cp cruxbuild:/rootfs.tar.xz .
 	@hg add rootfs.tar.xz
 	@hg commit -m "$(version)"
-	@hg bookmark $(version)
+	@hg bookmark -f $(version)
 	@docker rm -f cruxbuild
 	@docker build -t crux:$(version) .

@@ -15,7 +15,7 @@ die () {
 
 ISO=${1}
 
-ROOTFS=$(pwd)/rootfs
+ROOTFS=$(mktemp -d /tmp/rootfs-XXXXXXXXXX)
 CRUX=$(mktemp -d /tmp/crux-XXXXXXXXXX)
 TMP=$(mktemp -d /tmp/XXXXXXXXXX)
 
@@ -27,7 +27,7 @@ if [ ! -d $ROOTFS ]; then
 fi
 
 # Mount the ISO
-mount -o ro,loop $ISO $CRUX || die "Unable to mount ISO!"
+mount -o ro,loop $ISO $CRUX
 
 # Extract pkgutils
 tar -C $TMP -xf $CRUX/tools/pkgutils#*.pkg.tar.gz
@@ -44,7 +44,7 @@ done
 
 ./cleanup.sh $ROOTFS
 ./mkdev.sh $ROOTFS
-./package.sh $ROOTFS crux $VERSION
+./package.sh $ROOTFS
 
 # Cleanup
 umount $CRUX

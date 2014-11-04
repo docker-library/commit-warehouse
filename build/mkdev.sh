@@ -11,7 +11,7 @@ die () {
 
 ROOTFS=${1}
 
-echo "Rebuilding ${ROOTFS}/dev"
+echo "Rebuilding /dev"
 
 # udev doesn't work in containers, rebuild /dev
 DEV=$ROOTFS/dev

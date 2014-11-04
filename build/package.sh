@@ -7,17 +7,14 @@ die () {
     exit 1
 }
 
-[ "$#" -eq 3 ] || die "3 argument(s) required, $# provided. Usage: ./package.sh /path/to/rootfs tag version"
+[ "$#" -eq 1 ] || die "1 argument(s) required, $# provided. Usage: ./package.sh /path/to/rootfs"
 
 ROOTFS=${1}
-TAG=${2}
-VERSION=${3}
 
-tar --numeric-owner --exclude=/etc/mtab --exclude=/root/.bash_history \
-    -P -cJvf rootfs.tar.xz -C $ROOTFS ./
+echo "Packaging Root FS ..."
 
-if $(which docker &> /dev/null); then
-    ID=$(tar --numeric-owner -C $ROOTFS -c . | docker import - ${TAG}:$VERSION)
-    docker tag $ID ${TAG}:latest
-    docker run -i -t crux echo Success.
-fi
+tar --numeric-owner \
+    --exclude=/etc/mtab \
+    --exclude=/root/.bash_history \
+    -P -cJf rootfs.tar.xz \
+    -C $ROOTFS ./

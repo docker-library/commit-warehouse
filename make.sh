@@ -13,7 +13,10 @@ docker run \
 	-v $(pwd)/media:/mnt/media \
 	cruxbuild
 
-git branch -D ${version}
+if $(git show-ref --verify --quiet refs/heads/${version}); then
+	git branch -D ${version}
+fi
+
 git branch ${version} origin/dist
 git checkout ${version}
 

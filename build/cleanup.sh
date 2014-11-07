@@ -23,7 +23,7 @@ fi
 rm -rf $ROOTFS/usr/src/*
 
 # Remove unnecessary packages
-pkgs=(btrfs-progs e2fsprogs ed exim hdparm jfsutils kbd kmod lilo openssh pciutils ppp psmisc reiserfsprogs vim xfsprogs)
+pkgs=(btrfs-progs dcron dhcpcd e2fsprogs ed exim hdparm httpup iproute2 iptables jfsutils libusb-compat kbd kmod lilo man-db man-pages mlocate openssh pciutils ppp psmisc rc reiserfsprogs sysfsutils sysvinit vim xfsprogs)
 
 for pkg in ${pkgs[@]}; do
     chroot ${1} /usr/bin/pkgrm $pkg

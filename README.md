@@ -3,7 +3,7 @@ orientdb-docker
 
 A dockerfile for creating an orientdb image with :
 
-  - explicit orientdb version (orientdb-2.0-M2) for image cache stability
+  - explicit orientdb version (orientdb-2.0-M3) for image cache stability
   - init by supervisord
   - config, databases and backup folders expected to be mounted as volumes
 
@@ -50,7 +50,7 @@ Persistent distributed storage using BTSync
 If you're not running OrientDB in a distributed configuration you need to take special care to backup your database (in case your host goes down).
 
 Below is a simple, yet hackish, way to do this: using BTSync data containers to propagate the OrientDB config, LIVE databases and backup folders to remote location(s).
-Note: don't trust the remote copy of the LIVE database folder unless the server is down and it has correctly flushed changes to disk. 
+Note: don't trust the remote copy of the LIVE database folder unless the server is down and it has correctly flushed changes to disk.
 
 1. Create BTSync shared folders on any remote location for the various folder you want to replicate
 

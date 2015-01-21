@@ -17,7 +17,7 @@ Building the image on your own
 
 2. Build the image:
   ```bash
-docker built -t <YOUR_DOCKER_HUB_USER>/orientdb-2.0 .
+docker build -t <YOUR_DOCKER_HUB_USER>/orientdb-2.0 .
 ```
 
 3. Push it to your Docker Hub repository (it will ask for your login credentials):

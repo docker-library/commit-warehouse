@@ -1,11 +1,12 @@
 orientdb-docker
 ===============
 
-A dockerfile for creating an orientdb image with :
+[OrientDB](http://www.orientdb.org) is the first Multi-Model Open Source NoSQL DBMS that combines the power of graphs and the flexibility of documents into one scalable, high-performance operational database.
 
-  - explicit orientdb version (orientdb-2.0) for image cache stability
-  - init by supervisord
-  - config, databases and backup folders expected to be mounted as volumes
+This repository is a dockerfile for creating an orientdb image with :
+- explicit orientdb version (orientdb-2.0) for image cache stability
+- init by supervisord
+- config, databases and backup folders expected to be mounted as volumes
 
 And lots of information from my orientdb+docker explorations. Read on!
 
@@ -37,19 +38,19 @@ To run the image, run:
 docker run --name orientdb -d -v <config_path>:/opt/orientdb/config -v <databases_path>:/opt/orientdb/databases -v <backup_path>:/opt/orientdb/backup -p 2424 -p 2480 nesrait/orientdb-2.0
 ```
 
-The docker image contains a unconfigured orientdb installation and for running it you need to provide your own config folder from which OrientDB will read its startup settings.
+The docker image contains a unconfigured orientdb installation and for running it you need to provide your own config folder from which [OrientDB](http://www.orientdb.org) will read its startup settings.
 
 The same applies for the databases folder which if local to the running container would go away as soon as it died/you killed it.
 
-The backup folder only needs to be mapped if you activate that setting on your OrientDB configuration file.
+The backup folder only needs to be mapped if you activate that setting on your [OrientDB](http://www.orientdb.org) configuration file.
 
 
 Persistent distributed storage using BTSync
 -------------------------------------------
 
-If you're not running OrientDB in a distributed configuration you need to take special care to backup your database (in case your host goes down).
+If you're not running [OrientDB](http://www.orientdb.org) in a distributed configuration you need to take special care to backup your database (in case your host goes down).
 
-Below is a simple, yet hackish, way to do this: using BTSync data containers to propagate the OrientDB config, LIVE databases and backup folders to remote location(s).
+Below is a simple, yet hackish, way to do this: using BTSync data containers to propagate the [OrientDB](http://www.orientdb.org) config, LIVE databases and backup folders to remote location(s).
 Note: don't trust the remote copy of the LIVE database folder unless the server is down and it has correctly flushed changes to disk.
 
 1. Create BTSync shared folders on any remote location for the various folder you want to replicate
@@ -58,7 +59,7 @@ Note: don't trust the remote copy of the LIVE database folder unless the server 
 
   1.2. databases: the LIVE databases folder
 
-  1.3. backup: the place where OrientDB will store the zipped backups (if you activate the backup in the configuration file)
+  1.3. backup: the place where [OrientDB](http://www.orientdb.org) will store the zipped backups (if you activate the backup in the configuration file)
 
 2. Take note of the BTSync folder secrets CONFIG_FOLDER_SECRET, DATABASES_FOLDER_SECRET, BACKUP_FOLDER_SECRET
 
@@ -88,7 +89,7 @@ docker run --name orientdb -d \
 OrientDB distributed
 --------------------
 
-If you're running OrientDB distributed* you won't have the problem of losing the contents of your databases folder since they are already replicated to the other OrientDB nodes. From the setup above simply leave out the "--volumes-from orientdb_databases" argument and OrientDB will use the container storage to hold your databases' files.
+If you're running [OrientDB](http://www.orientdb.org) distributed* you won't have the problem of losing the contents of your databases folder since they are already replicated to the other OrientDB nodes. From the setup above simply leave out the "--volumes-from orientdb_databases" argument and [OrientDB](http://www.orientdb.org) will use the container storage to hold your databases' files.
 
 *note: some extra work might be needed to correctly setup hazelcast running inside docker containers ([see this discussion](https://groups.google.com/forum/#!topic/vertx/MvKcz_aTaWM)).
 
@@ -96,7 +97,7 @@ If you're running OrientDB distributed* you won't have the problem of losing the
 Ad-hoc backups
 --------------
 
-With orientdb 2.0 we can now create ad-hoc backups by taking advantage of [the new backup.sh script](https://github.com/orientechnologies/orientdb/wiki/Backup-and-Restore#backup-database):
+With [OrientDB](http://www.orientdb.org) 2.0 we can now create ad-hoc backups by taking advantage of [the new backup.sh script](https://github.com/orientechnologies/orientdb/wiki/Backup-and-Restore#backup-database):
 
   - Using the orientdb_backup data container that was created above:
     ```bash
@@ -107,7 +108,7 @@ With orientdb 2.0 we can now create ad-hoc backups by taking advantage of [the n
 
     `docker run -i -t --volumes-from orientdb_config -v <host_backup_path>:/backup nesrait/orientdb-2.0 ./backup.sh <dburl> <user> <password> /backup/<backup_file> [<type>]`
 
-Either way, when the backup completes you will have the backup file located outside of the OrientDB container and read for safekeeping.
+Either way, when the backup completes you will have the backup file located outside of the [OrientDB](http://www.orientdb.org) container and read for safekeeping.
 
 Note: I haven't tried the non-blocking backup (type=lvm) yet but found [this discussion about a docker LVM dependency issue](https://groups.google.com/forum/#!topic/docker-user/n4Xtvsb4RAw).
 

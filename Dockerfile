@@ -31,6 +31,7 @@ RUN cd && \
 
 # use supervisord to start orientdb
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD orientdb-server-config.xml /opt/orientdb/config/orientdb-server-config.xml
 
 EXPOSE 2424
 EXPOSE 2480

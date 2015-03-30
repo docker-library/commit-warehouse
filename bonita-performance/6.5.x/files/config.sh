@@ -11,6 +11,9 @@ ENSURE_DB_CHECK_AND_CREATION=${ENSURE_DB_CHECK_AND_CREATION:-true}
 CLUSTER_MODE=${CLUSTER_MODE:-false}
 BONITA_HOME_COMMON_PATH=${BONITA_HOME_COMMON_PATH:-/opt/bonita_home}
 
+#Java OPTS
+export JAVA_OPTS=${JAVA_OPTS:-Xms1024m -Xmx1024m -XX:MaxPermSize=256m}
+
 # retrieve db parameters from container linked
 if [ -n "$POSTGRES_PORT_5432_TCP_PORT" ]
 then
@@ -134,6 +137,7 @@ sed -e 's/{{PLATFORM_LOGIN}}/'"${PLATFORM_LOGIN}"'/' \
     -e 's/{{PLATFORM_PASSWORD}}/'"${PLATFORM_PASSWORD}"'/' \
     -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/server/platform/conf/bonita-platform.properties
 sed 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bin/setenv.sh
+sed 's/{{JAVA_OPTS}}/'"${JAVA_OPTS}"'/' -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bin/setenv.sh
 sed -e 's/{{BUSINESS_DATA_HIBERNATE_DIALECT}}/'"${BUSINESS_DATA_HIBERNATE_DIALECT}"'/' \
     -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/server/platform/tenant-template/conf/bonita-server.properties
 case "${DB_VENDOR}" in

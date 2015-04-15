@@ -15,7 +15,7 @@ echo "Bonita URL :"${PERF_BONITA_URL}
 ./config.sh
 cd /opt/PerfLauncher/bin
 
-BASEDIR=`dirname $0`/..
+BASEDIR=/opt/PerfLauncher
 
 CFG_FOLDER=$BASEDIR/conf
 
@@ -23,4 +23,4 @@ JOPTS="$JOPTS -Djava.util.logging.config.file=$BASEDIR/conf/logging.properties"
 JOPTS="$JOPTS -Dlogback.configurationFile=file:$BASEDIR/conf/logback.xml"
 JOPTS="$JOPTS -Dconf.folder=$CFG_FOLDER"
 
-java -cp "$BASEDIR/lib/*" $JOPTS $JAVA_OPTS org.bonitasoft.engine.performance.PerfLauncher
+java $JAVA_OPTS $JOPTS -cp "$BASEDIR/lib/*" org.bonitasoft.engine.performance.PerfLauncher

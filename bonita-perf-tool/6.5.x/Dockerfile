@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 #COPY PerfLauncher.zip /opt/PerfLauncher.zip
-COPY PerfLauncher-bonitaBPM6-community-server-6.5.0-SNAPSHOT-1.0-SNAPSHOT-h2.zip /opt/PerfLauncher.zip
+COPY bin/PerfLauncher-bonitaBPM6-community-server-6.5.0-SNAPSHOT-1.0-SNAPSHOT-h2.zip /opt/PerfLauncher.zip
 COPY startup.sh /opt/startup.sh
 COPY config /opt/config
 RUN unzip /opt/PerfLauncher.zip -d /opt/PerfLauncher

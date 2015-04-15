@@ -11,12 +11,16 @@ ENV PERF_SERVER_MODE false
 ENV DEBIAN_FRONTEND noninteractive
 
 # install packages
-RUN apt-get update && apt-get install -y \
-  openjdk-7-jre-headless \
+RUN \
+  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+  add-apt-repository -y ppa:webupd8team/java && \
+  apt-get update && \
+  apt-get install -y oracle-java8-installer \
   unzip \
   wget \
-  gettext \
-  && rm -rf /var/lib/apt/lists/*
+  gettext && \
+  rm -rf /var/lib/apt/lists/* && \
+  rm -rf /var/cache/oracle-jdk8-installer && \
 
 #COPY PerfLauncher.zip /opt/PerfLauncher.zip
 COPY PerfLauncher-bonitaBPM6-community-server-6.5.0-SNAPSHOT-1.0-SNAPSHOT-h2.zip /opt/PerfLauncher.zip

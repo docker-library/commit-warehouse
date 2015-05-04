@@ -16,3 +16,7 @@ ${PERF_NB_LAUNCH}
 ${PERF_NB_PARALLEL_LAUNCH}
 # server mode (false = client, controls a separated Bonita instance || true = server, embedded server)
 ${PERF_SERVER_MODE}
+# timeout process instance
+${PERF_TIMEOUT_INSTANCE}
+# timeout process task
+${PERF_TIMEOUT_ACTIVITY}

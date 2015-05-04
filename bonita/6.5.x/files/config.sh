@@ -7,7 +7,8 @@ BONITA_TPL=${BONITA_TPL:-/opt/templates}
 BONITA_FILES=${BONITA_FILES:-/opt/files}
 # Flag to allow or not SQL queries to automatically check and create the database
 ENSURE_DB_CHECK_AND_CREATION=${ENSURE_DB_CHECK_AND_CREATION:-true}
-
+#Java OPTS
+export JAVA_OPTS=${JAVA_OPTS:-Xms1024m -Xmx1024m -XX:MaxPermSize=256m}
 # retrieve db parameters from container linked
 if [ -n "$POSTGRES_PORT_5432_TCP_PORT" ]
 then
@@ -26,7 +27,7 @@ else
 fi
 
 # Flag to allow benchmark 
-BENCH_ACTIVE=${BENCH_ACTIVE:false}
+BENCH_MODE=${BENCH_MODE:false}
 
 # if not enforced, set default values to configure the db
 DB_NAME=${DB_NAME:-bonitadb}
@@ -44,7 +45,7 @@ then
         unzip ${BONITA_FILES}/${BONITA_ARCHIVE_FILE} -d ${BONITA_PATH}
 fi
 
-if [ "${BENCH_ACTIVE}" = 'true' ]
+if [ "${BENCH_MODE}" = 'true' ]
 then
 	cp ${BONITA_FILES}/bench/* ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/lib/
 fi
@@ -100,7 +101,9 @@ sed -e 's/{{PLATFORM_LOGIN}}/'"${PLATFORM_LOGIN}"'/' \
     -e 's/{{PLATFORM_PASSWORD}}/'"${PLATFORM_PASSWORD}"'/' \
     -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/server/platform/conf/bonita-platform.properties
 sed 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bin/setenv.sh
-
+sed 's/{{JAVA_OPTS}}/'"${JAVA_OPTS}"'/' -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bin/setenv.sh
+sed -e 's/{{BUSINESS_DATA_HIBERNATE_DIALECT}}/'"${BUSINESS_DATA_HIBERNATE_DIALECT}"'/' \
+    -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/server/platform/tenant-template/conf/bonita-server.properties
 case "${DB_VENDOR}" in
 	mysql|postgres)
         	cp ${BONITA_TPL}/${DB_VENDOR}/bitronix-resources.properties ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/conf/bitronix-resources.properties

@@ -12,7 +12,7 @@ CLUSTER_MODE=${CLUSTER_MODE:-false}
 BONITA_HOME_COMMON_PATH=${BONITA_HOME_COMMON_PATH:-/opt/bonita_home}
 
 #Java OPTS
-export JAVA_OPTS=${JAVA_OPTS:-Xms1024m -Xmx1024m -XX:MaxPermSize=256m}
+export JAVA_OPTS=${JAVA_OPTS:--Xms1024m -Xmx1024m -XX:MaxPermSize=256m}
 
 # retrieve db parameters from container linked
 if [ -n "$POSTGRES_PORT_5432_TCP_PORT" ]

@@ -14,7 +14,7 @@ ENV MYSQL_JDBC_DRIVER_URL http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL
 ENV MYSQL_JDBC_DRIVER_FILE mysql-connector-java-5.1.26/mysql-connector-java-5.1.26-bin.jar
 
 # perf
-# ENV BENCH_ACTIVE true
+# ENV BENCH_MODE true
 ENV BENCH_URL_ACTIVEMQ http://central.maven.org/maven2/org/apache/activemq/activemq-client/5.8.0/activemq-client-5.8.0.jar
 ENV BENCH_URL_HAWTBUF http://central.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.9/hawtbuf-1.9.jar
 ENV BENCH_URL_GERONIMO_JMS http://central.maven.org/maven2/org/apache/geronimo/specs/geronimo-jms_1.1_spec/1.1.1/geronimo-jms_1.1_spec-1.1.1.jar

@@ -6,6 +6,7 @@ ENV BONITA_VERSION 7.0.0.RC1
 ENV TOMCAT_VERSION 7.0.55
 ENV BONITA_ARCHIVE_DIR BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}
 ENV BONITA_ARCHIVE_FILE ${BONITA_ARCHIVE_DIR}.zip
+ENV BONITA_DOWNLOAD_SHA256 d6710329e3843f91c8464d872743e09669a87c4a018cbdc922b24c6aadab088b
 #ENV BASE_URL http://download.forge.ow2.org/bonita
 ENV BASE_URL http://192.168.1.254/qa/releases/Early_Access/7.x/7.0.0.RC1/BonitaBPMCommunity-7.0.0.RC1
 ENV POSTGRES_JDBC_DRIVER_FILE postgresql-9.3-1102.jdbc41.jar
@@ -39,7 +40,8 @@ RUN wget -q ${MYSQL_JDBC_DRIVER_URL} -O /opt/files/${MYSQL_JDBC_DRIVER_ARCHIVE} 
   && rm /opt/files/${MYSQL_JDBC_DRIVER_ARCHIVE}
 
 # add Bonita BPM archive to the container
-ADD ${BASE_URL}/${BONITA_ARCHIVE_FILE} /opt/files/
+RUN wget -q ${BASE_URL}/${BONITA_ARCHIVE_FILE} -O /opt/files/${BONITA_ARCHIVE_FILE} \
+  &&  echo "$BONITA_DOWNLOAD_SHA256" /opt/files/${BONITA_ARCHIVE_FILE} | sha256sum -c -
 
 # create Volume to store Bonita BPM files
 VOLUME /opt/bonita

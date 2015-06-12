@@ -10,7 +10,7 @@ Bonita BPM is an open-source business process management and workflow suite crea
 
 ## Quick start
 
-	docker run -d --name bonita -p 8080:8080 bonita
+	docker run --name bonita -d -p 8080:8080 bonita
 	
 This will start a container running the Tomcat Bundle with Bonita BPM Engine + Portal. As you didn't sepecify any environment variables it's like if you have launched the Bundle on your host using startup.{sh|bat}. It means that Bonita BPM uses a H2 database here.
 
@@ -33,3 +33,14 @@ You can access to the portal on http://localhost:8080 and login using the defaul
 	docker run --name=bonita -e "TENANT_LOGIN=tech_user" -e "TENANT_PASSWORD=secret" -e "PLATFORM_LOGIN=pfadmin" -e "PLATFORM_PASSWORD=pfsecret" -d -p 8080:8080 bonita
 
 If you do so, you can access to the portal on http://localhost:8080 and login using : tech_user / secret
+
+# User Feedback
+
+## Issues
+
+If you have any problems with or questions about this image, please contact us through a GitHub issue
+
+## Contributing
+
+You are invited to contribute new features, fixes, or updates, large or small; we are always thrilled to receive pull requests, and do our best to process them as fast as we can.
+

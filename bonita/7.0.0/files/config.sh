@@ -9,7 +9,7 @@ BONITA_FILES=${BONITA_FILES:-/opt/files}
 # Flag to allow or not the SQL queries to automatically check and create the databases
 ENSURE_DB_CHECK_AND_CREATION=${ENSURE_DB_CHECK_AND_CREATION:-true}
 # Java OPTS
-export JAVA_OPTS=${JAVA_OPTS:--Xms1024m -Xmx1024m -XX:MaxPermSize=256m}
+JAVA_OPTS=${JAVA_OPTS:--Xms1024m -Xmx1024m -XX:MaxPermSize=256m}
 # Flag to enable or not dynamic authorization checking on Bonita REST API
 REST_API_DYN_AUTH_CHECKS=${REST_API_DYN_AUTH_CHECKS:-true}
 # Flag to enable or not Bonita HTTP API
@@ -61,7 +61,7 @@ then
 	case "${DB_VENDOR}" in
 		mysql)
 			db_admin_user='root'
-			db_admin pass=${MYSQL_ENV_MYSQL_ROOT_PASSWORD}
+			db_admin_pass=${MYSQL_ENV_MYSQL_ROOT_PASSWORD}
 			;;
 		postgres)
 			db_admin_user='postgres'
@@ -74,14 +74,8 @@ then
 		create_user_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $db_admin_user $db_admin_pass $DB_USER $DB_PASS
 		create_database_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $db_admin_user $db_admin_pass $DB_NAME $DB_USER
 		# ensure to create business db and user if needed
-		if [ "$DB_USER" != "$BIZ_DB_USER" ]
-		then
-			create_user_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $db_admin_user $db_admin_pass $BIZ_DB_USER $BIZ_DB_PASS
-		fi
-		if [ "$DB_NAME" != "$BIZ_DB_NAME" ]
-		then
-			create_database_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $db_admin_user $db_admin_pass $BIZ_DB_NAME $BIZ_DB_USER
-		fi
+		create_user_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $db_admin_user $db_admin_pass $BIZ_DB_USER $BIZ_DB_PASS
+		create_database_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $db_admin_user $db_admin_pass $BIZ_DB_NAME $BIZ_DB_USER
 	fi
 fi
 

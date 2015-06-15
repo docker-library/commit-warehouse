@@ -12,8 +12,7 @@ ENV BASE_URL http://192.168.1.254/qa/releases/7.0.x/${BONITA_VERSION}/BonitaBPMC
 ENV POSTGRES_JDBC_DRIVER_FILE postgresql-9.3-1102.jdbc41.jar
 ENV POSTGRES_JDBC_DRIVER_URL https://jdbc.postgresql.org/download/${POSTGRES_JDBC_DRIVER_FILE}
 ENV MYSQL_JDBC_DRIVER_NAME mysql-connector-java-5.1.26
-ENV MYSQL_JDBC_DRIVER_ARCHIVE ${MYSQL_JDBC_DRIVER_NAME}.zip
-ENV MYSQL_JDBC_DRIVER_URL http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL_JDBC_DRIVER_ARCHIVE}
+ENV MYSQL_JDBC_DRIVER_URL http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL_JDBC_DRIVER_NAME}.zip
 ENV MYSQL_JDBC_DRIVER_FILE ${MYSQL_JDBC_DRIVER_NAME}-bin.jar
 
 # avoid debconf messages
@@ -34,11 +33,11 @@ COPY templates /opt/templates
 
 # retrieve JDBC drivers
 ADD ${POSTGRES_JDBC_DRIVER_URL} /opt/files/
-RUN wget -q ${MYSQL_JDBC_DRIVER_URL} -O /opt/files/${MYSQL_JDBC_DRIVER_ARCHIVE} \
-  && unzip -q /opt/files/${MYSQL_JDBC_DRIVER_ARCHIVE} -d /opt/files/ \
+RUN wget -q ${MYSQL_JDBC_DRIVER_URL} -O /opt/files/${MYSQL_JDBC_DRIVER_NAME}.zip \
+  && unzip -q /opt/files/${MYSQL_JDBC_DRIVER_NAME}.zip -d /opt/files/ \
   && mv /opt/files/${MYSQL_JDBC_DRIVER_NAME}/${MYSQL_JDBC_DRIVER_FILE} /opt/files/ \
   && rm -r /opt/files/${MYSQL_JDBC_DRIVER_NAME} \
-  && rm /opt/files/${MYSQL_JDBC_DRIVER_ARCHIVE}
+  && rm /opt/files/${MYSQL_JDBC_DRIVER_NAME}.zip
 
 # add Bonita BPM archive to the container
 RUN wget -q ${BASE_URL}/${BONITA_ARCHIVE_FILE} -O /opt/files/${BONITA_ARCHIVE_FILE} \

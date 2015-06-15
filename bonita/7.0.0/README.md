@@ -12,7 +12,7 @@ Bonita BPM is an open-source business process management and workflow suite crea
 
 	docker run --name bonita -d -p 8080:8080 bonita
 	
-This will start a container running the [Tomcat Bundle](http://documentation.bonitasoft.com/tomcat-bundle-1) with Bonita BPM Engine + Portal. As you didn't sepecify any environment variables it's like if you have launched the Bundle on your host using startup.{sh|bat}. It means that Bonita BPM uses a H2 database here.
+This will start a container running the [Tomcat Bundle](http://documentation.bonitasoft.com/tomcat-bundle-1) with Bonita BPM Engine + Portal. As you didn't sepecify any environment variables it's almost like if you have launched the Bundle on your host using startup.{sh|bat} (with security hardening on REST and HTTP APIs, cf Security part). It means that Bonita BPM uses a H2 database here.
 
 You can access to the portal on http://localhost:8080 and login using the default credentials : install / install
 
@@ -33,6 +33,19 @@ You can access to the portal on http://localhost:8080 and login using the defaul
 	docker run --name=bonita -e "TENANT_LOGIN=tech_user" -e "TENANT_PASSWORD=secret" -e "PLATFORM_LOGIN=pfadmin" -e "PLATFORM_PASSWORD=pfsecret" -d -p 8080:8080 bonita
 
 If you do so, you can access to the portal on http://localhost:8080 and login using : tech_user / secret
+
+# Security
+
+This docker image ensures to activate by default both static and dynamic authorization checks on REST API. To be coherent it also deactivates the HTTP API.
+
+ * REST API authorization
+    * [Static authorization checking](http://documentation.bonitasoft.com/rest-api-authorization#static)
+    * [Dynamic authorization checking](http://documentation.bonitasoft.com/rest-api-authorization#dynamic)
+ * [HTTP API](http://documentation.bonitasoft.com/rest-api-authorization#activate)
+
+But for specific needs you can override this behavior by setting HTTP_API to true and REST_API_DYN_AUTH_CHECKS to false :
+
+	docker run  -e HTTP_API=true -e REST_API_DYN_AUTH_CHECKS=false --name bonita -d -p 8080:8080 bonita
 
 # License
 Bonita BPM image includes two parts :

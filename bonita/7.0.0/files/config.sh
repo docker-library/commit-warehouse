@@ -10,6 +10,8 @@ BONITA_FILES=${BONITA_FILES:-/opt/files}
 ENSURE_DB_CHECK_AND_CREATION=${ENSURE_DB_CHECK_AND_CREATION:-true}
 # Java OPTS
 export JAVA_OPTS=${JAVA_OPTS:--Xms1024m -Xmx1024m -XX:MaxPermSize=256m}
+# Flag to enable or not dynamic authorization checking on Bonita REST API
+REST_API_DYN_AUTH_CHECKS=${REST_API_DYN_AUTH_CHECKS:-true}
 
 # retrieve the db parameters from the container linked
 if [ -n "$POSTGRES_PORT_5432_TCP_PORT" ]
@@ -87,6 +89,12 @@ cp ${BONITA_TPL}/bonita-platform-community-custom.properties ${BONITA_PATH}/${BO
 cp ${BONITA_TPL}/bonita-tenant-community-custom.properties ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/engine-server/conf/tenants/template/bonita-tenant-community-custom.properties
 cp ${BONITA_TPL}/platform-tenant-config.properties ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/client/platform/conf/platform-tenant-config.properties
 cp ${BONITA_TPL}/setenv.sh ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bin/setenv.sh
+
+# if required, uncomment dynamic checks on REST API
+if [ "$REST_API_DYN_AUTH_CHECKS" = 'true' ]
+then
+    sed -i -e 's/^#GET|/GET|/' -e 's/^#POST|/POST|/' -e 's/^#PUT|/PUT|/' -e 's/^#DELETE|/DELETE|/' ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/client/platform/tenant-template/conf/dynamic-permissions-checks.properties
+fi
 
 # replace variables
 sed -e 's/{{TENANT_LOGIN}}/'"${TENANT_LOGIN}"'/' \

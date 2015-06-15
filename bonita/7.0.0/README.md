@@ -34,6 +34,11 @@ You can access to the portal on http://localhost:8080 and login using the defaul
 
 If you do so, you can access to the portal on http://localhost:8080 and login using : tech_user / secret
 
+# License
+Bonita BPM image includes two parts :
+ * Bonita BPM Engine under [LGPL v2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+ * Bonita BPM Portal under [GPL v2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+
 # User Feedback
 
 ## Issues

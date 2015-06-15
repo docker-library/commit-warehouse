@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y \
   postgresql-client \
   unzip \
   wget \
+  zip \
   && rm -rf /var/lib/apt/lists/*
 
 COPY files /opt/files

@@ -60,7 +60,7 @@ This docker image ensures to activate by default both static and dynamic authori
 
 But for specific needs you can override this behavior by setting HTTP_API to true and REST_API_DYN_AUTH_CHECKS to false :
 
-	docker run  -e HTTP_API=true -e REST_API_DYN_AUTH_CHECKS=false --name bonita -d -p 8080:8080 bonita
+	docker run  -e HTTP_API=true -e REST_API_DYN_AUTH_CHECKS=false --name bonita -h bonita -v ~/Documents/Docker/Volumes/bonita-performance/:/opt/bonita_home/ -d -p 8080:8080 bonita
 
 # License
 Bonita BPM image includes two parts :

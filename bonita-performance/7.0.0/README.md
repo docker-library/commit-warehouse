@@ -29,7 +29,7 @@ Then we can launch the Bonita container with the same hostname (-h) and this hos
 	
 This will start a container running the [Tomcat Bundle](http://documentation.bonitasoft.com/tomcat-bundle-1) with Bonita BPM Engine + Portal. As you didn't sepecify any environment variables it's almost like if you have launched the Bundle on your host using startup.{sh|bat} (with security hardening on REST and HTTP APIs, cf Security part). It means that Bonita BPM uses a H2 database here.
 
-You can access to the portal on http://localhost:8080 and login using the default credentials : install / install
+You can access to the portal on http://localhost:8080/bonita and login using the default credentials : install / install
 
 ## Link Bonita BPM to a database
 
@@ -47,7 +47,7 @@ You can access to the portal on http://localhost:8080 and login using the defaul
 
 	docker run --name=bonita -e "TENANT_LOGIN=tech_user" -e "TENANT_PASSWORD=secret" -e "PLATFORM_LOGIN=pfadmin" -e "PLATFORM_PASSWORD=pfsecret" -h bonita -v ~/Documents/Docker/Volumes/bonita-performance/:/opt/bonita_home/ -d -p 8080:8080 bonita
 
-If you do so, you can access to the portal on http://localhost:8080 and login using : tech_user / secret
+If you do so, you can access to the portal on http://localhost:8080/bonita and login using : tech_user / secret
 
 # Security
 

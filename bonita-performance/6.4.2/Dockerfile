@@ -43,8 +43,8 @@ ADD ${BASE_URL}/${BONITA_HOME_FILE} /opt/files/
 VOLUME /opt/bonita
 
 # create user to launch Bonita BPM as non-root
-RUN groupadd -r bonita -g 222 && \
-  useradd -u 222 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita
+RUN groupadd -r bonita -g 1000 && \
+  useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita
 
 # expose Tomcat port
 EXPOSE 8080

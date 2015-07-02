@@ -20,3 +20,9 @@ ${PERF_SERVER_MODE}
 ${PERF_TIMEOUT_INSTANCE}
 # timeout process task
 ${PERF_TIMEOUT_ACTIVITY}
+# clean platform
+${PERF_CLEAN_PLATFORM}
+# clean tenantUser
+${PERF_CLEAN_TENANT_USER}
+# clean processInstance
+${PERF_CLEAN_PROCESS_INSTANCE}

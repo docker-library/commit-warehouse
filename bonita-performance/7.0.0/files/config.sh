@@ -103,9 +103,10 @@ cp $license ${BONITA_HOME_COMMON_PATH}/server/licenses
 
 # apply conf
 # copy templates
-cp ${BONITA_TPL}/bonita-platform-community-custom.properties ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/engine-server/conf/bonita-platform-community-custom.properties
+cp ${BONITA_TPL}/bonita-platform-community-custom.properties ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/engine-server/conf/platform/bonita-platform-community-custom.properties
 cp ${BONITA_TPL}/bonita-tenant-community-custom.properties ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/engine-server/conf/tenants/template/bonita-tenant-community-custom.properties
 cp ${BONITA_TPL}/platform-tenant-config.properties ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/client/platform/conf/platform-tenant-config.properties
+cp ${BONITA_TPL}/bonita-platform-sp-custom.properties ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/engine-server/conf/platform/bonita-platform-sp-custom.properties
 cp ${BONITA_TPL}/setenv.sh ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bin/setenv.sh
 
 # if required, uncomment dynamic checks on REST API
@@ -128,6 +129,8 @@ sed -e 's/{{TENANT_LOGIN}}/'"${TENANT_LOGIN}"'/' \
 sed -e 's/{{PLATFORM_LOGIN}}/'"${PLATFORM_LOGIN}"'/' \
     -e 's/{{PLATFORM_PASSWORD}}/'"${PLATFORM_PASSWORD}"'/' \
     -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/engine-server/conf/platform/bonita-platform-community-custom.properties
+sed -e 's/{{CLUSTER_MODE}}/'"${CLUSTER_MODE}"'/' \
+    -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bonita/engine-server/conf/platform/bonita-platform-sp-custom.properties
 sed 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bin/setenv.sh
 sed 's/{{JAVA_OPTS}}/'"${JAVA_OPTS}"'/' -i ${BONITA_PATH}/${BONITA_ARCHIVE_DIR}/bin/setenv.sh
 sed -e 's/{{BIZ_DB_VENDOR}}/'"${BIZ_DB_VENDOR}"'/' \

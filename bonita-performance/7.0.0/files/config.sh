@@ -25,17 +25,40 @@ then
 	DB_HOST=$POSTGRES_PORT_5432_TCP_ADDR
 	DB_PORT=$POSTGRES_PORT_5432_TCP_PORT
 	JDBC_DRIVER=$POSTGRES_JDBC_DRIVER_FILE
-	BIZ_DB_VENDOR='postgres'
 elif [ -n "$MYSQL_PORT_3306_TCP_PORT" ]
 then
 	DB_VENDOR='mysql'
 	DB_HOST=$MYSQL_PORT_3306_TCP_ADDR
 	DB_PORT=$MYSQL_PORT_3306_TCP_PORT
 	JDBC_DRIVER=$MYSQL_JDBC_DRIVER_FILE
-	BIZ_DB_VENDOR='mysql'
 else
-	DB_VENDOR='h2'
-	BIZ_DB_VENDOR='h2'
+	if (![ -n "$DB_VENDOR" ])
+	then # default = h2
+		DB_VENDOR='h2'
+	fi
+fi
+
+case $DB_VENDOR in
+	"postgres")
+		JDBC_DRIVER=$POSTGRES_JDBC_DRIVER_FILE
+		if [ -n "$DB_PORT" ] 
+		then
+			DB_PORT=5432
+		fi
+		;;
+	"mysql")
+		JDBC_DRIVER=$MYSQL_JDBC_DRIVER_FILE
+		if [ -n "$DB_PORT" ] 
+		then
+			DB_PORT=3306
+		fi
+		;;
+	*)
+		;;
+esac
+if [ -n "$BIZ_DB_VENDOR" ]
+then
+	BIZ_DB_VENDOR=${DB_VENDOR}	
 fi
 
 # Flag to allow benchmark 
@@ -73,22 +96,34 @@ then
 	. ${BONITA_FILES}/functions.sh
 	case "${DB_VENDOR}" in
 		mysql)
-			db_admin_user='root'
-			db_admin_pass=${MYSQL_ENV_MYSQL_ROOT_PASSWORD}
+			if [ -n "$DB_ADMIN_USER" ]
+			then
+				DB_ADMIN_USER='root'
+			fi
+			if [ -n "$DB_ADMIN_PASS" ]
+			then
+				DB_ADMIN_PASS=${MYSQL_ENV_MYSQL_ROOT_PASSWORD}
+			fi
 			;;
 		postgres)
-			db_admin_user='postgres'
-			db_admin_pass=$POSTGRES_ENV_POSTGRES_PASSWORD
+			if [ -n "$DB_ADMIN_USER" ]
+			then
+				DB_ADMIN_USER='postgres'
+			fi
+			if [ -n "$DB_ADMIN_PASS" ]
+			then
+				DB_ADMIN_PASS=$POSTGRES_ENV_POSTGRES_PASSWORD
+			fi
 			;;
 	esac
 	if [ "${DB_VENDOR}" != 'h2' ]
 	then
 		# ensure to create bonita db and user
-		create_user_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $db_admin_user $db_admin_pass $DB_USER $DB_PASS
-		create_database_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $db_admin_user $db_admin_pass $DB_NAME $DB_USER
+		create_user_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $DB_ADMIN_USER $DB_ADMIN_PASS $DB_USER $DB_PASS
+		create_database_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $DB_ADMIN_USER $DB_ADMIN_PASS $DB_NAME $DB_USER
 		# ensure to create business db and user if needed
-		create_user_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $db_admin_user $db_admin_pass $BIZ_DB_USER $BIZ_DB_PASS
-		create_database_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $db_admin_user $db_admin_pass $BIZ_DB_NAME $BIZ_DB_USER
+		create_user_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $DB_ADMIN_USER $DB_ADMIN_PASS $BIZ_DB_USER $BIZ_DB_PASS
+		create_database_if_not_exists $DB_VENDOR $DB_HOST $DB_PORT $DB_ADMIN_USER $DB_ADMIN_PASS $BIZ_DB_NAME $BIZ_DB_USER
 	fi
 fi
 

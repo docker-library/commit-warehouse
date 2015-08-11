@@ -32,31 +32,22 @@ then
 	DB_PORT=$MYSQL_PORT_3306_TCP_PORT
 	JDBC_DRIVER=$MYSQL_JDBC_DRIVER_FILE
 else
-	if (![ -n "$DB_VENDOR" ])
-	then # default = h2
-		DB_VENDOR='h2'
-	fi
+	DB_VENDOR=${DB_VENDOR:-h2}
 fi
 
 case $DB_VENDOR in
 	"postgres")
 		JDBC_DRIVER=$POSTGRES_JDBC_DRIVER_FILE
-		if [ -n "$DB_PORT" ] 
-		then
-			DB_PORT=5432
-		fi
+		DB_PORT=${DB_PORT:-5432}
 		;;
 	"mysql")
 		JDBC_DRIVER=$MYSQL_JDBC_DRIVER_FILE
-		if [ -n "$DB_PORT" ] 
-		then
-			DB_PORT=3306
-		fi
+		DB_PORT=${DB_PORT:-3306}
 		;;
 	*)
 		;;
 esac
-if [ -n "$BIZ_DB_VENDOR" ]
+if [ -z "$BIZ_DB_VENDOR" ]
 then
 	BIZ_DB_VENDOR=${DB_VENDOR}	
 fi
@@ -96,21 +87,15 @@ then
 	. ${BONITA_FILES}/functions.sh
 	case "${DB_VENDOR}" in
 		mysql)
-			if [ -n "$DB_ADMIN_USER" ]
+			DB_ADMIN_USER=${DB_ADMIN_USER:-root}
+			if [ -z "$DB_ADMIN_PASS" ]
 			then
-				DB_ADMIN_USER='root'
-			fi
-			if [ -n "$DB_ADMIN_PASS" ]
-			then
-				DB_ADMIN_PASS=${MYSQL_ENV_MYSQL_ROOT_PASSWORD}
+				DB_ADMIN_PASS=$MYSQL_ENV_MYSQL_ROOT_PASSWORD
 			fi
 			;;
 		postgres)
-			if [ -n "$DB_ADMIN_USER" ]
-			then
-				DB_ADMIN_USER='postgres'
-			fi
-			if [ -n "$DB_ADMIN_PASS" ]
+			DB_ADMIN_USER=${DB_ADMIN_USER:-postgres}
+			if [ -z "$DB_ADMIN_PASS" ]
 			then
 				DB_ADMIN_PASS=$POSTGRES_ENV_POSTGRES_PASSWORD
 			fi

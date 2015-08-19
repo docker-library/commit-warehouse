@@ -3,33 +3,18 @@ FROM ubuntu:14.04
 MAINTAINER Jérémy Jacquier-Roux <jeremy.jacquier-roux@bonitasoft.com>
 
 ENV BONITA_VERSION 7.0.0
-ENV TOMCAT_VERSION 7.0.55
-ENV BONITA_ARCHIVE_DIR BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}
-ENV BONITA_ARCHIVE_FILE ${BONITA_ARCHIVE_DIR}.zip
-ENV BONITA_DOWNLOAD_SHA256 6a8758e2e829376c12ce6fcae754222fbfbfc739d0b78817b7e43117c5ee77de
-#ENV BASE_URL http://download.forge.ow2.org/bonita
 ENV BASE_URL http://192.168.1.254/qa/releases/7.0.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/
-ENV POSTGRES_JDBC_DRIVER_FILE postgresql-9.3-1102.jdbc41.jar
-ENV POSTGRES_JDBC_DRIVER_URL https://jdbc.postgresql.org/download/${POSTGRES_JDBC_DRIVER_FILE}
-ENV MYSQL_JDBC_DRIVER_NAME mysql-connector-java-5.1.26
-ENV MYSQL_JDBC_DRIVER_URL http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL_JDBC_DRIVER_NAME}.zip
-ENV MYSQL_JDBC_DRIVER_FILE ${MYSQL_JDBC_DRIVER_NAME}-bin.jar
+ENV BONITA_SHA256 6a8758e2e829376c12ce6fcae754222fbfbfc739d0b78817b7e43117c5ee77de
+ENV POSTGRES_JDBC_DRIVER postgresql-9.3-1102.jdbc41.jar
+ENV POSTGRES_SHA256 b78749d536da75c382d0a71c717cde6850df64e16594676fc7cacb5a74541d66
+ENV MYSQL_JDBC_DRIVER mysql-connector-java-5.1.26
+ENV MYSQL_SHA256 40b2d49f6f2551cc7fa54552af806e8026bf8405f03342205852e57a3205a868
 
 #cluster
 #ENV CLUSTER_MODE true
 
-# perf
-#ENV BENCH_MODE true
-ENV BENCH_URL_ACTIVEMQ http://central.maven.org/maven2/org/apache/activemq/activemq-client/5.8.0/activemq-client-5.8.0.jar
-ENV BENCH_URL_HAWTBUF http://central.maven.org/maven2/org/fusesource/hawtbuf/hawtbuf/1.9/hawtbuf-1.9.jar
-ENV BENCH_URL_GERONIMO_JMS http://central.maven.org/maven2/org/apache/geronimo/specs/geronimo-jms_1.1_spec/1.1.1/geronimo-jms_1.1_spec-1.1.1.jar
-ENV BENCH_URL_GERONIMO_J2EE http://central.maven.org/maven2/org/apache/geronimo/specs/geronimo-j2ee-management_1.1_spec/1.0.1/geronimo-j2ee-management_1.1_spec-1.0.1.jar
-
-# avoid debconf messages
-ENV DEBIAN_FRONTEND noninteractive
-
-# install packages
-RUN apt-get update && apt-get install -y \
+# avoid debconf messages and install packages
+RUN export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install -y \
   mysql-client-core-5.5 \
   openjdk-7-jre-headless \
   postgresql-client \
@@ -42,28 +27,26 @@ COPY files /opt/files
 COPY templates /opt/templates
 
 # retrieve JDBC drivers
-ADD ${POSTGRES_JDBC_DRIVER_URL} /opt/files/
-RUN wget -q ${MYSQL_JDBC_DRIVER_URL} -O /opt/files/${MYSQL_JDBC_DRIVER_NAME}.zip \
-  && unzip -q /opt/files/${MYSQL_JDBC_DRIVER_NAME}.zip -d /opt/files/ \
-  && mv /opt/files/${MYSQL_JDBC_DRIVER_NAME}/${MYSQL_JDBC_DRIVER_FILE} /opt/files/ \
-  && rm -r /opt/files/${MYSQL_JDBC_DRIVER_NAME} \
-  && rm /opt/files/${MYSQL_JDBC_DRIVER_NAME}.zip
-
-# add benchmark needed jars
-ADD ${BENCH_URL_ACTIVEMQ} /opt/files/bench/
-ADD ${BENCH_URL_HAWTBUF} /opt/files/bench/
-ADD ${BENCH_URL_GERONIMO_JMS} /opt/files/bench/
-ADD ${BENCH_URL_GERONIMO_J2EE} /opt/files/bench/
+RUN wget -q https://jdbc.postgresql.org/download/${POSTGRES_JDBC_DRIVER} -O /opt/files/${POSTGRES_JDBC_DRIVER} \
+  && echo "$POSTGRES_SHA256" /opt/files/${POSTGRES_JDBC_DRIVER} | sha256sum -c - \
+  && wget -q http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL_JDBC_DRIVER}.zip -O /opt/files/${MYSQL_JDBC_DRIVER}.zip \
+  && echo "$MYSQL_SHA256" /opt/files/${MYSQL_JDBC_DRIVER}.zip | sha256sum -c - \
+  && unzip -q /opt/files/${MYSQL_JDBC_DRIVER}.zip -d /opt/files/ \
+  && mv /opt/files/${MYSQL_JDBC_DRIVER}/${MYSQL_JDBC_DRIVER}-bin.jar /opt/files/ \
+  && rm -r /opt/files/${MYSQL_JDBC_DRIVER} \
+  && rm /opt/files/${MYSQL_JDBC_DRIVER}.zip
 
 # add Bonita BPM archive to the container
-RUN wget -q ${BASE_URL}/${BONITA_ARCHIVE_FILE} -O /opt/files/${BONITA_ARCHIVE_FILE} \
-  &&  echo "$BONITA_DOWNLOAD_SHA256" /opt/files/${BONITA_ARCHIVE_FILE} | sha256sum -c -
+RUN wget -q ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip -O /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip \
+  && echo "$BONITA_SHA256" /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip | sha256sum -c -
 
 # create Volume to store Bonita BPM files
 VOLUME /opt/bonita
 
 #cluster
 VOLUME /opt/bonita_home
+
+RUN mkdir /opt/custom-init.d/
 
 # create user to launch Bonita BPM as non-root
 RUN groupadd -r bonita -g 1000 \

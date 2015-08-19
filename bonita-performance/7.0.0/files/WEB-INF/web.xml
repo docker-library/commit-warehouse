@@ -499,11 +499,12 @@
         <servlet-class>org.bonitasoft.forms.server.FormsCacheServlet</servlet-class>
     </servlet>
     <!-- For engine HTTP API -->
-    
+    <!--
     <servlet>
         <servlet-name>HttpAPIServlet</servlet-name>
         <servlet-class>org.bonitasoft.engine.api.internal.servlet.HttpAPIServlet</servlet-class>
     </servlet>
+    -->
     
     <!-- For mobile -->
     
@@ -765,12 +766,12 @@
         <url-pattern>/portal/formsCache/*</url-pattern>
     </servlet-mapping>
     <!-- For engine HTTP API -->
-    
+    <!--
     <servlet-mapping>
         <servlet-name>HttpAPIServlet</servlet-name>
         <url-pattern>/serverAPI/*</url-pattern>
     </servlet-mapping>
-    
+    -->
 
     <!-- Default page to serve -->
     <welcome-file-list>

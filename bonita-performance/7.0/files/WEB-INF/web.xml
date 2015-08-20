@@ -44,6 +44,14 @@
             <param-value>i18ntranslation,feature</param-value>
         </init-param>
     </filter>
+    <filter>
+        <filter-name>RestAPIAuthorizationFilterToolkit</filter-name>
+        <filter-class>org.bonitasoft.console.common.server.login.filter.RestAPIAuthorizationFilter</filter-class>
+        <init-param>
+            <param-name>excludePatterns</param-name>
+            <param-value>i18ntranslation,feature</param-value>
+        </init-param>
+    </filter>
     <!-- Token Filter -->
     <filter>
         <filter-name>TokenGeneratorFilter</filter-name>
@@ -191,9 +199,15 @@
         <!-- <url-pattern>/portal/documentDownload</url-pattern> -->
         <!-- <url-pattern>/portal/downloadDocument</url-pattern> -->
         <!-- Add more servlet mappings here -->
-        <dispatcher>REQUEST</dispatcher>		
+        <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>RestAPIAuthorizationFilterToolkit</filter-name>
+        <url-pattern>/APIToolkit/*</url-pattern>
+        <!-- No need to handle the forward as requests forwarded to this URL are already filtered by RestAPIAuthorizationFilter -->
+        <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
     <filter-mapping>
         <filter-name>TokenGeneratorFilter</filter-name>
@@ -201,6 +215,7 @@
         <url-pattern>/APIToolkit/system/session/*</url-pattern>
         <!-- see TokenValidatorFilter comment -->
         <url-pattern>/portal/custom-page/API/system/session/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
     <!-- End Rest filter -->
 

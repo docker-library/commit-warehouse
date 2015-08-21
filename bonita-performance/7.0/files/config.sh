@@ -108,14 +108,19 @@ then
 	fi
 fi
 
-license=`ls -trh ${BONITA_HOME_COMMON_PATH}/*.lic 2>/dev/null|tail -n1`
-if [ -z "$license" ]
-then
+shopt -s nullglob
+LicenseNumber=0
+for file in ${BONITA_HOME_COMMON_PATH}/*.lic;
+do
+  LicenseNumber=$(( $LicenseNumber + 1 ))
+  echo "Copying licence file $file to Bonita license directory "
+  cp $file ${BONITA_HOME_COMMON_PATH}/server/licenses
+done
+
+if [ $LicenseNumber -eq 0 ]; then
 	echo "Error: no license found"
 	exit 1
 fi
-
-cp $license ${BONITA_HOME_COMMON_PATH}/server/licenses
 
 # apply conf
 # copy templates

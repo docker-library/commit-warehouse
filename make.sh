@@ -3,6 +3,7 @@
 set -e
 
 url=${1:-http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-3.1.iso}
+version=$(basename --suffix=.iso $url | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
 
 docker build -t cruxbuild build
 
@@ -19,8 +20,7 @@ if $(git show-ref --verify --quiet refs/heads/${version}); then
 	git branch -D ${version}
 fi
 
-git branch ${version} origin/dist
-git checkout ${version}
+git checkout -b ${version} dist
 
 docker cp cruxbuild:rootfs.tar.xz .
 docker rm -f cruxbuild

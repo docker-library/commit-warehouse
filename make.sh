@@ -22,7 +22,7 @@ fi
 git branch ${version} origin/dist
 git checkout ${version}
 
-docker cp cruxbuild:/rootfs.tar.xz .
+docker cp cruxbuild:rootfs.tar.xz .
 docker rm -f cruxbuild
 
 git add rootfs.tar.xz

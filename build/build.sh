@@ -2,10 +2,10 @@
 
 set -e
 
-if [[ ! -f $MEDIA/$(basename ${URL}) ]]; then
+if [[ ! -f /mnt/media/$(basename ${URL}) ]]; then
     echo "Downloading ${URL} ..."
-	curl -# -q -o $MEDIA/$(basename ${URL}) $URL
+	curl -# -q -o /mnt/media/$(basename ${URL}) $URL
 fi
 
 echo "Creating Root FS ..."
-./mkrootfs.sh $MEDIA/$(basename ${URL})
+./mkrootfs.sh /mnt/media/$(basename ${URL})

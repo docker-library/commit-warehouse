@@ -6,6 +6,8 @@ url=${1:-http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-3.1.iso}
 
 docker build -t cruxbuild build
 
+docker rm -f cruxbuild
+
 docker run \
 	-i -t --privileged \
 	--name cruxbuild \

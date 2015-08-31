@@ -4,7 +4,7 @@ set -e
 
 if [[ ! -f $MEDIA/$(basename ${URL}) ]]; then
     echo "Downloading ${URL} ..."
-    cd $MEDIA && curl -# -q -O $URL
+	curl -# -q -o $MEDIA/$(basename ${URL}) $URL
 fi
 
 echo "Creating Root FS ..."

@@ -20,7 +20,7 @@ if $(git show-ref --verify --quiet refs/heads/${version}); then
 	git branch -D ${version}
 fi
 
-git checkout -b ${version} dist
+git checkout -b ${version} origin/dist
 
 docker cp cruxbuild:rootfs.tar.xz .
 docker rm -f cruxbuild

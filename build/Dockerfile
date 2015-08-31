@@ -9,9 +9,6 @@ VOLUME /mnt/media
 # Startup
 CMD ["./build.sh"]
 
-# Configuration
-ENV URL http://crux.ninja/updated-iso/crux-3.1-updated.iso
-
 RUN mkdir -p /build
 COPY . /build/
 WORKDIR /build

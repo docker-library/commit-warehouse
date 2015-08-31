@@ -3,7 +3,7 @@
 set -e
 
 if [[ ! -f $MEDIA/$(basename ${URL}) ]]; then
-    echo "Downloading ISO ..."
+    echo "Downloading ${URL} ..."
     cd $MEDIA && curl -# -q -O $URL
 fi
 

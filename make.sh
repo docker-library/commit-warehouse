@@ -2,14 +2,14 @@
 
 set -e
 
-version=${1:-3.1}
+url=${1:-http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-3.1.iso}
 
 docker build -t cruxbuild build
 
 docker run \
 	-i -t --privileged \
 	--name cruxbuild \
-	-e VERSION=${version} \
+	-e URL=${url} \
 	-v $(pwd)/media:/mnt/media \
 	cruxbuild
 

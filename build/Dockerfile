@@ -10,9 +10,6 @@ VOLUME /mnt/media
 CMD ["./build.sh"]
 
 # Configuration
-ENV NAME crux
-ENV VERSION 3.1
-ENV URL http://ftp.morpheus.net/pub/linux/crux
-ENV MEDIA /mnt/media
+ENV URL http://crux.ninja/updated-iso/crux-3.1-updated.iso
 
-ADD . /
+COPY . /

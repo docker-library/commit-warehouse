@@ -2,10 +2,10 @@
 
 set -e
 
-if [[ ! -f $MEDIA/$NAME-$VERSION.iso ]]; then
+if [[ ! -f $MEDIA/$(basename ${URL}) ]]; then
     echo "Downloading ISO ..."
-    cd $MEDIA && curl -# -q -O $URL/$NAME-$VERSION/iso/$NAME-$VERSION.iso
+    cd $MEDIA && curl -# -q -O $URL
 fi
 
 echo "Creating Root FS ..."
-./mkrootfs.sh $MEDIA/$NAME-$VERSION.iso
+./mkrootfs.sh $MEDIA/$(basename ${URL})

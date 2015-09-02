@@ -10,7 +10,7 @@ RUN apt-get update && apt-get -y upgrade
 RUN wget -q -O - http://pkg.jenkins-ci.org/debian-stable/jenkins-ci.org.key | apt-key add - \
     && echo "deb http://pkg.jenkins-ci.org/debian-stable binary/" > /etc/apt/sources.list.d/jenkins.list \
     && apt-get update \
-    && apt-get install -y curl supervisor jenkins
+    && apt-get install -y curl supervisor openjdk-7-jdk jenkins
 
 ENV JENKINS_HOME /var/lib/jenkins
 ENV JENKINS_UC https://updates.jenkins-ci.org
@@ -41,6 +41,7 @@ COPY id_rsa /id_rsa
 RUN chown jenkins:jenkins /id_rsa
 RUN mkdir -p /usr/share/jenkins/ref/.ssh \
     && cp /id_rsa /usr/share/jenkins/ref/.ssh/id_rsa \
+    && chmod 600 /usr/share/jenkins/ref/.ssh/id_rsa \
     && ssh-keyscan github.com > usr/share/jenkins/ref/.ssh/known_hosts
 
 # Extend Jenkins with plugins
@@ -48,4 +49,7 @@ COPY jenkins.sh /usr/local/bin/jenkins.sh
 COPY plugins.sh /usr/local/bin/plugins.sh
 COPY plugins.txt /usr/share/jenkins/plugins.txt
 RUN /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt
+
+# Configure JENKINS_HOME
+COPY jenkins_home_files /usr/share/jenkins/ref
 

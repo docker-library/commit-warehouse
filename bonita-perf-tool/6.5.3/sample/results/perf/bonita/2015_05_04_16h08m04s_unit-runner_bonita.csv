@@ -1,2 +1,0 @@
-ID,Test name,Measure name,Min value,Avg value,Median value,Max value,Percentile 0.8,Percentile 0.9,Percentile 0.95,Percentile 0.99
-MessageStartEvent-ProcessA-instance exec,MessageStartEvent-ProcessA,instance exec,252,288,297,329,314,328,329,329

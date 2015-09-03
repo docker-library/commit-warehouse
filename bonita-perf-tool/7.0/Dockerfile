@@ -19,8 +19,8 @@ RUN apt-get update && apt-get install -y \
   gettext \
   && rm -rf /var/lib/apt/lists/*
 
-#COPY PerfLauncher.zip /opt/PerfLauncher.zip
-COPY bin/${PERF_TOOL_ARCHIVE_FILE} /opt/PerfLauncher.zip
+# download perf launcher
+RUN wget http://192.168.1.254/qa/releases/performance_tools/${BONITA_VERSION}/${PERF_TOOL_ARCHIVE_FILE} -O /opt/PerfLauncher.zip
 
 COPY startup.sh /opt/startup.sh
 COPY config /opt/config

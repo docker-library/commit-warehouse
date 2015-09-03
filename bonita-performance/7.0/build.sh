@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 BONITA_VERSION=$(grep -oP "^ENV BONITA_VERSION \K.*" Dockerfile | xargs)
 IMAGE_NAME=bonitasoft/bonita-performance:${BONITA_VERSION}

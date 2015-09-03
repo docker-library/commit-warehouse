@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 
 MAINTAINER Jérémy Jacquier-Roux <jeremy.jacquier-roux@bonitasoft.com>
 
-ENV BONITA_VERSION 7.0.2
+ENV BONITA_VERSION 7.0.3
 ENV BASE_URL http://192.168.1.254/qa/releases/7.0.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/
 ENV BONITA_SHA256 00a70d24f5b95d3a3473d48b9583a7eebd108742bc839ee31f5725c951a30743
 ENV POSTGRES_JDBC_DRIVER postgresql-9.3-1102.jdbc41.jar

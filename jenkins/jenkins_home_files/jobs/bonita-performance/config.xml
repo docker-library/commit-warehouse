@@ -7,15 +7,9 @@
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>BRANCH_SPECIFIER</name>
-          <description>&lt;div class="tag2"&gt;
-&lt;u&gt;Examples&lt;/u&gt;:
-&lt;ul&gt;
-  &lt;li&gt;refs/heads/branchName&lt;/li&gt;
-  &lt;li&gt;refs/tags/tagName&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;</description>
-          <defaultValue/>
+          <name>BONITA_VERSION</name>
+          <description/>
+          <defaultValue>7.0.0</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -29,7 +23,7 @@
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name>${BRANCH_SPECIFIER}</name>
+        <name>refs/tags/${BONITA_VERSION}</name>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -46,7 +40,7 @@
     <groupId>org.bonitasoft.perf</groupId>
     <artifactId>bonita-performance</artifactId>
   </rootModule>
-  <goals>clean package -Pengine.bonitaBPM6,db.postgres,v6-client,tx.bitronix -DskipTests</goals>
+  <goals>clean package -Pengine.bonitaBPM6,db.postgres,v6-server,tx.bitronix -DskipTests</goals>
   <aggregatorStyleBuild>true</aggregatorStyleBuild>
   <incrementalBuild>false</incrementalBuild>
   <ignoreUpstremChanges>true</ignoreUpstremChanges>
@@ -62,22 +56,18 @@
   <settings class="jenkins.mvn.DefaultSettingsProvider"/>
   <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
   <reporters/>
-  <publishers>
-    <hudson.tasks.ArtifactArchiver>
-      <artifacts>**/target/PerfLauncher*.zip</artifacts>
-      <allowEmptyArchive>false</allowEmptyArchive>
-      <onlyIfSuccessful>false</onlyIfSuccessful>
-      <fingerprint>false</fingerprint>
-      <defaultExcludes>true</defaultExcludes>
-    </hudson.tasks.ArtifactArchiver>
-  </publishers>
+  <publishers/>
   <buildWrappers/>
   <prebuilders/>
-  <postbuilders/>
+  <postbuilders>
+    <hudson.tasks.Shell>
+      <command>find $WORKSPACE -name PerfLauncher*.zip | xargs -I {} cp -v {} $JENKINS_HOME/userContent/</command>
+    </hudson.tasks.Shell>
+  </postbuilders>
   <runPostStepsIfResult>
-    <name>FAILURE</name>
-    <ordinal>2</ordinal>
-    <color>RED</color>
+    <name>SUCCESS</name>
+    <ordinal>0</ordinal>
+    <color>BLUE</color>
     <completeBuild>true</completeBuild>
   </runPostStepsIfResult>
 </maven2-moduleset>

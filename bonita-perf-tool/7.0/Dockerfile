@@ -19,11 +19,9 @@ RUN apt-get update && apt-get install -y \
   gettext \
   && rm -rf /var/lib/apt/lists/*
 
-# download perf launcher
-RUN wget http://192.168.1.254/qa/releases/performance_tools/${BONITA_VERSION}/${PERF_TOOL_ARCHIVE_FILE} -O /opt/PerfLauncher.zip
-
 COPY startup.sh /opt/startup.sh
 COPY config /opt/config
+COPY bin/${PERF_TOOL_ARCHIVE_FILE} /opt/PerfLauncher.zip
 RUN unzip /opt/PerfLauncher.zip -d /opt/PerfLauncher
 # command to run when container starts
 EXPOSE 61616

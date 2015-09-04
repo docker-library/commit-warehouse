@@ -29,6 +29,8 @@ RUN apt-get install -y apt-transport-https \
     && apt-get install -y docker-engine \
     && usermod -aG docker jenkins
 
+ENV DOCKER_DAEMON_ARGS="-s aufs"
+
 # Clean APT
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 

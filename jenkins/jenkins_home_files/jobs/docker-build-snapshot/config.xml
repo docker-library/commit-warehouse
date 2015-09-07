@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <actions/>
+  <description/>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>5</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>DOCKER_IMAGE</name>
+          <description/>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>bonita</string>
+              <string>bonita-performance</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BRANCH_NAME</name>
+          <description/>
+          <defaultValue>7.1.x</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BONITA_VERSION</name>
+          <description/>
+          <defaultValue>7.1.0-SNAPSHOT</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CI_NAME</name>
+          <description/>
+          <defaultValue>inno1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>git@github.com:bonitasoft/docker.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>refs/heads/${BRANCH_NAME}</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <customWorkspace>$JENKINS_HOME/userContent/docker-workspace</customWorkspace>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+MINOR_VERSION=$(echo $BONITA_VERSION | cut -d. -f1-2)
+
+if [ "$DOCKER_IMAGE" = "bonita" ]
+then
+  ZIP_URL="http://${CI_NAME}.rd.lan/job/bos_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-7.0.55.zip"
+elif [ "$DOCKER_IMAGE" = "bonita-performance" ]
+then
+  ZIP_URL="http://${CI_NAME}.rd.lan/job/sp_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip"
+else
+  echo "Docker image &lt;${DOCKER_IMAGE}&gt; not supported."
+  exit 1
+fi
+
+wget "${ZIP_URL}" -P "$DOCKER_IMAGE/$MINOR_VERSION/files"
+
+./build.sh "$DOCKER_IMAGE/$MINOR_VERSION"
+
+cp -v $WORKSPACE/${DOCKER_IMAGE}_${BONITA_VERSION}.tar $JENKINS_HOME/userContent/</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

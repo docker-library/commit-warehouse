@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 
 MAINTAINER Guillaume Rosinosky <guillaume.rosinosky@bonitasoft.com>
 
-ENV BONITA_VERSION 7.0.2
+ENV BONITA_VERSION 7.0.3
 ENV PERF_REFPATH /opt/PerfLauncher
 ENV PERF_MODE unitrunner
 ENV PERF_TESTS standardProcess;messageStartProcess;messageSynchronizationProcess
@@ -19,11 +19,9 @@ RUN apt-get update && apt-get install -y \
   gettext \
   && rm -rf /var/lib/apt/lists/*
 
-#COPY PerfLauncher.zip /opt/PerfLauncher.zip
-COPY bin/${PERF_TOOL_ARCHIVE_FILE} /opt/PerfLauncher.zip
-
 COPY startup.sh /opt/startup.sh
 COPY config /opt/config
+COPY bin/${PERF_TOOL_ARCHIVE_FILE} /opt/PerfLauncher.zip
 RUN unzip /opt/PerfLauncher.zip -d /opt/PerfLauncher
 # command to run when container starts
 EXPOSE 61616

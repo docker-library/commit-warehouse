@@ -37,8 +37,9 @@ RUN wget -q https://jdbc.postgresql.org/download/${POSTGRES_JDBC_DRIVER} -O /opt
   && rm /opt/files/${MYSQL_JDBC_DRIVER}.zip
 
 # add Bonita BPM archive to the container
-RUN wget -q ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip -O /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip \
-  && echo "$BONITA_SHA256" /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip | sha256sum -c -
+COPY files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip
+#RUN wget -q ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip -O /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip \
+#  && echo "$BONITA_SHA256" /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip | sha256sum -c -
 
 # create Volume to store Bonita BPM files
 VOLUME /opt/bonita

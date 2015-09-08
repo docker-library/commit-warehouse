@@ -12,16 +12,6 @@
   <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>DOCKER_IMAGE</name>
-          <description></description>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>bonita</string>
-              <string>bonita-performance</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BRANCH_NAME</name>
           <description></description>
@@ -71,23 +61,16 @@ set -e
 
 MINOR_VERSION=$(echo $BONITA_VERSION | cut -d. -f1-2)
 
-if [ &quot;$DOCKER_IMAGE&quot; = &quot;bonita&quot; ]
-then
-  ZIP_URL=&quot;http://${CI_NAME}.rd.lan/job/bos_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-7.0.55.zip&quot;
-elif [ &quot;$DOCKER_IMAGE&quot; = &quot;bonita-performance&quot; ]
-then
-  ZIP_URL=&quot;http://${CI_NAME}.rd.lan/job/sp_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip&quot;
-else
-  echo &quot;Docker image &lt;${DOCKER_IMAGE}&gt; not supported.&quot;
-  exit 1
-fi
+PERF_TOOL_ARCHIVE_FILE=&quot;PerfLauncher-bonitaBPM6-community-server-${BONITA_VERSION}-1.0-SNAPSHOT-postgres.zip&quot;
 
-wget &quot;${ZIP_URL}&quot; -P &quot;$DOCKER_IMAGE/$MINOR_VERSION/files&quot;
+ZIP_URL=&quot;http://${CI_NAME}.rd.lan/job/all_performance-build/client_server=-server,db_vendor=postgres,edition=v6,label=master/lastSuccessfulBuild/artifact/bonitaBPM6/bonitaBPM6-common/target/${PERF_TOOL_ARCHIVE_FILE}&quot;
 
-./build.sh &quot;$DOCKER_IMAGE/$MINOR_VERSION&quot;
+wget &quot;${ZIP_URL}&quot; -P $WORKSPACE/bonita-perf-tool/$MINOR_VERSION/bin/
+
+./build.sh &quot;bonita-perf-tool/$MINOR_VERSION&quot;
 
 mkdir -p $JENKINS_HOME/userContent/$CI_NAME
-cp -v $WORKSPACE/${DOCKER_IMAGE}_${BONITA_VERSION}.tar $JENKINS_HOME/userContent/$CI_NAME/</command>
+cp -v $WORKSPACE/bonita-perf-tool_${BONITA_VERSION}.tar $JENKINS_HOME/userContent/$CI_NAME/</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>

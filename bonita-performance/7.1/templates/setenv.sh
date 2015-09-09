@@ -3,7 +3,7 @@
 # Set some JVM system properties required by Bonita BPM
 
 # Bonita home folder (configuration files, temporary folder...) location
-BONITA_HOME="-Dbonita.home=${CATALINA_HOME}/bonita"
+BONITA_HOME="-Dbonita.home={{BONITA_HOME_PATH}}"
 
 # Define the RDMBS vendor use by Bonita Engine to store data
 DB_OPTS="-Dsysprop.bonita.db.vendor={{DB_VENDOR}}"

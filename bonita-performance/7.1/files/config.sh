@@ -69,12 +69,11 @@ TENANT_PASSWORD=${TENANT_PASSWORD:-install}
 if [ ! -d ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55 ]
 then
 	mkdir -p ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55
-	ln -s ${BONITA_HOME_COMMON_PATH} ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita
 fi
 
 if [ ! -d ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bin ]
 then
-        unzip -q ${BONITA_FILES}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip -d ${BONITA_PATH}
+    unzip -q ${BONITA_FILES}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip -d ${BONITA_PATH}
 fi
 
 if [ "${ENSURE_DB_CHECK_AND_CREATION}" = 'true' ]
@@ -114,7 +113,7 @@ for file in ${BONITA_HOME_COMMON_PATH}/*.lic;
 do
   LicenseNumber=$(( $LicenseNumber + 1 ))
   echo "Copying licence file $file to Bonita license directory "
-  cp $file ${BONITA_HOME_COMMON_PATH}/server/licenses
+  cp $file ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita/server/licenses
 done
 
 if [ $LicenseNumber -eq 0 ]; then
@@ -152,6 +151,7 @@ sed -e 's/{{PLATFORM_LOGIN}}/'"${PLATFORM_LOGIN}"'/' \
     -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita/engine-server/conf/platform/bonita-platform-community-custom.properties
 sed -e 's/{{CLUSTER_MODE}}/'"${CLUSTER_MODE}"'/' \
     -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita/engine-server/conf/platform/bonita-platform-sp-custom.properties
+sed 's@{{BONITA_HOME_PATH}}@'"${BONITA_HOME_COMMON_PATH}"'@' -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bin/setenv.sh
 sed 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bin/setenv.sh
 sed 's/{{JAVA_OPTS}}/'"${JAVA_OPTS}"'/' -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bin/setenv.sh
 sed -e 's/{{BIZ_DB_VENDOR}}/'"${BIZ_DB_VENDOR}"'/' \
@@ -179,3 +179,8 @@ case "${DB_VENDOR}" in
 		fi
 		;;
 esac
+
+# move bonita_home files to configured path
+mv ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita/* ${BONITA_HOME_COMMON_PATH}/
+rmdir ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita
+

@@ -73,21 +73,24 @@ MINOR_VERSION=$(echo $BONITA_VERSION | cut -d. -f1-2)
 
 if [ &quot;$DOCKER_IMAGE&quot; = &quot;bonita&quot; ]
 then
-  ZIP_URL=&quot;http://${CI_NAME}.rd.lan/job/bos_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-7.0.55.zip&quot;
+  BUNDLE_FILENAME=&quot;BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-7.0.55.zip&quot;
+  ZIP_URL=&quot;http://${CI_NAME}.rd.lan/job/bos_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/${BUNDLE_FILENAME}&quot;
 elif [ &quot;$DOCKER_IMAGE&quot; = &quot;bonita-performance&quot; ]
 then
-  ZIP_URL=&quot;http://${CI_NAME}.rd.lan/job/sp_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip&quot;
+  BUNDLE_FILENAME=&quot;BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip&quot;
+  ZIP_URL=&quot;http://${CI_NAME}.rd.lan/job/sp_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/${BUNDLE_FILENAME}&quot;
 else
   echo &quot;Docker image &lt;${DOCKER_IMAGE}&gt; not supported.&quot;
   exit 1
 fi
 
-wget &quot;${ZIP_URL}&quot; -P &quot;$DOCKER_IMAGE/$MINOR_VERSION/files&quot;
+rm -rvf $DOCKER_IMAGE/$MINOR_VERSION/files/BonitaBPM*Tomcat*
+wget &quot;${ZIP_URL}&quot; -O &quot;$DOCKER_IMAGE/$MINOR_VERSION/files/${BUNDLE_FILENAME}&quot;
 
 ./build.sh &quot;$DOCKER_IMAGE/$MINOR_VERSION&quot;
 
 mkdir -p $JENKINS_HOME/userContent/$CI_NAME
-cp -v $WORKSPACE/${DOCKER_IMAGE}_${BONITA_VERSION}.tar $JENKINS_HOME/userContent/$CI_NAME/</command>
+mv -v $WORKSPACE/${DOCKER_IMAGE}_${BONITA_VERSION}.tar $JENKINS_HOME/userContent/$CI_NAME/</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>

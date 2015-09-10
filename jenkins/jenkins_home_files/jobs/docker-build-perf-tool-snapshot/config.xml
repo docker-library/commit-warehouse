@@ -65,12 +65,13 @@ PERF_TOOL_ARCHIVE_FILE=&quot;PerfLauncher-bonitaBPM6-community-server-${BONITA_V
 
 ZIP_URL=&quot;http://${CI_NAME}.rd.lan/job/all_performance-build/client_server=-server,db_vendor=postgres,edition=v6,label=master/lastSuccessfulBuild/artifact/bonitaBPM6/bonitaBPM6-common/target/${PERF_TOOL_ARCHIVE_FILE}&quot;
 
-wget &quot;${ZIP_URL}&quot; -P $WORKSPACE/bonita-perf-tool/$MINOR_VERSION/bin/
+rm -rvf $WORKSPACE/bonita-perf-tool/$MINOR_VERSION/bin/PerfLauncher*
+wget &quot;${ZIP_URL}&quot; -O $WORKSPACE/bonita-perf-tool/$MINOR_VERSION/bin/${PERF_TOOL_ARCHIVE_FILE}
 
 ./build.sh &quot;bonita-perf-tool/$MINOR_VERSION&quot;
 
 mkdir -p $JENKINS_HOME/userContent/$CI_NAME
-cp -v $WORKSPACE/bonita-perf-tool_${BONITA_VERSION}.tar $JENKINS_HOME/userContent/$CI_NAME/</command>
+mv -v $WORKSPACE/bonita-perf-tool_${BONITA_VERSION}.tar $JENKINS_HOME/userContent/$CI_NAME/</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>

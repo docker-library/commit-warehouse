@@ -10,7 +10,7 @@ RUN apt-get update
 
 RUN apt-get -y install wget gzip
 
-ENV ORIENTDB_VERSION 2.1.1
+ENV ORIENTDB_VERSION 2.1.2
 
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \

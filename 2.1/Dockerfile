@@ -2,13 +2,9 @@
 # Dockerfile to run an OrientDB (Graph) Container
 ############################################################
 
-FROM azul/zulu-openjdk:8
+FROM java:8-jdk
 
 MAINTAINER Orient Technologies LTD (info@orientdb.com)
-
-RUN apt-get update
-
-RUN apt-get -y install wget gzip
 
 ENV ORIENTDB_VERSION 2.1.2
 
@@ -35,4 +31,4 @@ EXPOSE 2480
 USER root
 
 # Default command start the server
-CMD ["/orientdb/bin/server.sh"]
+CMD ["server.sh"]

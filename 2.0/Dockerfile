@@ -27,8 +27,5 @@ EXPOSE 2424
 #OrientDb http
 EXPOSE 2480
 
-# Set the user to run OrientDB daemon
-USER root
-
 # Default command start the server
 CMD ["server.sh"]

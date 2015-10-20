@@ -14,7 +14,7 @@ JAVA_OPTS=${JAVA_OPTS:--Xms1024m -Xmx1024m -XX:MaxPermSize=256m}
 REST_API_DYN_AUTH_CHECKS=${REST_API_DYN_AUTH_CHECKS:-true}
 # Flag to enable or not Bonita HTTP API
 HTTP_API=${HTTP_API:-false}
-# Clustering mode 
+# Clustering mode
 CLUSTER_MODE=${CLUSTER_MODE:-false}
 BONITA_HOME_COMMON_PATH=${BONITA_HOME_COMMON_PATH:-/opt/bonita_home}
 
@@ -31,6 +31,12 @@ then
 	DB_HOST=$MYSQL_PORT_3306_TCP_ADDR
 	DB_PORT=$MYSQL_PORT_3306_TCP_PORT
 	JDBC_DRIVER=${MYSQL_JDBC_DRIVER}-bin.jar
+elif [ -n "$ORACLE_PORT_1521_TCP_PORT" ]
+then
+	DB_VENDOR='oracle'
+	DB_HOST=$ORACLE_PORT_1521_TCP_ADDR
+	DB_PORT=$ORACLE_PORT_1521_TCP_PORT
+	JDBC_DRIVER=$ORACLE_JDBC_DRIVER
 else
 	DB_VENDOR=${DB_VENDOR:-h2}
 fi
@@ -44,12 +50,16 @@ case $DB_VENDOR in
 		JDBC_DRIVER=${MYSQL_JDBC_DRIVER}-bin.jar
 		DB_PORT=${DB_PORT:-3306}
 		;;
+	"oracle")
+		JDBC_DRIVER=$ORACLE_JDBC_DRIVER
+		DB_PORT=${DB_PORT:-1521}
+		;;
 	*)
 		;;
 esac
 if [ -z "$BIZ_DB_VENDOR" ]
 then
-	BIZ_DB_VENDOR=${DB_VENDOR}	
+	BIZ_DB_VENDOR=${DB_VENDOR}
 fi
 
 # if not enforced, set the default values to configure the databases
@@ -76,23 +86,35 @@ then
     unzip -q ${BONITA_FILES}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip -d ${BONITA_PATH}
 fi
 
+if [ ! -d ${BONITA_PATH}/${BONITA_DBTOOL} ]
+then
+		unzip -q ${BONITA_FILES}/${BONITA_DBTOOL}.zip -d ${BONITA_PATH}
+fi
+
 if [ "${ENSURE_DB_CHECK_AND_CREATION}" = 'true' ]
 then
 	# load SQL functions
 	. ${BONITA_FILES}/functions.sh
 	case "${DB_VENDOR}" in
-		mysql)
+		"postgres")
+			DB_ADMIN_USER=${DB_ADMIN_USER:-postgres}
+			if [ -z "$DB_ADMIN_PASS" ]
+			then
+				DB_ADMIN_PASS=$POSTGRES_ENV_POSTGRES_PASSWORD
+			fi
+			;;
+		"mysql")
 			DB_ADMIN_USER=${DB_ADMIN_USER:-root}
 			if [ -z "$DB_ADMIN_PASS" ]
 			then
 				DB_ADMIN_PASS=$MYSQL_ENV_MYSQL_ROOT_PASSWORD
 			fi
 			;;
-		postgres)
-			DB_ADMIN_USER=${DB_ADMIN_USER:-postgres}
+		"oracle")
+			DB_ADMIN_USER=${DB_ADMIN_USER:-sys}
 			if [ -z "$DB_ADMIN_PASS" ]
 			then
-				DB_ADMIN_PASS=$POSTGRES_ENV_POSTGRES_PASSWORD
+				DB_ADMIN_PASS=$ORACLE_ENV_ORACLE_PASSWORD
 			fi
 			;;
 	esac
@@ -157,7 +179,7 @@ sed 's/{{JAVA_OPTS}}/'"${JAVA_OPTS}"'/' -i ${BONITA_PATH}/BonitaBPMSubscription-
 sed -e 's/{{BIZ_DB_VENDOR}}/'"${BIZ_DB_VENDOR}"'/' \
     -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita/engine-server/conf/tenants/template/bonita-tenant-community-custom.properties
 case "${DB_VENDOR}" in
-	mysql|postgres)
+	"mysql"|"postgres"|"oracle")
 		cp ${BONITA_TPL}/${DB_VENDOR}/bitronix-resources.properties ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/conf/bitronix-resources.properties
 		cp ${BONITA_TPL}/${DB_VENDOR}/bonita.xml ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/conf/Catalina/localhost/bonita.xml
 		sed -e 's/{{DB_USER}}/'"${DB_USER}"'/' \
@@ -183,4 +205,3 @@ esac
 # move bonita_home files to configured path
 mv ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita/* ${BONITA_HOME_COMMON_PATH}/
 rmdir ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita
-

@@ -15,7 +15,17 @@ function create_user_if_not_exists {
 	db_pass=$7
 
 	case "${db_vendor}" in
-		mysql)
+		"postgres")
+			export PGPASSWORD=$db_admin_pass
+			# check if the user exists
+			psql -U $db_admin_user -h $db_host -p $db_port -d postgres -t -A -c "SELECT 1 FROM pg_roles WHERE rolname='${db_user}'" | grep -q 1
+			# if the user is not present, create it
+			if [ $? -eq 1 ]
+			then
+				psql -U $db_admin_user -h $db_host -p $db_port -d postgres -c "CREATE USER ${db_user} WITH PASSWORD '${db_pass}';"
+			fi
+			;;
+		"mysql")
 			# check if the user exists
 			mysql -u $db_admin_user -p${db_admin_pass} -h $db_host --port $db_port -B -e "SELECT EXISTS(SELECT 1 FROM mysql.user WHERE user = '${db_user}')" | tail -n 1 | grep -q 1
 			# if the user is not present, create it
@@ -24,15 +34,8 @@ function create_user_if_not_exists {
 				mysql -u $db_admin_user -p${db_admin_pass} -h $db_host --port $db_port -e "CREATE USER '${db_user}'@'%' IDENTIFIED BY '${db_pass}';"
 			fi
 			;;
-		postgres)
-			export PGPASSWORD=$db_admin_pass
-			# check if the user exists
-			psql -U $db_admin_user -h $db_host -p $db_port -d postgres -t -A -c "SELECT 1 FROM pg_roles WHERE rolname='${db_user}'" | grep -q 1
-			# if the user is not present, create it
-			if [ $? -eq 1 ]
-			then
-				psql -U $db_admin_user -h $db_host -p $db_port -d postgres -c "CREATE USER ${db_user} WITH PASSWORD '${db_pass}';"
-			fi	
+		"oracle")
+			ant -f ${BONITA_PATH}/${BONITA_DBTOOL}/deployer.xml init-oracle -Ddb.server.name=$db_host -Ddb.server.port=$db_port -Ddb.user=$db_user -Ddb.password=$db_pass -Ddb.admin.user=$db_admin_user -Ddb.admin.password=$db_admin_pass -Ddb.drop_existing=N
 			;;
 	esac
 }
@@ -53,12 +56,7 @@ function create_database_if_not_exists {
 	db_user=$7
 
 	case "${db_vendor}" in
-		mysql)
-			# if the db is not present, create it
-			mysql -u $db_admin_user -p${db_admin_pass} -h $db_host --port $db_port -e "CREATE DATABASE IF NOT EXISTS ${db_name};"
-			mysql -u $db_admin_user -p${db_admin_pass} -h $db_host --port $db_port -e "GRANT ALL PRIVILEGES ON ${db_name}.* to '${db_user}'@'%';"
-			;;
-		postgres)
+		"postgres")
 			# check if the db exists
 			psql -U $db_admin_user -h $db_host -p $db_port -d postgres -l | grep ${db_name}
 			# if the db is not present, create it
@@ -67,6 +65,13 @@ function create_database_if_not_exists {
 				psql -U $db_admin_user -h $db_host -p $db_port -d postgres -c "CREATE DATABASE ${db_name} OWNER ${db_user};"
 			fi
 			;;
+		"mysql")
+			# if the db is not present, create it
+			mysql -u $db_admin_user -p${db_admin_pass} -h $db_host --port $db_port -e "CREATE DATABASE IF NOT EXISTS ${db_name};"
+			mysql -u $db_admin_user -p${db_admin_pass} -h $db_host --port $db_port -e "GRANT ALL PRIVILEGES ON ${db_name}.* to '${db_user}'@'%';"
+			;;
+		"oracle")
+			echo "For Oracle schema is created with the 'create_user_if_not_exists' function."
+			;;
 	esac
 }
-

@@ -14,7 +14,7 @@ JAVA_OPTS=${JAVA_OPTS:--Xms1024m -Xmx1024m -XX:MaxPermSize=256m}
 REST_API_DYN_AUTH_CHECKS=${REST_API_DYN_AUTH_CHECKS:-true}
 # Flag to enable or not Bonita HTTP API
 HTTP_API=${HTTP_API:-false}
-# Clustering mode
+# Clustering mode 
 CLUSTER_MODE=${CLUSTER_MODE:-false}
 BONITA_HOME_COMMON_PATH=${BONITA_HOME_COMMON_PATH:-/opt/bonita_home}
 
@@ -59,7 +59,7 @@ case $DB_VENDOR in
 esac
 if [ -z "$BIZ_DB_VENDOR" ]
 then
-	BIZ_DB_VENDOR=${DB_VENDOR}
+	BIZ_DB_VENDOR=${DB_VENDOR}	
 fi
 
 # if not enforced, set the default values to configure the databases
@@ -75,6 +75,13 @@ PLATFORM_LOGIN=${PLATFORM_LOGIN:-platformAdmin}
 PLATFORM_PASSWORD=${PLATFORM_PASSWORD:-platform}
 TENANT_LOGIN=${TENANT_LOGIN:-install}
 TENANT_PASSWORD=${TENANT_PASSWORD:-install}
+if [ -d ${BONITA_HOME_COMMON_PATH}/engine-server ]; then
+	echo "BONITA_HOME directory already exists."
+	BONITA_HOME_EXISTS='true'
+else
+	echo "BONITA_HOME directory is not here. Using the one from Bonita directory."
+	BONITA_HOME_EXISTS='false'
+fi
 
 if [ ! -d ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55 ]
 then
@@ -202,6 +209,10 @@ case "${DB_VENDOR}" in
 		;;
 esac
 
-# move bonita_home files to configured path
+# move bonita_home files to configured path if it does not already exist
+if [ "$BONITA_HOME_EXISTS" = 'false' ]
+then
 mv ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita/* ${BONITA_HOME_COMMON_PATH}/
 rmdir ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55/bonita
+fi
+

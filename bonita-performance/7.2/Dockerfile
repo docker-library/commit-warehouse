@@ -50,11 +50,17 @@ RUN mkdir /opt/files \
   && unzip -q /opt/files/${MYSQL_JDBC_DRIVER}.zip -d /opt/files/ \
   && mv /opt/files/${MYSQL_JDBC_DRIVER}/${MYSQL_JDBC_DRIVER}-bin.jar /opt/files/ \
   && rm -r /opt/files/${MYSQL_JDBC_DRIVER} \
-  && rm /opt/files/${MYSQL_JDBC_DRIVER}.zip \
-  && echo "$ORACLE_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c -
+  && rm /opt/files/${MYSQL_JDBC_DRIVER}.zip
+
+COPY files /opt/files
+COPY templates /opt/templates
+
+RUN echo "$ORACLE_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c -
 
 # add Bonita BPM archive to the container
-COPY files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip
+### Get Bonita from local files
+#COPY files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip
+### Get Bonita from URL
 #RUN wget -q ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip -O /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip \
 #  && echo "$BONITA_SHA256" /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip | sha256sum -c -
 
@@ -63,9 +69,6 @@ VOLUME /opt/bonita
 
 #cluster
 VOLUME /opt/bonita_home
-
-COPY files /opt/files
-COPY templates /opt/templates
 
 # expose Tomcat port
 EXPOSE 8080

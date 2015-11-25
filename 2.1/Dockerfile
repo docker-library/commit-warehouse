@@ -7,12 +7,14 @@ FROM java:8-jdk
 MAINTAINER Orient Technologies LTD (info@orientdb.com)
 
 ENV ORIENTDB_VERSION 2.1.6
-ENV ORIENTDB_DOWNLOAD_SHA256 5ac1b706bc997a8e3de603aa1a9a07619900bf1b
+ENV ORIENTDB_DOWNLOAD_MD5 110b16e94a02f93af12db14b27032314
+ENV ORIENTDB_DOWNLOAD_SHA1 5ac1b706bc997a8e3de603aa1a9a07619900bf1b
 
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \
   wget  "http://central.maven.org/maven2/com/orientechnologies/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz" \
-  && echo "$ORIENTDB_DOWNLOAD_SHA256 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha256sum -c - \
+  && echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | md5sum -c - \
+  && echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha1sum -c - \
   && tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1\
   && rm orientdb-community-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*

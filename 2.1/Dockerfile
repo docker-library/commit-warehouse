@@ -6,13 +6,7 @@ FROM java:8-jdk
 
 MAINTAINER Orient Technologies LTD (info@orientdb.com)
 
-<<<<<<< HEAD
-ENV ORIENTDB_VERSION 2.1.7
-=======
 ENV ORIENTDB_VERSION 2.1.8
-ENV ORIENTDB_DOWNLOAD_MD5 25142a013c9def23c0054a0de0e14a9e
-ENV ORIENTDB_DOWNLOAD_SHA1 21dda79e4679c80ce20b91b651c9f1b56967fd38
->>>>>>> f0769276e5973eae4c2aa355b13a68adf39e11b5
 
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \

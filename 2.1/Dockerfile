@@ -4,7 +4,7 @@
 
 FROM java:8-jdk
 
-MAINTAINER Orient Technologies LTD (info@orientdb.com)
+MAINTAINER OrientDB LTD (info@orientdb.com)
 
 ENV ORIENTDB_VERSION 2.1.8
 

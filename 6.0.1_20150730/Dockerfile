@@ -1,4 +1,4 @@
-﻿# Set the base image
+# Set the base image
 FROM java:openjdk-8-jdk
 
 MAINTAINER Lightstreamer Server Development Team <support@lightreamer.com>

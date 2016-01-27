@@ -3,6 +3,9 @@ FROM java:openjdk-8-jdk
 
 MAINTAINER Lightstreamer Server Development Team <support@lightreamer.com>
 
+# Import Lighstreamer's public key
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 9B90BFD14309C7DA5EF58D7D4A8C08966F29B4D2
+
 # Set environment variables to identify the right Lightstreamer version and edition
 ENV LIGHSTREAMER_EDITION Allegro-Presto-Vivace
 ENV LIGHSTREAMER_VERSION 6_0_1_20150730
@@ -11,9 +14,12 @@ ENV LIGHSTREAMER_URL_DOWNLOAD http://www.lightstreamer.com/repo/distros/Lightstr
 # Set the temporary working dir
 WORKDIR /lightstreamer
 
-# Download the package from the Lightstreamer site and replace the fictitious jdk path with the JAVA_HOME environment variable in the launch script file.
+# Download the package from the Lightstreamer site and replace the fictitious jdk path with 
+# the JAVA_HOME environment variable in the launch script file.
 RUN set -x \
         && curl -fSL -o Lightstreamer.tar.gz ${LIGHSTREAMER_URL_DOWNLOAD} \
+        && curl -fSL -o Lightstreamer.tar.gz.asc ${LIGHSTREAMER_URL_DOWNLOAD}.asc \
+        && gpg --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
         && tar -xvf Lightstreamer.tar.gz --strip-components=1 \
         && rm Lightstreamer.tar.gz \
         && sed -i -- 's/\/usr\/jdk1.7.0/$JAVA_HOME/' bin/unix-like/LS.sh

@@ -16,13 +16,16 @@ WORKDIR /lightstreamer
 
 # Download the package from the Lightstreamer site and replace the fictitious jdk path with 
 # the JAVA_HOME environment variable in the launch script file.
+# Finally, adjust logging configuration to log only on standard output.
 RUN set -x \
         && curl -fSL -o Lightstreamer.tar.gz ${LIGHSTREAMER_URL_DOWNLOAD} \
         && curl -fSL -o Lightstreamer.tar.gz.asc ${LIGHSTREAMER_URL_DOWNLOAD}.asc \
         && gpg --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
         && tar -xvf Lightstreamer.tar.gz --strip-components=1 \
         && rm Lightstreamer.tar.gz \
-        && sed -i -- 's/\/usr\/jdk1.7.0/$JAVA_HOME/' bin/unix-like/LS.sh
+        && sed -i -- 's/\/usr\/jdk1.7.0/$JAVA_HOME/' bin/unix-like/LS.sh \
+        && sed -i -e '123,$s/<appender-ref ref="LSDailyRolling" \/>/<appender-ref ref="LSConsole" \/>/' \
+                  -e '/<appender-ref ref="LSDailyRolling" \/>/ d' conf/lightstreamer_log_conf.xml
 
 # Export TCP port 8080
 EXPOSE 8080

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
+
 bashbrew list --all \
 	| cut -d: -f1 \
 	| sort -u \

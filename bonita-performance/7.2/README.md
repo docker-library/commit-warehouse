@@ -13,15 +13,15 @@ Bonita BPM is an open-source business process management and workflow suite crea
 First genereate a request key into a container with a specific hostname (-h):
 
 	docker run --rm --name=bonita -h bonita -ti bonita /bin/bash
-	unzip /opt/files/BonitaBPMSubscription-7.0.0-Tomcat-7.0.55.zip
-	cd BonitaBPMSubscription-7.0.0-Tomcat-7.0.55/request_key_utils/
-	./generateRequestForAnyEnvironment.sh
+	unzip /opt/files/BonitaBPMSubscription-7.2.0-Tomcat-7.0.67.zip
+	cd BonitaBPMSubscription-7.2.0-Tomcat-7.0.67/request_key_utils/
+	./generateRequestKey.sh
 	exit
 	
 Retrieve the licence from the [customer portal](https://customer.bonitasoft.com) and place it to a directory on your host :	
 
     mkdir ~/Documents/Docker/Volumes/bonita-performance
-    cp ~/Téléchargements/BonitaBPMSubscription-7.0-jeremy_Jacquier-roux-bonita-20150616-20151212.lic ~/Documents/Docker/Volumes/bonita-performance
+    cp ~/Téléchargements/BonitaBPMSubscription-7.2-jeremy_Jacquier-roux-bonita-20160215-20161212.lic ~/Documents/Docker/Volumes/bonita-performance
 
 Then we can launch the Bonita container with the same hostname (-h) and this host directory mounted (-v) :
 

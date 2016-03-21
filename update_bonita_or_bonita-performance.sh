@@ -8,11 +8,12 @@ NEW_RELEASE=$1
 EDITION=$2
 LAST_RELEASE=`grep "^ENV BONITA_VERSION" bonita/7.2/Dockerfile | awk '{ print $3 }'`
 BASE_URL="http://192.168.1.254/qa/releases/7.2.x/${NEW_RELEASE}"
+TOMCAT_VERSION="7.0.67"
 
 echo "updating $ed"
 case $EDITION in
 "community")
-        BUNDLE="BonitaBPMCommunity-${NEW_RELEASE}-Tomcat-7.0.55"
+        BUNDLE="BonitaBPMCommunity-${NEW_RELEASE}-Tomcat-${TOMCAT_VERSION}"
 	DIR="bonita"
 	LAST_RELEASE=`grep "^ENV BONITA_VERSION" ${DIR}/7.2/Dockerfile | awk '{ print $3 }'`
 	echo "Last release is : $LAST_RELEASE"
@@ -39,7 +40,7 @@ case $EDITION in
 	echo "if merge is finished, please remove ${DIR}/7.2.bck directory"
 	;;
 "performance")
-        BUNDLE="BonitaBPMSubscription-${NEW_RELEASE}-Tomcat-7.0.55"
+        BUNDLE="BonitaBPMSubscription-${NEW_RELEASE}-Tomcat-${TOMCAT_VERSION}"
         DIR="bonita-performance"
         LAST_RELEASE=`grep "^ENV BONITA_VERSION" ${DIR}/7.2/Dockerfile | awk '{ print $3 }'`
 	echo "Last release is : $LAST_RELEASE"

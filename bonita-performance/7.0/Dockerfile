@@ -2,6 +2,30 @@ FROM ubuntu:14.04
 
 MAINTAINER Jérémy Jacquier-Roux <jeremy.jacquier-roux@bonitasoft.com>
 
+# avoid debconf messages and install packages
+RUN apt-get update && apt-get install -y \
+  mysql-client-core-5.5 \
+  openjdk-7-jre-headless \
+  postgresql-client \
+  unzip \
+  wget \
+  zip \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /opt/custom-init.d/
+
+# create user to launch Bonita BPM as non-root
+RUN groupadd -r bonita -g 1000 \
+  && useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita
+
+# grab gosu
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
+RUN wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture)" -O /usr/local/bin/gosu \
+  && wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture).asc" -O /usr/local/bin/gosu.asc \
+  && gpg --verify /usr/local/bin/gosu.asc \
+  && rm /usr/local/bin/gosu.asc \
+  && chmod +x /usr/local/bin/gosu
+
 ENV BONITA_VERSION 7.0.3
 ENV BASE_URL http://repositories.rd.lan/nas/releases/7.0.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/
 ENV BONITA_SHA256 3d95898a0e6bab26da0fcefe12e0f6b51b66cf84a6bafd473a5758839c7877f1
@@ -13,21 +37,9 @@ ENV MYSQL_SHA256 40b2d49f6f2551cc7fa54552af806e8026bf8405f03342205852e57a3205a86
 #cluster
 #ENV CLUSTER_MODE true
 
-# avoid debconf messages and install packages
-RUN export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get install -y \
-  mysql-client-core-5.5 \
-  openjdk-7-jre-headless \
-  postgresql-client \
-  unzip \
-  wget \
-  zip \
-  && rm -rf /var/lib/apt/lists/*
-
-COPY files /opt/files
-COPY templates /opt/templates
-
 # retrieve JDBC drivers
-RUN wget -q https://jdbc.postgresql.org/download/${POSTGRES_JDBC_DRIVER} -O /opt/files/${POSTGRES_JDBC_DRIVER} \
+RUN mkdir /opt/files \
+  && wget -q https://jdbc.postgresql.org/download/${POSTGRES_JDBC_DRIVER} -O /opt/files/${POSTGRES_JDBC_DRIVER} \
   && echo "$POSTGRES_SHA256" /opt/files/${POSTGRES_JDBC_DRIVER} | sha256sum -c - \
   && wget -q http://dev.mysql.com/get/Downloads/Connector-J/${MYSQL_JDBC_DRIVER}.zip -O /opt/files/${MYSQL_JDBC_DRIVER}.zip \
   && echo "$MYSQL_SHA256" /opt/files/${MYSQL_JDBC_DRIVER}.zip | sha256sum -c - \
@@ -35,6 +47,9 @@ RUN wget -q https://jdbc.postgresql.org/download/${POSTGRES_JDBC_DRIVER} -O /opt
   && mv /opt/files/${MYSQL_JDBC_DRIVER}/${MYSQL_JDBC_DRIVER}-bin.jar /opt/files/ \
   && rm -r /opt/files/${MYSQL_JDBC_DRIVER} \
   && rm /opt/files/${MYSQL_JDBC_DRIVER}.zip
+
+COPY files /opt/files
+COPY templates /opt/templates
 
 # add Bonita BPM archive to the container
 RUN wget -q ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip -O /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip \
@@ -45,12 +60,6 @@ VOLUME /opt/bonita
 
 #cluster
 VOLUME /opt/bonita_home
-
-RUN mkdir /opt/custom-init.d/
-
-# create user to launch Bonita BPM as non-root
-RUN groupadd -r bonita -g 1000 \
-  && useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita
 
 # expose Tomcat port
 EXPOSE 8080

@@ -38,6 +38,6 @@
               username="{{BIZ_DB_USER}}"
               password="{{BIZ_DB_PASS}}"
               driverClassName="oracle.jdbc.OracleDriver"
-              url="jdbc:oracle:thin:@//{{DB_HOST}}:{{DB_PORT}}/{{DB_NAME}}"/>
+              url="jdbc:oracle:thin:@{{DB_HOST}}:{{DB_PORT}}:{{DB_NAME}}"/>
 
 </Context>

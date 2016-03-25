@@ -27,7 +27,7 @@ IMAGE_NAME=bonitasoft/${FOLDER_NAME}:${BONITA_VERSION}
 TAR_NAME=${FOLDER_NAME}_${BONITA_VERSION}.tar
 
 echo ". Building image <${IMAGE_NAME}>"
-docker build -t ${IMAGE_NAME} "${BUILD_PATH}"
+docker build --no-cache=true -t ${IMAGE_NAME} "${BUILD_PATH}"
 
 echo ". Saving image to archive file <${TAR_NAME}>"
 docker save ${IMAGE_NAME} > ${TAR_NAME}

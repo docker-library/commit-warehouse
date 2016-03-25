@@ -43,6 +43,11 @@ You can access to the portal on http://localhost:8080/bonita and login using the
 	docker run --name mydbpostgres -e POSTGRES_PASSWORD=mysecretpassword -d bonitasoft/postgres
 	docker run --name bonita_postgres --link mydbpostgres:postgres -h bonita -v ~/Documents/Docker/Volumes/bonita-performance/:/opt/bonita_home/ -d -p 8080:8080 bonita
 
+### Oracle
+
+	docker run --name mydboracle -d alexeiled/docker-oracle-xe-11g
+	docker run --name bonita_oracle --link mydboracle:oracle -e DB_ADMIN_PASS=oracle -e DB_NAME=xe -h bonita -v ~/Documents/Docker/Volumes/bonita-performance-7.1/:/opt/bonita_home/ -d -p 8080:8080 bonitasoft/bonita-performance:7.1.5
+
 ## Modify default credentials
 
 	docker run --name=bonita -e "TENANT_LOGIN=tech_user" -e "TENANT_PASSWORD=secret" -e "PLATFORM_LOGIN=pfadmin" -e "PLATFORM_PASSWORD=pfsecret" -h bonita -v ~/Documents/Docker/Volumes/bonita-performance/:/opt/bonita_home/ -d -p 8080:8080 bonita

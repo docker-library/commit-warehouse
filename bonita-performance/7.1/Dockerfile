@@ -34,8 +34,8 @@ ENV POSTGRES_JDBC_DRIVER postgresql-9.3-1102.jdbc41.jar
 ENV POSTGRES_SHA256 b78749d536da75c382d0a71c717cde6850df64e16594676fc7cacb5a74541d66
 ENV MYSQL_JDBC_DRIVER mysql-connector-java-5.1.26
 ENV MYSQL_SHA256 40b2d49f6f2551cc7fa54552af806e8026bf8405f03342205852e57a3205a868
-ENV ORACLE_JDBC_DRIVER ojdbc6.jar
-ENV ORACLE_SHA256 e70213917b5f0d7448072836da07c709930b89dd4b0cc14a1eef814836747900
+ENV ORACLE_JDBC_DRIVER ojdbc-6.jar
+ENV ORACLE_SHA256 a6e151e3c30efbfb3d86ad729dd2f9136a093815baebcfe81e6d0b26893180b2
 ENV BONITA_DBTOOL_VERSION 7.0.0-05
 ENV BONITA_DBTOOL_SHA256 33280c0b4591620f03b97436e577de6573b00abf7e494db45470a807f5ecdfcb
 ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
@@ -52,7 +52,9 @@ RUN mkdir /opt/files \
   && unzip -q /opt/files/${MYSQL_JDBC_DRIVER}.zip -d /opt/files/ \
   && mv /opt/files/${MYSQL_JDBC_DRIVER}/${MYSQL_JDBC_DRIVER}-bin.jar /opt/files/ \
   && rm -r /opt/files/${MYSQL_JDBC_DRIVER} \
-  && rm /opt/files/${MYSQL_JDBC_DRIVER}.zip
+  && rm /opt/files/${MYSQL_JDBC_DRIVER}.zip \
+  && wget -q http://repositories.rd.lan/archiva/repository/releases/com/oracle/ojdbc/6/${ORACLE_JDBC_DRIVER} -O /opt/files/${ORACLE_JDBC_DRIVER} \
+  && echo "$ORACLE_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c -
 
 # retrieve bonita deployer databasases tool
 RUN wget -q http://repositories.rd.lan/archiva/repository/releases/org/bonitasoft/tools/bonita-deployer/${BONITA_DBTOOL_VERSION}/${BONITA_DBTOOL}.zip -O /opt/files/${BONITA_DBTOOL}.zip \

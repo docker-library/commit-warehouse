@@ -53,6 +53,8 @@ case $DB_VENDOR in
 	"oracle")
 		JDBC_DRIVER=$ORACLE_JDBC_DRIVER
 		DB_PORT=${DB_PORT:-1521}
+		# pay attention that for Oracle, DB_NAME is used to store INSTANCE NAME (SID)
+		DB_NAME=${DB_NAME:-orcl}
 		;;
 	*)
 		;;

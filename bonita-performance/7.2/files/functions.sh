@@ -35,7 +35,7 @@ function create_user_if_not_exists {
 			fi
 			;;
 		"oracle")
-			ant -f ${BONITA_PATH}/${BONITA_DBTOOL}/deployer.xml init-oracle -Ddb.server.name=$db_host -Ddb.server.port=$db_port -Ddb.user=$db_user -Ddb.password=$db_pass -Ddb.admin.user=$db_admin_user -Ddb.admin.password=$db_admin_pass -Ddb.drop_existing=N
+			ant -f ${BONITA_PATH}/bonita-deployer-databases-${BONITA_DBTOOL_VERSION}/deployer.xml init-oracle -Ddb.server.name=$db_host -Ddb.server.port=$db_port -Ddb.instance.name=${DB_NAME} -Ddb.user=$db_user -Ddb.password=$db_pass -Ddb.admin.user=$db_admin_user -Ddb.admin.password=$db_admin_pass -Ddb.drop_existing=N
 			;;
 	esac
 }

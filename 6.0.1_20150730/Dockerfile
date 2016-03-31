@@ -20,9 +20,9 @@ WORKDIR /lightstreamer
 RUN set -x \
         && curl -fSL -o Lightstreamer.tar.gz ${LIGHSTREAMER_URL_DOWNLOAD} \
         && curl -fSL -o Lightstreamer.tar.gz.asc ${LIGHSTREAMER_URL_DOWNLOAD}.asc \
-        && gpg --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
+        && gpg --batch --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
         && tar -xvf Lightstreamer.tar.gz --strip-components=1 \
-        && rm Lightstreamer.tar.gz \
+        && rm Lightstreamer.tar.gz Lightstreamer.tar.gz.asc \
         && sed -i -- 's/\/usr\/jdk1.7.0/$JAVA_HOME/' bin/unix-like/LS.sh \
         && sed -i -e '123,$s/<appender-ref ref="LSDailyRolling" \/>/<appender-ref ref="LSConsole" \/>/' \
                   -e '/<appender-ref ref="LSDailyRolling" \/>/ d' conf/lightstreamer_log_conf.xml
@@ -33,5 +33,5 @@ EXPOSE 8080
 # Set the final working dir
 WORKDIR /lightstreamer/bin/unix-like
 
-# Define the entry point
-ENTRYPOINT ["./LS.sh", "run"]
+# Start the server
+CMD ["./LS.sh", "run"]

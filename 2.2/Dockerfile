@@ -2,20 +2,30 @@
 # Dockerfile to run an OrientDB (Graph) Container
 ############################################################
 
-FROM java:8-jdk
+FROM java:openjdk-8-jdk-alpine
 
 MAINTAINER OrientDB LTD (info@orientdb.com)
 
-ENV ORIENTDB_VERSION 2.2.0-beta
-ENV ORIENTDB_DOWNLOAD_MD5 a1b6abe1f0c45312be0a1a0831525386
-ENV ORIENTDB_DOWNLOAD_SHA1 ac265bb16a55a62066b5403fd6f3cd94333db8df
+# Override the solr download location with e.g.:
+#   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
+ARG ORIENTDB_DOWNLOAD_SERVER
+
+ENV ORIENTDB_VERSION 2.2.0-beta2
+ENV ORIENTDB_DOWNLOAD_MD5 fc41c64830b704a84865832892dea48b
+ENV ORIENTDB_DOWNLOAD_SHA1 87340634a5ee2ddf8a3bdaadf99dc29330846b0a
+
+ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies/orientdb-community/}$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
+
+RUN apk add --update \
+        tar \
+    && rm -rf /var/cache/apk/*
 
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \
-  wget  "http://central.maven.org/maven2/com/orientechnologies/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz" \
+  wget  $ORIENTDB_DOWNLOAD_URL \
   && echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | md5sum -c - \
   && echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha1sum -c - \
-  && tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1\
+  && tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 \
   && rm orientdb-community-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*
 

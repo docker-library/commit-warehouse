@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+
+DAEMON=/usr/lib/libreoffice/program/soffice.bin
+
+case $1 in
+  start)
+    echo -n "OpenOffice service starting ..."; 
+    pid=""
+    while [ "Z$pid" = "Z" ]; do
+      "$DAEMON" --nologo --norestore --invisible --headless --accept="socket,host=localhost,port=8100,tcpNoDelay=1;urp;" &
+      sleep 1s
+      pid=`pidof soffice.bin`
+      echo -n '.'
+    done
+    echo " [Started]"
+    ;;
+  stop)
+    pid=`pidof soffice.bin`
+    test "Z$pid" = "Z" || kill -15 $pid && echo "OpenOffice service stopped"
+    ;;
+  status)
+    pid=`pidof soffice.bin`
+    if [ "Z$pid" = "Z" ]; then
+      echo "OpenOffice service is stopped"
+    else
+      echo "OpenOffice service is started"
+    fi 
+    ;;
+  *)
+    echo "Usage: ooserver start|stop|status"
+esac

@@ -4,8 +4,8 @@ MAINTAINER Miguel Moquillon "miguel.moquillon@silverpeas.org"
 
 LABEL name="Silverpeas 6" description="Image to install and to run Silverpeas 6" vendor="Silverpeas"
 
-ARG SILVERPEAS_VERSION
-ARG WILDFLY_VERSION
+ARG SILVERPEAS_VERSION=6.0-SNAPSHOT
+ARG WILDFLY_VERSION=10.0.0
 ARG DEFAULT_LOCALE=en_US.UTF-8
 
 #

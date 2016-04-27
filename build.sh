@@ -13,5 +13,5 @@ wildfly_version=$2
 docker build \
   --build-arg SILVERPEAS_VERSION=$silverpeas_version \
   --build-arg WILDFLY_VERSION=$wildfly_version \
-  -t silverpeas-prod-$silverpeas_version \
+  -t silverpeas-prod:$silverpeas_version \
   .

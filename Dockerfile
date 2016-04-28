@@ -2,11 +2,11 @@ FROM debian:jessie-backports
 
 MAINTAINER Miguel Moquillon "miguel.moquillon@silverpeas.org"
 
-LABEL name="Silverpeas 6" description="Image to install and to run Silverpeas 6" vendor="Silverpeas"
-
 ARG SILVERPEAS_VERSION=6.0-SNAPSHOT
 ARG WILDFLY_VERSION=10.0.0
 ARG DEFAULT_LOCALE=en_US.UTF-8
+
+LABEL name="Silverpeas 6" description="Image to install and to run Silverpeas 6" vendor="Silverpeas" version=${SILVERPEAS_VERSION} build=1
 
 #
 # Check Silvereas and Wildfly at the asked version exist
@@ -40,6 +40,7 @@ RUN apt-get update && apt-get install -y \
     ghostscript \
     libreoffice \
     ure \
+    gpgv \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && update-ca-certificates -f
@@ -91,6 +92,9 @@ ENV JBOSS_HOME /opt/wildfly
 
 # Fetch both Silverpeas and Wildfly and unpack them into /opt
 RUN wget -nc https://www.silverpeas.org/files/silverpeas-${SILVERPEAS_VERSION}-wildfly${WILDFLY_VERSION%.?.?}.zip \
+  && wget -nc https://www.silverpeas.org/files/silverpeas-${SILVERPEAS_VERSION}-wildfly${WILDFLY_VERSION%.?.?}.zip.asc \
+  && gpg --keyserver hkp://pgp.mit.edu --recv-keys 3DF442B6 \
+  && gpg --batch --verify silverpeas-${SILVERPEAS_VERSION}-wildfly${WILDFLY_VERSION%.?.?}.zip.asc silverpeas-${SILVERPEAS_VERSION}-wildfly${WILDFLY_VERSION%.?.?}.zip \
   && wget -nc http://download.jboss.org/wildfly/${WILDFLY_VERSION}.Final/wildfly-${WILDFLY_VERSION}.Final.zip \
   && unzip silverpeas-${SILVERPEAS_VERSION}-wildfly${WILDFLY_VERSION%.?.?}.zip -d /opt \
   && unzip wildfly-${WILDFLY_VERSION}.Final.zip -d /opt \

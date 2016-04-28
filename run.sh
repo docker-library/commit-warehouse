@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 #
 # Initialization script that wraps the installation, starting and stopping

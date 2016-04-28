@@ -1,30 +1,38 @@
-#docker-silverpeas-prod
+# docker-silverpeas-prod
 
-A Dockerfile that produces a container that will run [Silverpeas 6][silverpeas].
+A Dockerfile that produces a Docker image of [Silverpeas 6][silverpeas].
 
 Be caution, Silverpeas 6 is currently in development and it is not production-ready. Silverpeas 6.0-SNAPSHOT is the development version of 6.0.
 [silverpeas]: http://www.silverpeas.org
 
 ## Image creation
 
-To create an image of Silverpeas 6 you have to specify the exact versions of Silverpeas and of Wildfly used for running it in this order:
+To create a Docker image with the last version of Silverpeas 6, that is to say the last snapshot of the version in development:
+```
+$ ./build.sh
+```
+this will build an image of the last snapshot of Silverpeas 6 with the tag `silverpeas:latest`.
+
+To create an image of a given version of Silverpeas 6, you have to specify the exact versions of Silverpeas and of Wildfly used by this version:
 ```
 $ ./build.sh 6.0 10.0.0
 ```
-This builds an image containing Silverpeas 6.0 (not yet available) and Wildfly 10.0.0 with the tag `silverpeas-prod:6.0`. The versions passed as argument have to match the versions of Silverpeas and Wildfly available in the Web; indeed, Silverpeas and Wildfly are downloaded from their respective project Web site.
+this will build an image containing Silverpeas 6.0 (not yet available) and Wildfly 10.0.0 with the tag `silverpeas:6.0`. The versions passed as argument have to match the versions of Silverpeas and Wildfly available in the Web; indeed, Silverpeas and Wildfly are downloaded from their respective project Web site.
 
 ## Container running
 
-Silverpeas 6 image depends on a one of the following database:
+The Silverpeas 6 image requires one of the following database in order to be ran:
 * the open-source and recommended PostgreSQL database system,
-* MS-SQLServer database system.
+* the MS-SQLServer database system.
 
-So, to run Silverpeas 6 you have to first to run a container with one of the above database. 
+(Althrough the Oracle database system (>= 11i) is supported by Silverpeas, it is not supported by this image because of the licensing policy of Oracle about its JDBC driver.)
+
+So, to run Silverpeas 6 you have first to run a container with one of the above database. 
 
 ### With a database from a container
 
 In [Docker Hub][dockerhub], you will find a lot of images embedding PostgreSQL.
-For example, with a container from the [official PostgreSQL docker image][docker-postgresql]:
+For example, with an image from the [official PostgreSQL docker image][docker-postgresql]:
 ```
 $ docker run --name postgresql -d \
   -e POSTGRES_PASSWORD="mysecretpassword" \
@@ -43,10 +51,10 @@ $ docker run --name silverpeas -p 8080:8000 -d \
   -v /var/log/silverpeas:/opt/silverpeas/log \
   -v /var/lib/silverpeas:/opt/silverpeas/data \
   --link postgresql:database \
-  silverpeas-prod:6.0
+  silverpeas:6.0
 ```
-This image exposes the 8000 port at which Silverpeas is listening and this port is here mapped to the 8080 port of the host.
-It is recommended to mount the volumes `/opt/silverpeas/log` and `/opt/silverpeas/data` from the container. Indeed, the first volume contains the log files produced by the Silverpeas application whereas the second volume contains all the data that are managed by the users in Silverpeas. So, you can easily have a glance at the Silverpeas activity and you can switch to the next version of Silverpeas without losing the data. (Using a [Data Volume Container][data-volume] to map `/opt/silverpeas/log` and `/opt/silverpeas/data` is a better solution.)
+This image exposes the 8000 port at which Silverpeas listens and this port of the container is here mapped to the 8080 port of the host.
+It is recommended to mount the volumes `/opt/silverpeas/log` and `/opt/silverpeas/data` from the container. Indeed, the first volume contains the log files produced by the Silverpeas application whereas the second volume contains all the data that are managed by the users in Silverpeas. So, you can easily have a glance at the Silverpeas activity and you can switch to the next version of Silverpeas without losing any data. (Using a [Data Volume Container][data-volume] to map `/opt/silverpeas/log` and `/opt/silverpeas/data` is a better solution.)
 
 In the case to have a finer configuration of Silverpeas, you can create directly a `config.properties` file with, additionally to the other configuration parameters, the database access parameters, and then you pass it to the container:
 ```
@@ -55,7 +63,7 @@ $ docker run --name silverpeas -p 8080:8000 -d \
   -v /var/log/silverpeas:/opt/silverpeas/log \
   -v /var/lib/silverpeas:/opt/silverpeas/data \
   --link postgresql:database \
-  silverpeas-prod:6.0
+  silverpeas:6.0
 ```
 where `/etc/silverpeas/config.properties` is the Silverpeas global configuration file on the host.
 
@@ -83,7 +91,7 @@ $ docker run --name silverpeas -p 8080:8000 -d \
   -v /etc/silverpeas/config.properties:/opt/silverpeas/configuration/config.properties \
   -v /var/log/silverpeas:/opt/silverpeas/log \
   -v /var/lib/silverpeas:/opt/silverpeas/data \
-  silverpeas-prod:6.0
+  silverpeas:6.0
 ```
 where `database` is the hostname on which run PostgreSQL and that is referred as such in the `config.properties`.
 
@@ -103,7 +111,7 @@ $ docker create --name silverpeas-store \
   -v /opt/silverpeas/log \
   -v /opt/silverpeas/properties \
   -v /etc/silverpeas/config.properties:/opt/silverpeas/configuration/properties \
-  silverpeas-prod:6.0 \
+  silverpeas:6.0 \
   /bin/true
 ```
 
@@ -112,7 +120,7 @@ Then to mount the volumes in the Silverpeas container:
 $ docker run --name silverpeas -p 8080:8000 -d \
   --link postgresql:database \
   --volumes-from silverpeas-store \
-  silverpeas-prod:6.0
+  silverpeas:6.0
 ``` 
 
 If you have to customize the settings of Silverpeas or add, for example, a new database definition in Wildfly, then specify these settings with the Data Volume Container:
@@ -124,11 +132,11 @@ $ docker create --name silverpeas-store \
   -v /etc/silverpeas/config.properties:/opt/silverpeas/configuration/properties \
   -v /etc/silverpeas/CustomerSettings.xml:/opt/silverpeas/configuration/silverpeas/CustomerSettings.xml \
   -v /etc/silverpeas/my-datasource.cli:/opt/silverpeas/configuration/jboss/my-datasource.cli \
-  silverpeas-prod:6.0 \
+  silverpeas:6.0 \
   /bin/true
 ```
 
-## Container activity
+## Logs
 
 You can follow the activity of Silverpeas by watching the logs generated in the mounted `/opt/silverpeas/log` directory.
 

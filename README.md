@@ -51,7 +51,7 @@ $ docker run --name silverpeas -p 8080:8000 -d \
   -v /var/log/silverpeas:/opt/silverpeas/log \
   -v /var/lib/silverpeas:/opt/silverpeas/data \
   --link postgresql:database \
-  silverpeas:6.0
+  silverpeas/silverpeas:6.0
 ```
 This image exposes the 8000 port at which Silverpeas listens and this port of the container is here mapped to the 8080 port of the host.
 It is recommended to mount the volumes `/opt/silverpeas/log` and `/opt/silverpeas/data` from the container. Indeed, the first volume contains the log files produced by the Silverpeas application whereas the second volume contains all the data that are managed by the users in Silverpeas. So, you can easily have a glance at the Silverpeas activity and you can switch to the next version of Silverpeas without losing any data. (Using a [Data Volume Container][data-volume] to map `/opt/silverpeas/log` and `/opt/silverpeas/data` is a better solution.)
@@ -63,7 +63,7 @@ $ docker run --name silverpeas -p 8080:8000 -d \
   -v /var/log/silverpeas:/opt/silverpeas/log \
   -v /var/lib/silverpeas:/opt/silverpeas/data \
   --link postgresql:database \
-  silverpeas:6.0
+  silverpeas/silverpeas:6.0
 ```
 where `/etc/silverpeas/config.properties` is the Silverpeas global configuration file on the host.
 
@@ -91,7 +91,7 @@ $ docker run --name silverpeas -p 8080:8000 -d \
   -v /etc/silverpeas/config.properties:/opt/silverpeas/configuration/config.properties \
   -v /var/log/silverpeas:/opt/silverpeas/log \
   -v /var/lib/silverpeas:/opt/silverpeas/data \
-  silverpeas:6.0
+  silverpeas/silverpeas:6.0
 ```
 where `database` is the hostname on which run PostgreSQL and that is referred as such in the `config.properties`.
 
@@ -111,7 +111,7 @@ $ docker create --name silverpeas-store \
   -v /opt/silverpeas/log \
   -v /opt/silverpeas/properties \
   -v /etc/silverpeas/config.properties:/opt/silverpeas/configuration/properties \
-  silverpeas:6.0 \
+  silverpeas/silverpeas:6.0 \
   /bin/true
 ```
 
@@ -120,7 +120,7 @@ Then to mount the volumes in the Silverpeas container:
 $ docker run --name silverpeas -p 8080:8000 -d \
   --link postgresql:database \
   --volumes-from silverpeas-store \
-  silverpeas:6.0
+  silverpeas/silverpeas:6.0
 ``` 
 
 If you have to customize the settings of Silverpeas or add, for example, a new database definition in Wildfly, then specify these settings with the Data Volume Container:
@@ -132,7 +132,7 @@ $ docker create --name silverpeas-store \
   -v /etc/silverpeas/config.properties:/opt/silverpeas/configuration/properties \
   -v /etc/silverpeas/CustomerSettings.xml:/opt/silverpeas/configuration/silverpeas/CustomerSettings.xml \
   -v /etc/silverpeas/my-datasource.cli:/opt/silverpeas/configuration/jboss/my-datasource.cli \
-  silverpeas:6.0 \
+  silverpeas/silverpeas:6.0 \
   /bin/true
 ```
 

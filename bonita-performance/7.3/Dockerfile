@@ -30,7 +30,7 @@ RUN wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --
 
 ENV BONITA_VERSION 7.3.0-SNAPSHOT
 ENV TOMCAT_VERSION 7.0.67
-ENV BASE_URL http://pollux1.rd.lan/job/sp_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/
+ENV BASE_URL http://repositories.rd.lan/nas/releases/7.3.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/
 ENV BONITA_SHA256 ce1fdbd633aaa77175a3b991849d1aaddb9e49e4cdbf6ecd709e12ce93837408
 ENV POSTGRES_JDBC_DRIVER postgresql-9.3-1102.jdbc41.jar
 ENV POSTGRES_SHA256 b78749d536da75c382d0a71c717cde6850df64e16594676fc7cacb5a74541d66
@@ -71,7 +71,6 @@ RUN echo "$ORACLE_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c -
 ### Get Bonita from URL
 #RUN wget -q ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip -O /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
 #  && echo "$BONITA_SHA256" /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
-RUN wget -q ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip -O /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
 
 # create Volume to store Bonita BPM files
 VOLUME /opt/bonita

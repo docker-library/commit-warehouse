@@ -8,7 +8,7 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 9B90BFD14309C7DA5EF58
 
 # Set environment variables to identify the right Lightstreamer version and edition
 ENV LIGHSTREAMER_EDITION Allegro-Presto-Vivace
-ENV LIGHSTREAMER_VERSION 6_0_1_20150730
+ENV LIGHSTREAMER_VERSION 6_0_2_20160510
 ENV LIGHSTREAMER_URL_DOWNLOAD http://www.lightstreamer.com/repo/distros/Lightstreamer_${LIGHSTREAMER_EDITION}_${LIGHSTREAMER_VERSION}.tar.gz
 
 # Set the temporary working dir
@@ -23,7 +23,7 @@ RUN set -x \
         && gpg --batch --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
         && tar -xvf Lightstreamer.tar.gz --strip-components=1 \
         && rm Lightstreamer.tar.gz Lightstreamer.tar.gz.asc \
-        && sed -i -- 's/\/usr\/jdk1.7.0/$JAVA_HOME/' bin/unix-like/LS.sh \
+        && sed -i -- 's/\/usr\/jdk1.8.0/$JAVA_HOME/' bin/unix-like/LS.sh \
         && sed -i -e '123,$s/<appender-ref ref="LSDailyRolling" \/>/<appender-ref ref="LSConsole" \/>/' \
                   -e '/<appender-ref ref="LSDailyRolling" \/>/ d' conf/lightstreamer_log_conf.xml
 

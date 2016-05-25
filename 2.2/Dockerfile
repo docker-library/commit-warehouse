@@ -6,7 +6,7 @@ FROM java:openjdk-8-jdk-alpine
 
 MAINTAINER OrientDB LTD (info@orientdb.com)
 
-# Override the solr download location with e.g.:
+# Override the orientdb download location with e.g.:
 #   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 

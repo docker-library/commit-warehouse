@@ -1,0 +1,14 @@
+git push -f git@github.com:tianon/bad-ideas.git
+{{- range $i, $e := .Entries -}}
+	{{- /* force bashbrew to "fetch" the GitCommit so that it is fully resolved */ -}}
+	{{- $from := $.DockerFrom $e -}}
+
+	{{- range $e.Tags -}}
+		{{- " " -}}
+		{{- $e.GitCommit -}}
+		:refs/tags/
+		{{- $.RepoName -}}
+		/
+		{{- . -}}
+	{{- end -}}
+{{- end -}}

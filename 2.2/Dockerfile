@@ -10,14 +10,13 @@ MAINTAINER OrientDB LTD (info@orientdb.com)
 #   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 
-ENV ORIENTDB_VERSION 2.2.0
-ENV ORIENTDB_DOWNLOAD_MD5 985b8a47d752ba6c94befa993f2fff37
-ENV ORIENTDB_DOWNLOAD_SHA1 0a360382271466cb8c5671ac237ed38c640c5455
+ENV ORIENTDB_VERSION 2.2.2
+ENV ORIENTDB_DOWNLOAD_MD5 34edaf7d0197f0c0be14c7ab1bc7b1d8
+ENV ORIENTDB_DOWNLOAD_SHA1 82ac016c590cd2f013cb1cdce092c57689f17255
 
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
-RUN apk add --update \
-        tar \
+RUN apk add --update tar \
     && rm -rf /var/cache/apk/*
 
 #download distribution tar, untar and delete databases

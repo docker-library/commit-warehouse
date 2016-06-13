@@ -10,8 +10,7 @@ ENV ORIENTDB_VERSION 2.1.19
 ENV ORIENTDB_DOWNLOAD_MD5 11942093675c32b9341658bd56f191f0
 ENV ORIENTDB_DOWNLOAD_SHA1 289b5d0950254e90531e65a3f4ef530bb4193f32
 
-RUN apk add --update \
-        tar \
+RUN apk add --update tar \
     && rm -rf /var/cache/apk/*
 
 #download distribution tar, untar and delete databases

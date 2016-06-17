@@ -16,7 +16,6 @@ REST_API_DYN_AUTH_CHECKS=${REST_API_DYN_AUTH_CHECKS:-true}
 HTTP_API=${HTTP_API:-false}
 # Clustering mode 
 CLUSTER_MODE=${CLUSTER_MODE:-false}
-BONITA_HOME_COMMON_PATH=${BONITA_HOME_COMMON_PATH:-/opt/bonita_home}
 
 # retrieve the db parameters from the container linked
 if [ -n "$POSTGRES_PORT_5432_TCP_PORT" ]
@@ -77,13 +76,6 @@ PLATFORM_LOGIN=${PLATFORM_LOGIN:-platformAdmin}
 PLATFORM_PASSWORD=${PLATFORM_PASSWORD:-platform}
 TENANT_LOGIN=${TENANT_LOGIN:-install}
 TENANT_PASSWORD=${TENANT_PASSWORD:-install}
-if [ -d ${BONITA_HOME_COMMON_PATH}/engine-server ]; then
-	echo "BONITA_HOME directory already exists."
-	BONITA_HOME_EXISTS='true'
-else
-	echo "BONITA_HOME directory is not here. Using the one from Bonita directory."
-	BONITA_HOME_EXISTS='false'
-fi
 
 if [ ! -d ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION} ]
 then
@@ -140,11 +132,11 @@ fi
 
 shopt -s nullglob
 LicenseNumber=0
-for file in ${BONITA_HOME_COMMON_PATH}/*.lic;
+for file in /opt/bonita_lic/*.lic;
 do
   LicenseNumber=$(( $LicenseNumber + 1 ))
   echo "Copying licence file $file to Bonita license directory "
-  cp $file ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/platform-setup/licenses
+  cp $file ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/setup/platform_conf/licenses
 done
 
 if [ $LicenseNumber -eq 0 ]; then
@@ -159,7 +151,7 @@ cp ${BONITA_TPL}/setenv.sh ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION
 # if required, uncomment dynamic checks on REST API
 if [ "$REST_API_DYN_AUTH_CHECKS" = 'true' ]
 then
-    sed -i -e 's/^#GET|/GET|/' -e 's/^#POST|/POST|/' -e 's/^#PUT|/PUT|/' -e 's/^#DELETE|/DELETE|/' ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/platform-setup/portal-tenant/dynamic-permissions-checks.properties
+    sed -i -e 's/^#GET|/GET|/' -e 's/^#POST|/POST|/' -e 's/^#PUT|/PUT|/' -e 's/^#DELETE|/DELETE|/' ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/setup/platform_conf/initial/tenant_template_portal/dynamic-permissions-checks.properties
 fi
 # if required, deactivate HTTP API by updating bonita.war with proper web.xml
 if [ "$HTTP_API" = 'false' ]
@@ -169,17 +161,16 @@ then
 fi
 
 # replace variables
-find ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/platform-setup -name "*.properties" | xargs -I{} -n10 sed -i \
-    -e 's/^userName\s*=.*/'"userName=${TENANT_LOGIN}"'/' \
-    -e 's/^userPassword\s*=.*/'"userPassword=${TENANT_PASSWORD}"'/' \
+find ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/setup/platform_conf/initial -name "*.properties" | xargs -I{} -n10 sed -i \
+    -e 's/^#userName\s*=.*/'"userName=${TENANT_LOGIN}"'/' \
+    -e 's/^#userPassword\s*=.*/'"userPassword=${TENANT_PASSWORD}"'/' \
     -e 's/^platform.tenant.default.username\s*=.*/'"platform.tenant.default.username=${TENANT_LOGIN}"'/' \
     -e 's/^platform.tenant.default.password\s*=.*/'"platform.tenant.default.password=${TENANT_PASSWORD}"'/' \
-    -e 's/^platformAdminUsername\s*=.*/'"platformAdminUsername=${PLATFORM_LOGIN}"'/' \
-    -e 's/^platformAdminPassword\s*=.*/'"platformAdminPassword=${PLATFORM_PASSWORD}"'/' \
-    -e 's/^bonita.cluster\s*=.*/'"bonita.cluster=${CLUSTER_MODE}"'/'
+    -e 's/^#platformAdminUsername\s*=.*/'"platformAdminUsername=${PLATFORM_LOGIN}"'/' \
+    -e 's/^#platformAdminPassword\s*=.*/'"platformAdminPassword=${PLATFORM_PASSWORD}"'/' \
+    -e 's/^#bonita.cluster\s*=.*/'"bonita.cluster=${CLUSTER_MODE}"'/'
 
-sed -i -e 's@{{BONITA_HOME_PATH}}@'"${BONITA_HOME_COMMON_PATH}"'@' \
-    -e 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' \
+sed -i -e 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' \
     -e 's/{{BIZ_DB_VENDOR}}/'"${BIZ_DB_VENDOR}"'/' \
     -e 's/{{JAVA_OPTS}}/'"${JAVA_OPTS}"'/' \
     ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/bin/setenv.sh
@@ -208,11 +199,3 @@ case "${DB_VENDOR}" in
 		;;
 esac
 
-# move bonita_home files to configured path if it does not already exist
-if [ "$BONITA_HOME_EXISTS" = 'false' ]
-then
-    mv ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/bonita/* \
-       ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/bonita/.[^.]* \
-       ${BONITA_HOME_COMMON_PATH}/
-    rmdir ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/bonita
-fi

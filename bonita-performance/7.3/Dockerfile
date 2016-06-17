@@ -28,7 +28,7 @@ RUN wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --
   && chmod +x /usr/local/bin/gosu
 
 
-ENV BONITA_VERSION 7.3.0-SNAPSHOT
+ENV BONITA_VERSION 7.3.0.beta-03
 ENV TOMCAT_VERSION 7.0.67
 ENV BASE_URL http://repositories.rd.lan/nas/releases/7.3.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/
 ENV BONITA_SHA256 ce1fdbd633aaa77175a3b991849d1aaddb9e49e4cdbf6ecd709e12ce93837408
@@ -65,8 +65,6 @@ RUN wget -q http://repositories.rd.lan/archiva/repository/releases/org/bonitasof
 COPY files /opt/files
 COPY templates /opt/templates
 
-RUN echo "$ORACLE_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c -
-
 # add Bonita BPM archive to the container
 ### Get Bonita from URL
 #RUN wget -q ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip -O /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
@@ -75,8 +73,8 @@ RUN echo "$ORACLE_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c -
 # create Volume to store Bonita BPM files
 VOLUME /opt/bonita
 
-#cluster
-VOLUME /opt/bonita_home
+# create Volume to store Bonita BPM licenses (*.lic)
+VOLUME /opt/bonita_lic
 
 # expose Tomcat port
 EXPOSE 8080

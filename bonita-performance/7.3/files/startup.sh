@@ -9,7 +9,7 @@ if [ ! -f /opt/${BONITA_VERSION}-configured ]
 then
 	gosu bonita /opt/files/config.sh \
       && gosu bonita /opt/bonita/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/setup/setup.sh init \
-      && touch /opt/${BONITA_VERSION}-configured || exit 0
+      && touch /opt/${BONITA_VERSION}-configured || exit 1
 fi
 if [ -d /opt/custom-init.d/ ]
 then

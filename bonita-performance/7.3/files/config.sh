@@ -38,6 +38,8 @@ then
 	JDBC_DRIVER=$ORACLE_JDBC_DRIVER
 else
 	DB_VENDOR=${DB_VENDOR:-h2}
+    DB_HOST=localhost
+    DB_PORT=9091
 fi
 
 case $DB_VENDOR in
@@ -147,6 +149,7 @@ fi
 # apply conf
 # copy templates
 cp ${BONITA_TPL}/setenv.sh ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/bin/setenv.sh
+cp ${BONITA_TPL}/database.properties ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/setup/database.properties
 
 # if required, uncomment dynamic checks on REST API
 if [ "$REST_API_DYN_AUTH_CHECKS" = 'true' ]
@@ -176,10 +179,11 @@ sed -i -e 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' \
     ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/bin/setenv.sh
 
 case "${DB_VENDOR}" in
-	"mysql"|"postgres"|"oracle")
+	"h2"|"mysql"|"postgres"|"oracle")
 		cp ${BONITA_TPL}/${DB_VENDOR}/bitronix-resources.properties ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/conf/bitronix-resources.properties
 		cp ${BONITA_TPL}/${DB_VENDOR}/bonita.xml ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/conf/Catalina/localhost/bonita.xml
-		sed -e 's/{{DB_USER}}/'"${DB_USER}"'/' \
+		sed -e 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' \
+            -e 's/{{DB_USER}}/'"${DB_USER}"'/' \
 		    -e 's/{{DB_PASS}}/'"${DB_PASS}"'/' \
 		    -e 's/{{DB_NAME}}/'"${DB_NAME}"'/' \
 		    -e 's/{{DB_HOST}}/'"${DB_HOST}"'/' \
@@ -188,7 +192,8 @@ case "${DB_VENDOR}" in
 		    -e 's/{{BIZ_DB_PASS}}/'"${BIZ_DB_PASS}"'/' \
 		    -e 's/{{BIZ_DB_NAME}}/'"${BIZ_DB_NAME}"'/' \
 		    -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/conf/bitronix-resources.properties \
-		       ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/conf/Catalina/localhost/bonita.xml
+		       ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/conf/Catalina/localhost/bonita.xml \
+		       ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/setup/database.properties
 
 		# if not present, copy JDBC driver into the Bundle
 		file=$(basename $JDBC_DRIVER)

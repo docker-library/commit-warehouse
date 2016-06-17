@@ -38,11 +38,11 @@ then
 	JDBC_DRIVER=$ORACLE_JDBC_DRIVER
 else
 	DB_VENDOR=${DB_VENDOR:-h2}
-    DB_HOST=localhost
 fi
 
 case $DB_VENDOR in
 	"h2")
+        DB_HOST=${DB_HOST:-localhost}
 		DB_PORT=${DB_PORT:-9091}
 		;;
 	"postgres")

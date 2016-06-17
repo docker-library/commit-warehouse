@@ -39,10 +39,12 @@ then
 else
 	DB_VENDOR=${DB_VENDOR:-h2}
     DB_HOST=localhost
-    DB_PORT=9091
 fi
 
 case $DB_VENDOR in
+	"h2")
+		DB_PORT=${DB_PORT:-9091}
+		;;
 	"postgres")
 		JDBC_DRIVER=$POSTGRES_JDBC_DRIVER
 		DB_PORT=${DB_PORT:-5432}

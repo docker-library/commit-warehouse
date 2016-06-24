@@ -2,10 +2,10 @@
 # Dockerfile  for OrientDB with spatial module
 ############################################################
 
-FROM orientdb:2.2.0
+FROM orientdb:2.2.3
 
-ENV ORIENTDB_DOWNLOAD_SPATIAL_MD5 6c2209f137a6363e60c88fd0412c35ac
-ENV ORIENTDB_DOWNLOAD_SPATIAL_SHA1 ce4f8541e8994a7edaae05af96b3b36a8a1bd537
+ENV ORIENTDB_DOWNLOAD_SPATIAL_MD5 bc4b7f3a185e7391e2a313caf5ebbb0e
+ENV ORIENTDB_DOWNLOAD_SPATIAL_SHA1 f787056fa74a6d49c40a3b3bd426640c7e729b94
 
 ENV ORIENTDB_DOWNLOAD_SPATIAL_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-spatial/$ORIENTDB_VERSION/orientdb-spatial-$ORIENTDB_VERSION-dist.jar
 

@@ -18,7 +18,7 @@ RUN echo '#!/usr/bin/env bash' > "$RAPIDOID_BIN" \
  && echo 'java -Djava.io.tmpdir="$RAPIDOID_TMP" -cp "$RAPIDOID_JAR:/app/app.jar:/app/*.jar" org.rapidoid.standalone.Main app.jar=/app/app.jar root=/app $@' >> "$RAPIDOID_BIN" \
  && chmod ugo+x "$RAPIDOID_BIN"
 
-ENV RAPIDOID_VERSION 5.1.8
+ENV RAPIDOID_VERSION 5.1.9
 ENV RAPIDOID_URL https://repo1.maven.org/maven2/org/rapidoid/rapidoid-standalone/$RAPIDOID_VERSION/rapidoid-standalone-$RAPIDOID_VERSION.jar
 
 RUN set -xe \

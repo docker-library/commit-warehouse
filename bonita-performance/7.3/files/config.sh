@@ -168,7 +168,7 @@ then
 fi
 
 # replace variables
-find ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/setup/platform_conf/initial -name "*.properties" | xargs -I{} -n10 sed -i \
+find ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/setup/platform_conf/initial -name "*.properties" | xargs -n10 sed -i \
     -e 's/^#userName\s*=.*/'"userName=${TENANT_LOGIN}"'/' \
     -e 's/^#userPassword\s*=.*/'"userPassword=${TENANT_PASSWORD}"'/' \
     -e 's/^platform.tenant.default.username\s*=.*/'"platform.tenant.default.username=${TENANT_LOGIN}"'/' \

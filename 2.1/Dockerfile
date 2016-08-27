@@ -7,8 +7,8 @@ FROM java:openjdk-8-jdk-alpine
 MAINTAINER OrientDB LTD (info@orientdb.com)
 
 ENV ORIENTDB_VERSION 2.1.22
-ENV ORIENTDB_DOWNLOAD_MD5 bfba11a44e9e6f585d709e9fab706472
-ENV ORIENTDB_DOWNLOAD_SHA1 7ad39c5fed3db7290dadae1d7884ae9ed4ad532c
+ENV ORIENTDB_DOWNLOAD_MD5 43d5096bde17bf81bd4ed1c17b10b7a3
+ENV ORIENTDB_DOWNLOAD_SHA1 cd92c92f9a743b32ed70bab669ac329ac4eb5599
 
 RUN apk add --update tar \
     && rm -rf /var/cache/apk/*

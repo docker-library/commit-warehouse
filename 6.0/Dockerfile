@@ -8,7 +8,7 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 9B90BFD14309C7DA5EF58
 
 # Set environment variables to identify the right Lightstreamer version and edition
 ENV LIGHSTREAMER_EDITION Allegro-Presto-Vivace
-ENV LIGHSTREAMER_VERSION 6_0_2_20160510
+ENV LIGHSTREAMER_VERSION 6_0_3_20160905
 ENV LIGHSTREAMER_URL_DOWNLOAD http://www.lightstreamer.com/repo/distros/Lightstreamer_${LIGHSTREAMER_EDITION}_${LIGHSTREAMER_VERSION}.tar.gz
 
 # Set the temporary working dir

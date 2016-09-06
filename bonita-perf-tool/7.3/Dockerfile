@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 
 MAINTAINER Guillaume Rosinosky <guillaume.rosinosky@bonitasoft.com>
 
-ENV BONITA_VERSION 7.3.1
+ENV BONITA_VERSION 7.3.2
 ENV PERF_REFPATH /opt/PerfLauncher
 ENV PERF_MODE unitrunner
 ENV PERF_TESTS standardProcess;messageStartProcess;messageSynchronizationProcess

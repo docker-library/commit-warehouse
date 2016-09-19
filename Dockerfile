@@ -29,4 +29,3 @@ RUN set -xe \
 	&& chmod 555 /opt/entrypoint.sh
 
 ENTRYPOINT ["/opt/entrypoint.sh"]
-CMD ["production"]

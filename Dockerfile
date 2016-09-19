@@ -1,17 +1,18 @@
 FROM java:8-jre
 MAINTAINER Nikolche Mihajlovski
 
-ENV RAPIDOID_VERSION 5.1.9
+# GPG key of Rapidoid's author/maintainer (616EF49C: Nikolche Mihajlovski <nikolce.mihajlovski@gmail.com>)
+ENV GPG_KEY E306FEF548C686C23DC00242B9B08D8F616EF49C
+
 ENV RAPIDOID_JAR /opt/rapidoid.jar
 ENV RAPIDOID_TMP /tmp/rapidoid
-ENV RAPIDOID_URL https://repo1.maven.org/maven2/org/rapidoid/rapidoid-standalone/$RAPIDOID_VERSION/rapidoid-standalone-$RAPIDOID_VERSION.jar
-
-# GPG key of Rapidoid's author (616EF49C: Nikolche Mihajlovski <nikolce.mihajlovski@gmail.com>)
-ENV GPG_KEY E306FEF548C686C23DC00242B9B08D8F616EF49C
 
 VOLUME /app
 WORKDIR /opt
 EXPOSE 8888
+
+ENV RAPIDOID_VERSION 5.2.4
+ENV RAPIDOID_URL https://repo1.maven.org/maven2/org/rapidoid/rapidoid-standalone/$RAPIDOID_VERSION/rapidoid-standalone-$RAPIDOID_VERSION.jar
 
 COPY entrypoint.sh /opt/
 

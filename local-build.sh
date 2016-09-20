@@ -2,6 +2,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-echo Building version $1
+echo Building tag $1
 docker build -t rapidoid/rapidoid:$1 .
 docker images -a

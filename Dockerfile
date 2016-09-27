@@ -12,7 +12,7 @@ WORKDIR /opt
 EXPOSE 8888
 
 ENV RAPIDOID_VERSION 5.2.4
-ENV RAPIDOID_URL https://repo1.maven.org/maven2/org/rapidoid/rapidoid-standalone/$RAPIDOID_VERSION/rapidoid-standalone-$RAPIDOID_VERSION.jar
+ENV RAPIDOID_URL https://repo1.maven.org/maven2/org/rapidoid/rapidoid-platform/$RAPIDOID_VERSION/rapidoid-platform-$RAPIDOID_VERSION.jar
 
 COPY entrypoint.sh /opt/
 

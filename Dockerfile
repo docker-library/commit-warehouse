@@ -11,7 +11,7 @@ VOLUME /app
 WORKDIR /opt
 EXPOSE 8888
 
-ENV RAPIDOID_VERSION 5.2.4
+ENV RAPIDOID_VERSION 5.2.5
 ENV RAPIDOID_URL https://repo1.maven.org/maven2/org/rapidoid/rapidoid-platform/$RAPIDOID_VERSION/rapidoid-platform-$RAPIDOID_VERSION.jar
 
 COPY entrypoint.sh /opt/
@@ -25,7 +25,6 @@ RUN set -xe \
 	&& gpg --batch --verify $RAPIDOID_JAR.asc $RAPIDOID_JAR \
 	&& rm -r "$GNUPGHOME" \
 	&& rm "$RAPIDOID_JAR.asc" \
-	&& chmod 444 $RAPIDOID_JAR \
-	&& chmod 555 /opt/entrypoint.sh
+	&& chmod ugo+x /opt/entrypoint.sh
 
 ENTRYPOINT ["/opt/entrypoint.sh"]

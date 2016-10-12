@@ -28,10 +28,10 @@ RUN wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --
   && chmod +x /usr/local/bin/gosu
 
 
-ENV BONITA_VERSION 7.3.2
+ENV BONITA_VERSION 7.3.3
 ENV TOMCAT_VERSION 7.0.67
 ENV BASE_URL http://repositories.rd.lan/nas/releases/7.3.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/
-ENV BONITA_SHA256 471891d3400733d18b3ecc121bdabf3467e1bc77362b9aca138a4ac57403b7e9
+ENV BONITA_SHA256 f6ab57b732db6235e1dadb4300c4327c27858aed0995b323f42ab42ad21b44a5
 ENV POSTGRES_JDBC_DRIVER postgresql-9.3-1102.jdbc41.jar
 ENV POSTGRES_SHA256 b78749d536da75c382d0a71c717cde6850df64e16594676fc7cacb5a74541d66
 ENV MYSQL_JDBC_DRIVER mysql-connector-java-5.1.26

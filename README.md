@@ -7,17 +7,30 @@ Be caution, Silverpeas 6 is currently in development and it is not production-re
 
 ## Image creation
 
-To create a Docker image with the last version of Silverpeas 6, that is to say the last snapshot of the version in development:
+To create a Docker image with the lastest version of Silverpeas 6, that is currently the lastest snapshot version of Silverpeas 6 in development:
+```
+$ docker build -t silverpeas:latest .
+```
+this will build an image containing the latest version of Silverpeas (as defined in the actual `Dockerfile` descriptor).
+
+To build an image for a given version of Silverpeas 6, say 6.0.1:
+```
+$ ./build.sh 6.0.1
+```
+
+This will checkout the tag 6.0.1 and then build the image corresponding to the tagged Dockerfile.
+
+To build an image for the last available Silverpeas 6 version, just:
+
 ```
 $ ./build.sh
 ```
-this will build an image of the last snapshot of Silverpeas 6 with the tag `silverpeas:latest`.
 
-To create an image of a given version of Silverpeas 6, you have to specify the exact versions of Silverpeas and of Wildfly used by this version:
+By default, the image is created with as default locale `en_US.UTF-8`. To specify another locale, for example `fr_FR.UTF-8`, just do:
+
 ```
-$ ./build.sh 6.0 10.0.0
+$ docker build --build-arg DEFAULT_LOCALE=fr_FR.UTF-8 -t silverpeas:latest .
 ```
-this will build an image containing Silverpeas 6.0 (not yet available) and Wildfly 10.0.0 with the tag `silverpeas:6.0`. The versions passed as argument have to match the versions of Silverpeas and Wildfly available in the Web; indeed, Silverpeas and Wildfly are downloaded from their respective project Web site.
 
 ## Container running
 
@@ -44,6 +57,7 @@ This will start a PostgreSQL instance that will be initialized with a superuser 
 Finally, you can run Silverpeas 6 by specifying the required database access data. For example:
 ```
 $ docker run --name silverpeas -p 8080:8000 -d \
+  -e DB_SERVER="mypostgresqlhost" \
   -e DB_NAME="Silverpeas" \
   -e DB_USER="postgres" \
   -e DB_PASSWORD="mysecretpassword" \

@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 
-if [ $# -eq 2 ]; then
-  silverpeas_version=$1
-  wildfly_version=$2
-
-  docker build \
-    --build-arg SILVERPEAS_VERSION=$silverpeas_version \
-    --build-arg WILDFLY_VERSION=$wildfly_version \
-    -t silverpeas/silverpeas:$silverpeas_version \
-    .
+if [ $# -ne 0 ]; then
+  version="$1"
+  git checkout ${version}
 else
-  docker build \
-    -t silverpeas/silverpeas:latest \
-    .
+  version=`grep 'ENV SILVERPEAS_VERSION' Dockerfile | cut -d '=' -f 2`
 fi
+
+echo "Build a docker image for Silverpeas ${version}"
+sleep 1
+docker build -t silverpeas:${version} .
+

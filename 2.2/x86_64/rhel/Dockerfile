@@ -10,9 +10,9 @@ MAINTAINER OrientDB LTD (info@orientdb.com)
 #   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 
-ENV ORIENTDB_VERSION 2.2.11
-ENV ORIENTDB_DOWNLOAD_MD5 df97a70c559256029f846caabe456e45
-ENV ORIENTDB_DOWNLOAD_SHA1 f97a4d7a3bc5b60fff718c7c6408153b866f35b9
+ENV ORIENTDB_VERSION 2.2.12
+ENV ORIENTDB_DOWNLOAD_MD5 a9f8f60e2f7a61eb719bcdcbff805c5d
+ENV ORIENTDB_DOWNLOAD_SHA1 f4d63be03acad5ec81309503616c168ca8d77a4c
 
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
@@ -24,7 +24,8 @@ RUN yum repolist --disablerepo=* && \
 #Install JDK and necessary applications
 RUN yum -y install java-1.8.0-openjdk && \
     yum -y install wget && \
-    yum -y install tar
+    yum -y install tar && \
+    yum clean all
 
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb 
@@ -35,6 +36,8 @@ RUN wget  $ORIENTDB_DOWNLOAD_URL && \
   rm orientdb-community-$ORIENTDB_VERSION.tar.gz && \
   rm -rf /orientdb/databases/*
 
+
+ADD help.1 /help.1
 
 ENV PATH /orientdb/bin:$PATH
 

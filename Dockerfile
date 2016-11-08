@@ -24,7 +24,6 @@ RUN set -xe \
 	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys $GPG_KEY \
 	&& gpg --batch --verify $RAPIDOID_JAR.asc $RAPIDOID_JAR \
 	&& rm -r "$GNUPGHOME" \
-	&& rm "$RAPIDOID_JAR.asc" \
-	&& chmod ugo+x /opt/entrypoint.sh
+	&& rm "$RAPIDOID_JAR.asc"
 
 ENTRYPOINT ["/opt/entrypoint.sh"]

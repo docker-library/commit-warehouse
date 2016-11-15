@@ -34,7 +34,7 @@ $ docker build --build-arg DEFAULT_LOCALE=fr_FR.UTF-8 -t silverpeas:latest .
 
 ## Container running
 
-The Silverpeas 6 image requires one of the following database in order to be ran:
+The Silverpeas 6 image requires one of the following databases:
 * the open-source and recommended PostgreSQL database system,
 * the MS-SQLServer database system.
 
@@ -57,7 +57,7 @@ This will start a PostgreSQL instance that will be initialized with a superuser 
 Finally, you can run Silverpeas 6 by specifying the required database access data. For example:
 ```
 $ docker run --name silverpeas -p 8080:8000 -d \
-  -e DB_SERVER="mypostgresqlhost" \
+  -e DB_SERVER="database" \
   -e DB_NAME="Silverpeas" \
   -e DB_USER="postgres" \
   -e DB_PASSWORD="mysecretpassword" \
@@ -149,6 +149,37 @@ $ docker create --name silverpeas-store \
   silverpeas/silverpeas:6.0 \
   /bin/true
 ```
+
+# Document conversion
+
+Some features in Silverpeas (export, preview, content visualization, ...) requires a document converter. The document conversion is performed in Silverpeas by the program LibreOffice running as a daemon. So, in order to enable and to use these features, you have first to use a Data Volume Container to store all the Silverpeas data and second to run a container embbeding a LibreOffice program running as a daemon. There is no official Docker images of LibreOffice but DockerHub hosts some of unofficial images of it ([xcgd/libreoffice](https://hub.docker.com/r/xcgd/libreoffice/) for example).
+
+Once a Data Volume Container created for Silverpeas as explained in the section above, you have to link it with the Docker image running LibreOffice in order the program have access the documents to convert:
+``̀
+  $ docker run --name libreoffice -d \
+      --volumes-from silverpeas-store \
+      xcgd/libreoffice
+``̀
+
+Check the port at which the LibreOffice image is listening and then defines it in the Silverpeas configuration. In our example, `xcgd/libreoffice` listens by default the port 8997. The configuration parameters to communicate with LibreOffice are defined by the two following properties:
+
+* `CONVERTER_HOST` is either the IP address or the name of the host in which runs LibreOffice,
+* `CONVERTER_PORT` is the port number at which the LibreOffice daemon listens.
+
+These properties have to be defined in the Silverpeas global configuration file `config.properties` that is mounted in the Data Volume Container:
+```
+  CONVERTER_HOST=libreoffice
+  CONVERTER_PORT=8997
+``̀
+
+Then the Docker image of Silverpeas can be ran:
+``̀
+  $ docker run --name silverpeas -p 8080:8000 -d \
+	    --link postgresql:database \
+	    --link libreoffice:libreoffice \
+	    --volumes-from silverpeas-store \
+	    silverpeas
+`̀``
 
 ## Logs
 

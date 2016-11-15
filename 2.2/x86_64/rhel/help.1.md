@@ -1,6 +1,6 @@
 % ORIENTDB(1)
 % Roberto Franchini - r.franchini@orientdb.com
-% October 20, 2016
+% November 15, 2016
 
 # NAME
 orientdb \- orientdb container image

@@ -2,8 +2,6 @@
 # Dockerfile to run an OrientDB (Graph) Container
 ############################################################
 
-#FROM java:openjdk-8-jdk-alpine
-#Base image for this dockerfile
 FROM ppc64le/ibmjava:latest
 
 MAINTAINER OrientDB LTD (info@orientdb.com)
@@ -12,14 +10,12 @@ MAINTAINER OrientDB LTD (info@orientdb.com)
 #   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 
-ENV ORIENTDB_VERSION 2.2.8
-ENV ORIENTDB_DOWNLOAD_MD5 418d506886b306f87b77d9f4bfa8da65
-ENV ORIENTDB_DOWNLOAD_SHA1 df09a34b2d27f8a1bf114e67818af4e6c6369a3e
+ENV ORIENTDB_VERSION 2.2.13
+ENV ORIENTDB_DOWNLOAD_MD5 030bbf826830d3e8533ff7db332f2ad7
+ENV ORIENTDB_DOWNLOAD_SHA1 ab8f759067a8787c6013d3f15b37f82c3d96784e
 
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
-#RUN apk add --update tar \
-#    && rm -rf /var/cache/apk/*
 
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \

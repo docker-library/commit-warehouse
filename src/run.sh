@@ -8,7 +8,7 @@ set -e
 
 pre_install() {
   dbtype=${DB_SERVERTYPE:-POSTGRESQL}
-  dbserver=${DB_SERVER:-localhost}
+  dbserver=${DB_SERVER:-database}
   dbport=${DB_PORT}
   dbname=${DB_NAME:-Silverpeas}
   dbuser=${DB_USER:-silverpeas}

@@ -7,7 +7,6 @@ ENV GPG_KEY E306FEF548C686C23DC00242B9B08D8F616EF49C
 ENV RAPIDOID_JAR /opt/rapidoid.jar
 ENV RAPIDOID_TMP /tmp/rapidoid
 
-VOLUME /app
 WORKDIR /opt
 EXPOSE 8888
 
@@ -17,6 +16,7 @@ ENV RAPIDOID_URL https://repo1.maven.org/maven2/org/rapidoid/rapidoid-platform/$
 COPY entrypoint.sh /opt/
 
 RUN set -xe \
+    && mkdir /app \
     && mkdir -p "$RAPIDOID_TMP" \
 	&& curl -SL "$RAPIDOID_URL" -o $RAPIDOID_JAR \
 	&& curl -SL "$RAPIDOID_URL.asc" -o $RAPIDOID_JAR.asc \

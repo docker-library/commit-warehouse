@@ -28,7 +28,7 @@ To run the OrientDB container (after it is installed), run:
 
 To remove the OrientDB container (not the image) from your system, run:
 
-  atomic uninstall rhel7/orientdbe4c54
+  atomic uninstall rhel7/orientdb
 
 To upgrade the OrientDB container from your system, run:
 

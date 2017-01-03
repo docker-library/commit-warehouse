@@ -66,7 +66,7 @@ ENV SILVERPEAS_HOME /opt/silverpeas
 ENV JBOSS_HOME /opt/wildfly
 
 ENV SILVERPEAS_VERSION=6.0-alpha2
-ENV WILDFLY_VERSION=10.0.0
+ENV WILDFLY_VERSION=10.1.0
 LABEL name="Silverpeas 6" description="Image to install and to run Silverpeas 6" vendor="Silverpeas" version="6.0-alpha2" build=1
 
 # Fetch both Silverpeas and Wildfly and unpack them into /opt
@@ -106,9 +106,9 @@ RUN ./silverpeas assemble \
 # Silverpeas listens port 8000 by default
 EXPOSE 8000 9990
 
-# The following Silverpeas folders are exposed by default so that you can access the logs, the data, the properties
-# or the configuration of Silverpeas outside the container
-VOLUME ["/opt/silverpeas/log", "/opt/silverpeas/data", "/opt/silverpeas/properties", "/opt/silverpeas/configuration", "/opt/silverpeas/xmlcomponents/workflows"]
+# The following Silverpeas folders are exposed by default so that you can access outside the container the logs, 
+# the data, and the workflow definitions that are produced in Silverpeas.
+VOLUME ["/opt/silverpeas/log", "/opt/silverpeas/data", "/opt/silverpeas/xmlcomponents/workflows"]
 
 # What to execute by default when running the container
 CMD ["/opt/run.sh"]

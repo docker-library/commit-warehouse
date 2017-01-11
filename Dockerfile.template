@@ -80,11 +80,11 @@ RUN wget -nc https://www.silverpeas.org/files/silverpeas-${SILVERPEAS_VERSION}-w
   && mv /opt/silverpeas-${SILVERPEAS_VERSION}-wildfly${WILDFLY_VERSION%.?.?} /opt/silverpeas \
   && mv /opt/wildfly-${WILDFLY_VERSION}.Final /opt/wildfly \
   && rm *.zip \
-  && mkdir -p ${HOME}/.m2 \
+  && mkdir -p /root/.m2
 
 # Copy the Maven settings.xml required to install Silverpeas by fetching the software bundles from 
 # the Silverpeas Nexus Repository
-COPY src/settings.xml ${HOME}/.m2/
+COPY src/settings.xml /root/.m2/
 
 # Set the default working directory
 WORKDIR ${SILVERPEAS_HOME}/bin

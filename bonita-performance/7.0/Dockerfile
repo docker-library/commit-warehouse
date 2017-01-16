@@ -27,7 +27,7 @@ RUN wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --
   && chmod +x /usr/local/bin/gosu
 
 ENV BONITA_VERSION 7.0.3
-ENV BASE_URL http://repositories.rd.lan/nas/releases/7.0.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/
+ENV BASE_URL http://repositories.rd.lan/nas/releases/7.x/7.0.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/
 ENV BONITA_SHA256 3d95898a0e6bab26da0fcefe12e0f6b51b66cf84a6bafd473a5758839c7877f1
 ENV POSTGRES_JDBC_DRIVER postgresql-9.3-1102.jdbc41.jar
 ENV POSTGRES_SHA256 b78749d536da75c382d0a71c717cde6850df64e16594676fc7cacb5a74541d66

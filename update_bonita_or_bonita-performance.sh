@@ -8,7 +8,7 @@ NEW_RELEASE=$1
 MINOR=7.4
 EDITION=$2
 LAST_RELEASE=`grep "^ENV BONITA_VERSION" bonita/${MINOR}/Dockerfile | awk '{ print $3 }'`
-BASE_URL="http://192.168.1.254/qa/releases/7.x/${MINOR}.x/${NEW_RELEASE}"
+BASE_URL="http://repositories.rd.lan/nas/releases/7.x/${MINOR}.x/${NEW_RELEASE}"
 TOMCAT_VERSION="7.0.67"
 
 echo "updating $ed"
@@ -41,6 +41,7 @@ esac
 	sed -i "s/^ENV BONITA_VERSION.*/ENV BONITA_VERSION ${NEW_RELEASE}/" ${DIR}/${MINOR}/Dockerfile
 	sed -i "s/^ENV BONITA_SHA256.*/ENV BONITA_SHA256 ${SHA256SUM}/" ${DIR}/${MINOR}/Dockerfile
         cp /tmp/${BUNDLE}/setup/database.properties ${DIR}/${MINOR}/templates/database.properties
+        cp /tmp/${BUNDLE}/setup/tomcat-templates/setenv.sh ${DIR}/${MINOR}/templates/setenv.sh
         unzip -q -c /tmp/${BUNDLE}/server/webapps/bonita.war WEB-INF/web.xml > ${DIR}/${MINOR}/files/WEB-INF/web.xml
 	rm /tmp/${BUNDLE}.zip
 	rm -rf /tmp/${BUNDLE}

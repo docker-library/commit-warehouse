@@ -27,10 +27,17 @@ RUN wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --
   && rm /usr/local/bin/gosu.asc \
   && chmod +x /usr/local/bin/gosu
 
-ENV BONITA_VERSION 7.4.2
-ENV TOMCAT_VERSION 7.0.67
-ENV BASE_URL http://repositories.rd.lan/nas/releases/7.x/7.4.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/
-ENV BONITA_SHA256 356c2e99ee0274cd1f5606be05a14ed6f6571d95841deeaf8d68f2b5d5ed4527
+# use --build-arg key=value in docker build command to override arguments
+ARG BONITA_VERSION
+ARG TOMCAT_VERSION
+ARG BONITA_SHA256
+ARG BASE_URL
+
+ENV BONITA_VERSION ${BONITA_VERSION:-7.4.2}
+ENV TOMCAT_VERSION ${TOMCAT_VERSION:-7.0.67}
+ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/7.x/7.4.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/}
+ENV BONITA_URL ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
+ENV BONITA_SHA256  ${BONITA_SHA256:-356c2e99ee0274cd1f5606be05a14ed6f6571d95841deeaf8d68f2b5d5ed4527}
 ENV ORACLE_JDBC_DRIVER ojdbc-6.jar
 ENV ORACLE_SHA256 a6e151e3c30efbfb3d86ad729dd2f9136a093815baebcfe81e6d0b26893180b2
 ENV BONITA_DBTOOL_VERSION 7.0.0-05
@@ -40,9 +47,11 @@ ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
 #cluster
 #ENV CLUSTER_MODE true
 
-# retrieve JDBC drivers
-RUN mkdir /opt/files \
-  && wget -q http://repositories.rd.lan/archiva/repository/releases/com/oracle/ojdbc/6/${ORACLE_JDBC_DRIVER} -O /opt/files/${ORACLE_JDBC_DRIVER} \
+#create destination folder for downloads
+RUN mkdir /opt/files 
+
+# retrieve oracle JDBC drivers
+RUN wget -q http://repositories.rd.lan/archiva/repository/releases/com/oracle/ojdbc/6/${ORACLE_JDBC_DRIVER} -O /opt/files/${ORACLE_JDBC_DRIVER} \
   && echo "$ORACLE_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c -
 
 # retrieve bonita deployer databasases tool
@@ -53,8 +62,13 @@ COPY files /opt/files
 COPY templates /opt/templates
 
 # add Bonita BPM archive to the container
-RUN wget -q ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip -O /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
-  && echo "$BONITA_SHA256" /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
+RUN wget -q ${BONITA_URL} -O /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
+
+# display downloaded checksum
+RUN sha256sum /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
+
+# check with expected checksum
+RUN echo "$BONITA_SHA256" /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
 
 # create Volume to store Bonita BPM files
 VOLUME /opt/bonita

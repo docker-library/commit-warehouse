@@ -1,7 +1,7 @@
 # Set the base image
 FROM openjdk:8-jre
 
-MAINTAINER Lightstreamer Server Development Team <support@lightreamer.com>
+MAINTAINER Lightstreamer Server Development Team <support@lightstreamer.com>
 
 # Import Lighstreamer's public key
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 9B90BFD14309C7DA5EF58D7D4A8C08966F29B4D2

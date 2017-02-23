@@ -25,6 +25,7 @@ RUN yum repolist --disablerepo=* && \
 RUN yum -y install java-1.8.0-openjdk && \
     yum -y install wget && \
     yum -y install tar && \
+    yum -y install curl && \
     yum clean all
 
 #download distribution tar, untar and delete databases

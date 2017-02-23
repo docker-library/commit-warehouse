@@ -16,7 +16,7 @@ ENV ORIENTDB_DOWNLOAD_SHA1 e43104e7dafb301a232212d2300922a086f7aedf
 
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
-RUN apk add --update tar \
+RUN apk add --update tar curl \
     && rm -rf /var/cache/apk/*
 
 #download distribution tar, untar and delete databases
@@ -43,3 +43,5 @@ EXPOSE 2480
 
 # Default command start the server
 CMD ["server.sh"]
+
+HEALTHCHECK CMD curl --fail http://localhost:2480/ || exit 1

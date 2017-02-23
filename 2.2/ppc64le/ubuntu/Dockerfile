@@ -17,6 +17,10 @@ ENV ORIENTDB_DOWNLOAD_SHA1 e43104e7dafb301a232212d2300922a086f7aedf
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \
   wget  $ORIENTDB_DOWNLOAD_URL \
@@ -41,3 +45,5 @@ EXPOSE 2480
 
 # Default command start the server
 CMD ["server.sh"]
+
+HEALTHCHECK CMD curl --fail http://localhost:2480/ || exit 1

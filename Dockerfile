@@ -10,6 +10,8 @@ ENV RAPIDOID_TMP /tmp/rapidoid
 WORKDIR /opt
 EXPOSE 8888
 
+VOLUME /data
+
 ENV RAPIDOID_VERSION 5.2.8
 ENV RAPIDOID_URL https://repo1.maven.org/maven2/org/rapidoid/rapidoid-platform/$RAPIDOID_VERSION/rapidoid-platform-$RAPIDOID_VERSION.jar
 

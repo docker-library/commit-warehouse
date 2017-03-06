@@ -12,7 +12,7 @@ EXPOSE 8888
 
 VOLUME /data
 
-ENV RAPIDOID_VERSION 5.3.1
+ENV RAPIDOID_VERSION 5.3.2
 ENV RAPIDOID_URL https://repo1.maven.org/maven2/org/rapidoid/rapidoid-platform/$RAPIDOID_VERSION/rapidoid-platform-$RAPIDOID_VERSION.jar
 
 COPY entrypoint.sh /opt/

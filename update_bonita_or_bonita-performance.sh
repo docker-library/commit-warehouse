@@ -38,8 +38,8 @@ esac
 	fi
 	echo "backup current version"
 	cp -r ${DIR}/${MINOR} ${DIR}/${MINOR}.bck
-	sed -i "s/^ENV BONITA_VERSION.*/ENV BONITA_VERSION ${NEW_RELEASE}/" ${DIR}/${MINOR}/Dockerfile
-	sed -i "s/^ENV BONITA_SHA256.*/ENV BONITA_SHA256 ${SHA256SUM}/" ${DIR}/${MINOR}/Dockerfile
+	sed -i "s/^ENV BONITA_VERSION \${BONITA_VERSION:-.*/ENV BONITA_VERSION \${BONITA_VERSION:-${NEW_RELEASE}}/" ${DIR}/${MINOR}/Dockerfile
+	sed -i "s/^ENV BONITA_SHA256  \${BONITA_SHA256:-.*/ENV BONITA_SHA256  \${BONITA_SHA256:-${SHA256SUM}}/" ${DIR}/${MINOR}/Dockerfile
         cp /tmp/${BUNDLE}/setup/database.properties ${DIR}/${MINOR}/templates/database.properties
         cp /tmp/${BUNDLE}/setup/tomcat-templates/setenv.sh ${DIR}/${MINOR}/templates/setenv.sh
         unzip -q -c /tmp/${BUNDLE}/server/webapps/bonita.war WEB-INF/web.xml > ${DIR}/${MINOR}/files/WEB-INF/web.xml

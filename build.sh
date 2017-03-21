@@ -21,7 +21,7 @@ then
     exit 1
 fi
 
-BONITA_VERSION=$(grep -oP "^ENV BONITA_VERSION \K.*" "${BUILD_PATH}/Dockerfile" | xargs)
+BONITA_VERSION=$(grep -oP "^ENV BONITA_VERSION \K.*" "${BUILD_PATH}/Dockerfile" | sed 's/.*:-\(.*\)}$/\1/' | xargs)
 FOLDER_NAME=$(basename $(dirname "${BUILD_PATH}"))
 IMAGE_NAME=bonitasoft/${FOLDER_NAME}:${BONITA_VERSION}
 TAR_NAME=${FOLDER_NAME}_${BONITA_VERSION}.tar

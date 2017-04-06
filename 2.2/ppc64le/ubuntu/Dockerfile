@@ -10,9 +10,9 @@ MAINTAINER OrientDB LTD (info@orientdb.com)
 #   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 
-ENV ORIENTDB_VERSION 2.2.17
-ENV ORIENTDB_DOWNLOAD_MD5 3be5c561fbee52ca6ba12f1637f206fc
-ENV ORIENTDB_DOWNLOAD_SHA1 e43104e7dafb301a232212d2300922a086f7aedf
+ENV ORIENTDB_VERSION 2.2.18
+ENV ORIENTDB_DOWNLOAD_MD5 dc92356f8fc488208f3c5f272e418fb3
+ENV ORIENTDB_DOWNLOAD_SHA1 dc866f6b8be40eec43b71fbee3548ec8b2f423e6
 
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
@@ -46,4 +46,3 @@ EXPOSE 2480
 # Default command start the server
 CMD ["server.sh"]
 
-HEALTHCHECK CMD curl --fail http://localhost:2480/ || exit 1

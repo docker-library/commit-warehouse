@@ -1,0 +1,27 @@
+version: '3'
+services:
+  odb1:
+    image: orientdb:2.2.20
+    command: dserver.sh
+    volumes:
+      - ./var/odb1/config:/orientdb/config
+      - ./var/odb1/databases:/orientdb/databases
+    environment:
+      ORIENTDB_ROOT_PASSWORD: root
+      ORIENTDB_NODE_NAME: odb1
+    ports:
+      - 2480:2480
+      - 2424:2424
+
+  odb2:
+    image: orientdb:2.2.20
+    command: dserver.sh
+    volumes:
+      - ./var/odb2/config:/orientdb/config
+      - ./var/odb2/databases:/orientdb/databases
+    environment:
+      ORIENTDB_ROOT_PASSWORD: root
+      ORIENTDB_NODE_NAME: odb2
+    depends_on:
+      - odb1
+

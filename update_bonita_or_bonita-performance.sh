@@ -5,11 +5,11 @@ then
 	exit 1
 fi
 NEW_RELEASE=$1
-MINOR=7.4
+MINOR=7.5
 EDITION=$2
 LAST_RELEASE=`grep "^ENV BONITA_VERSION" bonita/${MINOR}/Dockerfile | awk '{ print $3 }'`
 BASE_URL="http://repositories.rd.lan/nas/releases/7.x/${MINOR}.x/${NEW_RELEASE}"
-TOMCAT_VERSION="7.0.67"
+TOMCAT_VERSION="7.0.76"
 
 echo "updating $ed"
 case $EDITION in

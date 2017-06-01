@@ -2,7 +2,7 @@
 # Dockerfile to run an OrientDB (Graph) Container
 ############################################################
 
-FROM rhel7.2:latest
+FROM registry.access.redhat.com/rhel7
 
 MAINTAINER OrientDB LTD (info@orientdb.com)
 
@@ -10,16 +10,36 @@ MAINTAINER OrientDB LTD (info@orientdb.com)
 #   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 
-ENV ORIENTDB_VERSION 2.2.20
-ENV ORIENTDB_DOWNLOAD_MD5 f3d098e8d978437e9679ec4f9d95aa19
-ENV ORIENTDB_DOWNLOAD_SHA1 040429b67b33752c0a9852ee0a2e29890733a3c1
+ENV ORIENTDB_VERSION 2.2.21
+ENV ORIENTDB_DOWNLOAD_MD5 5e59409f6e582e98e125d19e208e5e90
+ENV ORIENTDB_DOWNLOAD_SHA1 290d63ea2b5e1f6c951351e00875b65bfc51cf04
 
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
+LABEL name="orientdb/orientdb" \
+      vendor="OrientDB LTD." \
+      version="2.2" \
+      release="21" \
+### Recommended labels below
+      build-date="2016-10-12T14:12:54.553894Z" \
+      url="https://www.orientdb.com" \
+      summary="OrientDB multi-model database" \
+      description="OrientDB multi-model database" \
+      run='docker run -tdi --name ${NAME} ${IMAGE}' \
+      io.k8s.description="Starter app will do ....." \
+      io.k8s.display-name="OrientDB multi-model database" \
+      io.openshift.expose-services="" \
+      io.openshift.tags="orientdb"
+
+
 #Saitisfy the Docker yum requirements
-RUN yum repolist --disablerepo=* && \
-    yum-config-manager --disable \* > /dev/null && \
-    yum-config-manager --enable rhel-7-server-rpms > /dev/null
+RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
+### Add necessary Red Hat repos here
+    yum-config-manager --enable rhel-7-server-rpms,rhel-7-server-optional-rpms &> /dev/null && \
+    yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
+### Add your package needs to this installation line
+    yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man && \
+    yum clean all
 
 #Install JDK and necessary applications
 RUN yum -y install java-1.8.0-openjdk && \
@@ -29,7 +49,7 @@ RUN yum -y install java-1.8.0-openjdk && \
     yum clean all
 
 #download distribution tar, untar and delete databases
-RUN mkdir /orientdb 
+RUN mkdir /orientdb
 RUN wget  $ORIENTDB_DOWNLOAD_URL && \
   echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | md5sum -c - && \
   echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha1sum -c -&& \

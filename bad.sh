@@ -1,5 +1,5 @@
-#!/bin/bash
-set -eo pipefail
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
 template="$(dirname "$(readlink -f "$BASH_SOURCE")")/bad.sh.tmpl"
 
@@ -24,5 +24,6 @@ arches=( $(
 
 for arch in "${arches[@]}"; do
 	bashbrew --arch="$arch" cat -F "$template" "$@" \
-		| bash -ex
+		| grep -vE '[.]git$' \
+		| bash -Eeuo pipefail -x
 done

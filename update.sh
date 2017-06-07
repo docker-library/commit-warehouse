@@ -11,3 +11,8 @@ LATEST_VERSION="$(
 
 set -x
 sed -ri 's/^(ENV RAPIDOID_VERSION) .*/\1 '"$LATEST_VERSION"'/' Dockerfile
+
+git add Dockerfile
+git commit -m "Bumped version to $LATEST_VERSION"
+git status
+

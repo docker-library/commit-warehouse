@@ -3,9 +3,10 @@ git push -f git@github.com:tianon/bad-ideas.git
 	{{- /* force bashbrew to "fetch" the GitCommit so that it is fully resolved */ -}}
 	{{- $from := $.DockerFrom $e -}}
 
+	{{- /* TODO handle multiarch! */ -}}
 	{{- range $e.Tags -}}
 		{{- " " -}}
-		{{- $e.GitCommit -}}
+		{{- $e.ArchGitCommit arch -}}
 		:refs/tags/
 		{{- $.RepoName -}}
 		/

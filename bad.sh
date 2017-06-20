@@ -7,23 +7,10 @@ export BASHBREW_CACHE="${BASHBREW_CACHE:-${XDG_CACHE_HOME:-$HOME/.cache}/bashbre
 cd "$BASHBREW_CACHE/git"
 
 set -- $(
-	bashbrew list "$@" \
+	bashbrew list --repos "$@" \
 		| sed 's!^!https://github.com/docker-library/official-images/raw/master/library/!'
 )
 
-arches=( $(
-	bashbrew cat --format '
-		{{- range .Entries -}}
-			{{- range .Architectures -}}
-				{{- . -}}{{- "\n" -}}
-			{{- end -}}
-		{{- end -}}
-	' "$@" \
-		| sort -u
-) )
-
-for arch in "${arches[@]}"; do
-	bashbrew --arch="$arch" cat -F "$template" "$@" \
-		| grep -vE '[.]git$' \
-		| bash -Eeuo pipefail -x
-done
+bashbrew cat -F "$template" "$@" \
+	| grep -vE '[.]git$' \
+	| bash -Eeuo pipefail -x

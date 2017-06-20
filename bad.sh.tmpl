@@ -1,15 +1,15 @@
 git push -f git@github.com:tianon/bad-ideas.git
-{{- range $i, $e := .Entries -}}
-	{{- if $e.HasArchitecture arch -}}
+{{- range $e := .Entries -}}
+	{{- range $arch := $e.Architectures -}}
 		{{- /* force bashbrew to "fetch" the GitCommit so that it is fully resolved */ -}}
-		{{- $from := $.DockerFrom $e -}}
+		{{- $from := $.ArchDockerFrom $arch $e -}}
 
-		{{- range $e.Tags -}}
-			{{- $commit := $e.ArchGitCommit arch -}}
-			{{- if eq arch "amd64" -}}
-				{{- " " -}}{{- $commit -}}:refs/tags/{{- $.RepoName -}}/{{- . -}}
+		{{- $commit := $e.ArchGitCommit $arch -}}
+		{{- range $tag := $e.Tags -}}
+			{{- if eq $arch "amd64" -}}
+				{{- " " -}}{{- $commit -}}:refs/tags/{{- $.RepoName -}}/{{- $tag -}}
 			{{- end -}}
-			{{- " " -}}{{- $commit -}}:refs/tags/{{- arch -}}/{{- $.RepoName -}}/{{- . -}}
+			{{- " " -}}{{- $commit -}}:refs/tags/{{- $arch -}}/{{- $.RepoName -}}/{{- $tag -}}
 		{{- end -}}
 	{{- end -}}
 {{- end -}}

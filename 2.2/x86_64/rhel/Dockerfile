@@ -19,7 +19,7 @@ ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/m
 LABEL name="orientdb/orientdb" \
       vendor="OrientDB LTD." \
       version="2.2" \
-      release="21" \
+      release="22" \
 ### Recommended labels below
       build-date="2016-10-12T14:12:54.553894Z" \
       url="https://www.orientdb.com" \
@@ -55,7 +55,9 @@ RUN wget  $ORIENTDB_DOWNLOAD_URL && \
   echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha1sum -c -&& \
   tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 && \
   rm orientdb-community-$ORIENTDB_VERSION.tar.gz && \
-  rm -rf /orientdb/databases/*
+  rm -rf /orientdb/databases/* && \
+  mkdir /licences && \
+  cp /orientdb/license.txt /licences/
 
 
 ADD help.1 /help.1

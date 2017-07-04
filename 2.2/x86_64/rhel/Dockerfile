@@ -41,7 +41,10 @@ RUN wget  $ORIENTDB_DOWNLOAD_URL && \
   echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | md5sum -c - && \
   echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha1sum -c -&& \
   tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 && \
-  rm orientdb-community-$ORIENTDB_VERSION.tar.gz
+    rm orientdb-community-$ORIENTDB_VERSION.tar.gz && \
+    rm -rf /orientdb/databases/* && \
+    chown -R 99 /orientdb && \
+    chmod -R g=u /orientdb
 
 ADD help.1 /help.1
 

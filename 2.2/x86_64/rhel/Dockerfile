@@ -21,7 +21,6 @@ LABEL name="orientdb/orientdb" \
       version="2.2" \
       release="22" \
 ### Recommended labels below
-      build-date="2016-10-12T14:12:54.553894Z" \
       url="https://www.orientdb.com" \
       summary="OrientDB multi-model database" \
       description="OrientDB multi-model database" \
@@ -54,13 +53,11 @@ RUN wget  $ORIENTDB_DOWNLOAD_URL && \
   echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | md5sum -c - && \
   echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha1sum -c -&& \
   tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 && \
-  rm orientdb-community-$ORIENTDB_VERSION.tar.gz && \
-  rm -rf /orientdb/databases/* && \
-  mkdir /licences && \
-  cp /orientdb/license.txt /licences/
-
+  rm orientdb-community-$ORIENTDB_VERSION.tar.gz
 
 ADD help.1 /help.1
+
+COPY licenses /licenses
 
 ENV PATH /orientdb/bin:$PATH
 

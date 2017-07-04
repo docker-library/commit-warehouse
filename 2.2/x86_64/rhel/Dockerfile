@@ -20,31 +20,19 @@ LABEL name="orientdb/orientdb" \
       vendor="OrientDB LTD." \
       version="2.2" \
       release="22" \
-### Recommended labels below
-      url="https://www.orientdb.com" \
       summary="OrientDB multi-model database" \
       description="OrientDB multi-model database" \
+### Recommended labels below
+      url="https://www.orientdb.com" \
       run='docker run -tdi --name ${NAME} ${IMAGE}' \
       io.k8s.description="Starter app will do ....." \
       io.k8s.display-name="OrientDB multi-model database" \
       io.openshift.expose-services="" \
       io.openshift.tags="orientdb"
 
-
-#Saitisfy the Docker yum requirements
-RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
-### Add necessary Red Hat repos here
-    yum-config-manager --enable rhel-7-server-rpms,rhel-7-server-optional-rpms &> /dev/null && \
-    yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
-### Add your package needs to this installation line
-    yum -y install --setopt=tsflags=nodocs golang-github-cpuguy83-go-md2man && \
-    yum clean all
-
 #Install JDK and necessary applications
-RUN yum -y install java-1.8.0-openjdk && \
-    yum -y install wget && \
-    yum -y install tar && \
-    yum -y install curl && \
+RUN yum -y install --disablerepo "*" --enablerepo rhel-7-server-rpms --setopt=tsflags=nodocs \
+      java-1.8.0-openjdk wget && \
     yum clean all
 
 #download distribution tar, untar and delete databases
@@ -71,5 +59,8 @@ EXPOSE 2424
 #OrientDb http
 EXPOSE 2480
 
-# Default command start the server
+#Switch to non-root user
+USER 99
+
+#Default command start the server
 CMD ["server.sh"]

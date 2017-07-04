@@ -36,19 +36,19 @@ RUN yum -y install --disablerepo "*" --enablerepo rhel-7-server-rpms --setopt=ts
     yum clean all
 
 #download distribution tar, untar and delete databases
-RUN mkdir /orientdb
-RUN wget  $ORIENTDB_DOWNLOAD_URL && \
-  echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | md5sum -c - && \
-  echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha1sum -c -&& \
-  tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 && \
+RUN mkdir /orientdb && \
+    wget  $ORIENTDB_DOWNLOAD_URL && \
+    echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | md5sum -c - && \
+    echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha1sum -c -&& \
+    tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 && \
+    mkdir /licenses && \
+    cp /orientdb/license.txt /licenses/ && \
     rm orientdb-community-$ORIENTDB_VERSION.tar.gz && \
     rm -rf /orientdb/databases/* && \
     chown -R 99 /orientdb && \
     chmod -R g=u /orientdb
 
 ADD help.1 /help.1
-
-COPY licenses /licenses
 
 ENV PATH /orientdb/bin:$PATH
 

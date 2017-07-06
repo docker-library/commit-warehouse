@@ -3,11 +3,11 @@ Private Docker repository
 
 bonita
 ------
-BOS Docker containers
+Bonita Community containers
 
-bonita-performance
+bonita-subscription
 ------------------
-Bonita Performance containers (license needed)
+Bonita Subscription containers (license needed)
 
 bonita-perf-tool
 ----------------

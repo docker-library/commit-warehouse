@@ -18,7 +18,7 @@
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
               <string>bonita</string>
-              <string>bonita-performance</string>
+              <string>bonita-subscription</string>
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
@@ -75,7 +75,7 @@ if [ &quot;$DOCKER_IMAGE&quot; = &quot;bonita&quot; ]
 then
   BUNDLE_FILENAME=&quot;BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-7.0.55.zip&quot;
   ZIP_URL=&quot;http://${CI_NAME}.rd.lan/job/bos_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/${BUNDLE_FILENAME}&quot;
-elif [ &quot;$DOCKER_IMAGE&quot; = &quot;bonita-performance&quot; ]
+elif [ &quot;$DOCKER_IMAGE&quot; = &quot;bonita-subscription&quot; ]
 then
   BUNDLE_FILENAME=&quot;BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-7.0.55.zip&quot;
   ZIP_URL=&quot;http://${CI_NAME}.rd.lan/job/sp_web-distrib/lastSuccessfulBuild/artifact/bundle/tomcat/target/${BUNDLE_FILENAME}&quot;

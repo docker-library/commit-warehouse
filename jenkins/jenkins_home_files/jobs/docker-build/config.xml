@@ -18,7 +18,7 @@
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
               <string>bonita</string>
-              <string>bonita-performance</string>
+              <string>bonita-subscription</string>
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>

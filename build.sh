@@ -1,19 +1,21 @@
 #!/bin/bash
 set -e
 
-if [ "$#" -ne 1 ]
+if [ "$#" -lt 1 ]
 then
     SCRIPT_NAME=`basename "$0"`
-    echo "Usage: $SCRIPT_NAME <Path_to_Dockerfile>"
+    echo "Usage: $SCRIPT_NAME <Path_to_Dockerfile> [docker_build_args]"
     echo ""
     echo "Examples:"
-    echo "  $> $SCRIPT_NAME bonita/7.0"
-    echo "  $> $SCRIPT_NAME bonita-perf-tool/7.0"
-    echo "  $> $SCRIPT_NAME bonita-performance/7.0"
+    echo "  $> $SCRIPT_NAME bonita/7.5"
+    echo "  $> $SCRIPT_NAME bonita-perf-tool/7.5"
+    echo "  $> $SCRIPT_NAME bonita-subscription/7.5 --build-arg ORACLE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources"
     exit 1
 fi
 
 BUILD_PATH=$1
+shift
+DOCKER_BUILD_ARGS="$*"
 
 if [ ! -f "${BUILD_PATH}/Dockerfile" ]
 then
@@ -24,13 +26,13 @@ fi
 BONITA_VERSION=$(grep -oP "^ENV BONITA_VERSION \K.*" "${BUILD_PATH}/Dockerfile" | sed 's/.*:-\(.*\)}$/\1/' | xargs)
 FOLDER_NAME=$(basename $(dirname "${BUILD_PATH}"))
 IMAGE_NAME=bonitasoft/${FOLDER_NAME}:${BONITA_VERSION}
-TAR_NAME=${FOLDER_NAME}_${BONITA_VERSION}.tar
+ARCHIVE_NAME=${FOLDER_NAME}_${BONITA_VERSION}.tar.gz
 
 echo ". Building image <${IMAGE_NAME}>"
-docker build --no-cache=true -t ${IMAGE_NAME} "${BUILD_PATH}"
+docker build $DOCKER_BUILD_ARGS --no-cache=true -t ${IMAGE_NAME} "${BUILD_PATH}"
 
-echo ". Saving image to archive file <${TAR_NAME}>"
-docker save ${IMAGE_NAME} > ${TAR_NAME}
+echo ". Saving image to archive file <${ARCHIVE_NAME}>"
+docker save ${IMAGE_NAME} | gzip > ${ARCHIVE_NAME}
 
 echo ". Done!"
 

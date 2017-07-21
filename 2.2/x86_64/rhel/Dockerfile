@@ -10,22 +10,22 @@ MAINTAINER OrientDB LTD (info@orientdb.com)
 #   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 
-ENV ORIENTDB_VERSION 2.2.23
-ENV ORIENTDB_DOWNLOAD_MD5 b5876a00eab78237a1098a787b21bed4
-ENV ORIENTDB_DOWNLOAD_SHA1 33b8a824ac890f7fb5721333e67baa01c2421513
+ENV ORIENTDB_VERSION 2.2.24
+ENV ORIENTDB_DOWNLOAD_MD5 04da451958c0cb72ebaf42029883a257
+ENV ORIENTDB_DOWNLOAD_SHA1 af0d308d580f7485c2d3871ac98a371f2c77a2ae
 
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
 LABEL name="orientdb/orientdb" \
       vendor="OrientDB LTD." \
       version="2.2" \
-      release="22" \
+      release="24" \
       summary="OrientDB multi-model database" \
       description="OrientDB multi-model database" \
 ### Recommended labels below
       url="https://www.orientdb.com" \
       run='docker run -tdi --name ${NAME} ${IMAGE}' \
-      io.k8s.description="Starter app will do ....." \
+      io.k8s.description="OrientDB multi-model database" \
       io.k8s.display-name="OrientDB multi-model database" \
       io.openshift.expose-services="" \
       io.openshift.tags="orientdb"

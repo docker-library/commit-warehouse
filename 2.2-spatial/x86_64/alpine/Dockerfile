@@ -2,10 +2,10 @@
 # Dockerfile  for OrientDB with spatial module and neo4j connector
 ############################################################
 
-FROM orientdb:2.2.23
+FROM orientdb:2.2.24
 
-ENV ORIENTDB_DOWNLOAD_SPATIAL_MD5 5504791ac478c13b9ab55be705d8cab0
-ENV ORIENTDB_DOWNLOAD_SPATIAL_SHA1 54f8c636ef893d363bf2918b37c27b8a5872235e
+ENV ORIENTDB_DOWNLOAD_SPATIAL_MD5 95955d1984f65825941f5d3b649ab3b0
+ENV ORIENTDB_DOWNLOAD_SPATIAL_SHA1 51e47a10e5cbe7d26cacd273958b66d551543e51
 
 ENV ORIENTDB_DOWNLOAD_SPATIAL_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-spatial/$ORIENTDB_VERSION/orientdb-spatial-$ORIENTDB_VERSION-dist.jar
 

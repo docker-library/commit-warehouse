@@ -1,15 +1,17 @@
-git push --verbose --force git@github.com:tianon/bad-ideas.git
 {{- range $e := .Entries -}}
 	{{- range $arch := $e.Architectures -}}
 		{{- /* force bashbrew to "fetch" the GitCommit so that it is fully resolved */ -}}
 		{{- $from := $.ArchDockerFrom $arch $e -}}
 
 		{{- $commit := $e.ArchGitCommit $arch -}}
+
+		git push --verbose --force git@github.com:tianon/bad-ideas.git
 		{{- range $tag := $e.Tags -}}
 			{{- if eq $arch "amd64" -}}
 				{{- " " -}}{{- $commit -}}:refs/tags/{{- $.RepoName -}}/{{- $tag -}}
 			{{- end -}}
 			{{- " " -}}{{- $commit -}}:refs/tags/{{- $arch -}}/{{- $.RepoName -}}/{{- $tag -}}
 		{{- end -}}
+		{{- "\n" -}}
 	{{- end -}}
 {{- end -}}

@@ -1,4 +1,4 @@
-git push -f git@github.com:tianon/bad-ideas.git
+git push --verbose --force git@github.com:tianon/bad-ideas.git
 {{- range $e := .Entries -}}
 	{{- range $arch := $e.Architectures -}}
 		{{- /* force bashbrew to "fetch" the GitCommit so that it is fully resolved */ -}}

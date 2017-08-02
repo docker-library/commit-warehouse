@@ -1,3 +1,4 @@
+
 # Purpose
 
 This folder contains a Docker compose file that runs two OrientDB nodes in HA configutation.

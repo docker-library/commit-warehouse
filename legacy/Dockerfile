@@ -3,6 +3,7 @@ MAINTAINER Gabriel Wicke <gwicke@wikimedia.org>
 
 # System Dependencies.
 RUN apt-get update && apt-get install -y \
+		git \
 		imagemagick \
 		libicu-dev \
 	--no-install-recommends && rm -r /var/lib/apt/lists/*

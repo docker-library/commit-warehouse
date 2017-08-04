@@ -1,71 +1,38 @@
-FROM debian:sid
+FROM php:7.1-apache
 MAINTAINER Gabriel Wicke <gwicke@wikimedia.org>
 
-ENV MEDIAWIKI_VERSION wmf/1.30.0-wmf.4
+# System Dependencies.
+RUN apt-get update && apt-get install -y \
+		imagemagick \
+		libicu-dev \
+	--no-install-recommends && rm -r /var/lib/apt/lists/*
 
-# XXX: Consider switching to nginx.
-RUN set -x; \
-    apt-get update \
-    && apt-get install -y --no-install-recommends \
-        ca-certificates \
-        apache2 \
-        libapache2-mod-php7.1 \
-        php7.1-mysql \
-        php7.1-cli \
-        php7.1-gd \
-        php7.1-curl \
-        php7.1-mbstring \
-        php7.1-xml \
-        imagemagick \
-        netcat \
-        git \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /var/cache/apt/archives/* \
-    && a2enmod rewrite \
-    && a2enmod proxy \
-    && a2enmod proxy_http \
-    # Remove the default Debian index page.
-    && rm /var/www/html/index.html
+# Install the PHP extensions we need
+RUN docker-php-ext-install mbstring mysqli opcache intl
 
+# Install the default object cache.
+RUN pecl channel-update pecl.php.net \
+  && pecl install apcu \
+	&& docker-php-ext-enable apcu
+
+# set recommended PHP.ini settings
+# see https://secure.php.net/manual/en/opcache.installation.php
+RUN { \
+		echo 'opcache.memory_consumption=128'; \
+		echo 'opcache.interned_strings_buffer=8'; \
+		echo 'opcache.max_accelerated_files=4000'; \
+		echo 'opcache.revalidate_freq=60'; \
+		echo 'opcache.fast_shutdown=1'; \
+		echo 'opcache.enable_cli=1'; \
+	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
+# Version
+ENV MEDIAWIKI_VERSION 1.29.0
+ENV MEDIAWIKIL_MD5 2d038488d9219c97a21a1fe6a9d99020
 
 # MediaWiki setup
-RUN set -x; \
-    mkdir -p /usr/src \
-    && git clone \
-        --depth 1 \
-        -b $MEDIAWIKI_VERSION \
-        https://gerrit.wikimedia.org/r/p/mediawiki/core.git \
-        /usr/src/mediawiki \
-    && cd /usr/src/mediawiki \
-    && git submodule update --init skins \
-    && git submodule update --init vendor \
-    && cd extensions \
-    # Extensions
-    # TODO: make submodules shallow clones?
-    && git submodule update --init --recursive VisualEditor \
-    && git submodule update --init --recursive Math \
-    && git submodule update --init --recursive EventBus \
-    && git submodule update --init --recursive Scribunto \
-    && git submodule update --init --recursive ParserFunctions \
-    && git submodule update --init --recursive SyntaxHighlight_GeSHi \
-    && git submodule update --init --recursive Cite \
-    && git submodule update --init --recursive Echo \
-    && git submodule update --init --recursive Flow \
-    && git submodule update --init --recursive PageImages \
-    && git submodule update --init --recursive TextExtracts \
-    && git submodule update --init --recursive MobileFrontend \
-    && git submodule update --init --recursive TemplateData \
-    && git submodule update --init --recursive ParserFunctions \
-    && git submodule update --init --recursive Citoid
-
-
-COPY php.ini /usr/local/etc/php/conf.d/mediawiki.ini
-
-COPY apache/mediawiki.conf /etc/apache2/
-RUN echo "Include /etc/apache2/mediawiki.conf" >> /etc/apache2/apache2.conf
-
-COPY docker-entrypoint.sh /entrypoint.sh
-
-EXPOSE 80 443
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["apachectl", "-e", "info", "-D", "FOREGROUND"]
+RUN curl -fSL "https://releases.wikimedia.org/mediawiki/1.29/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz \
+	&& echo "${MEDIAWIKIL_MD5} *mediawiki.tar.gz" | md5sum -c - \
+	&& tar -xz --strip-components=1 -f mediawiki.tar.gz \
+	&& rm mediawiki.tar.gz \
+	&& chown -R www-data:www-data extensions skins

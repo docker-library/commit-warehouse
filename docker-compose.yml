@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    build: .
+    build: ./stable
     ports:
       - 8888:80
     links:

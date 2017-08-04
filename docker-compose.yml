@@ -2,10 +2,18 @@ version: '3'
 services:
   web:
     build: ./stable
+    # Use the image instead of `build` in your docker-compose
+    # image: davidbarratt/mediawiki
     ports:
       - 8888:80
     links:
       - db
+    # Persist Data
+    # volumes:
+      # Persist Images.
+      # - images:/var/www/html/images
+      # Use own local MediaWiki
+      # - ./mediawiki:/var/www/html:cached
   db:
     image: mariadb
     environment:
@@ -17,3 +25,4 @@ services:
       - database:/var/lib/mysql
 volumes:
   database:
+  # images:

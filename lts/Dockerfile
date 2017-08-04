@@ -1,4 +1,4 @@
-FROM php:7.0-apache
+FROM php:5.6-apache
 MAINTAINER Gabriel Wicke <gwicke@wikimedia.org>
 
 # System Dependencies.
@@ -27,11 +27,11 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 # Version
-ENV MEDIAWIKI_VERSION 1.28.2
-ENV MEDIAWIKIL_MD5 d10212ced22d09f9eb2f92e28e70c601
+ENV MEDIAWIKI_VERSION 1.27.3
+ENV MEDIAWIKIL_MD5 7aefefb0bd5ba8d08ed721f91f8b74ce
 
 # MediaWiki setup
-RUN curl -fSL "https://releases.wikimedia.org/mediawiki/1.28/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz \
+RUN curl -fSL "https://releases.wikimedia.org/mediawiki/1.27/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz \
 	&& echo "${MEDIAWIKIL_MD5} *mediawiki.tar.gz" | md5sum -c - \
 	&& tar -xz --strip-components=1 -f mediawiki.tar.gz \
 	&& rm mediawiki.tar.gz \

@@ -13,7 +13,7 @@ RUN docker-php-ext-install mbstring mysqli opcache intl
 
 # Install the default object cache.
 RUN pecl channel-update pecl.php.net \
-  && pecl install apcu \
+	&& pecl install apcu \
 	&& docker-php-ext-enable apcu
 
 # set recommended PHP.ini settings

@@ -36,4 +36,4 @@ RUN curl -fSL "https://releases.wikimedia.org/mediawiki/1.29/mediawiki-${MEDIAWI
 	&& echo "${MEDIAWIKIL_MD5} *mediawiki.tar.gz" | md5sum -c - \
 	&& tar -xz --strip-components=1 -f mediawiki.tar.gz \
 	&& rm mediawiki.tar.gz \
-	&& chown -R www-data:www-data extensions skins
+	&& chown -R www-data:www-data extensions skins cache images

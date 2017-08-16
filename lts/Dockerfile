@@ -27,6 +27,10 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
+# SQLite Directory Setup
+RUN mkdir -p /var/www/data \
+	&& chown -R www-data:www-data /var/www/data
+
 # Version
 ENV MEDIAWIKI_VERSION 1.27.3
 ENV MEDIAWIKIL_MD5 7aefefb0bd5ba8d08ed721f91f8b74ce

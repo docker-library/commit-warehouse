@@ -2,7 +2,7 @@
 # Dockerfile to run an OrientDB (Graph) Container
 ############################################################
 
-FROM rhel7.2:latest
+FROM registry.access.redhat.com/rhel7
 
 MAINTAINER OrientDB LTD (info@orientdb.com)
 
@@ -16,27 +16,37 @@ ENV ORIENTDB_DOWNLOAD_SHA1 4520d18b19f366937a9158c2753c36bae4133905
 
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community-gremlin/$ORIENTDB_VERSION/orientdb-community-gremlin-$ORIENTDB_VERSION.tar.gz
 
-#Saitisfy the Docker yum requirements
-RUN yum repolist --disablerepo=* && \
-    yum-config-manager --disable \* > /dev/null && \
-    yum-config-manager --enable rhel-7-server-rpms > /dev/null
+LABEL name="orientdb/orientdb" \
+      vendor="OrientDB LTD." \
+      version="3.0" \
+      release="0m2" \
+      summary="OrientDB multi-model database" \
+      description="OrientDB multi-model database" \
+### Recommended labels below
+      url="https://www.orientdb.com" \
+      run='docker run -tdi --name ${NAME} ${IMAGE}' \
+      io.k8s.description="OrientDB multi-model database" \
+      io.k8s.display-name="OrientDB multi-model database" \
+      io.openshift.expose-services="" \
+      io.openshift.tags="orientdb"
 
 #Install JDK and necessary applications
-RUN yum -y install java-1.8.0-openjdk && \
-    yum -y install wget && \
-    yum -y install tar && \
-    yum -y install curl && \
+RUN yum -y install --disablerepo "*" --enablerepo rhel-7-server-rpms --setopt=tsflags=nodocs \
+      java-1.8.0-openjdk wget && \
     yum clean all
 
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \
-  wget  $ORIENTDB_DOWNLOAD_URL \
-  && echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-gremlin-$ORIENTDB_VERSION.tar.gz" | md5sum -c - \
-  && echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-gremlin-$ORIENTDB_VERSION.tar.gz" | sha1sum -c - \
-  && tar -xvzf orientdb-community-gremlin-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 \
-  && rm orientdb-community-gremlin-$ORIENTDB_VERSION.tar.gz \
-  && rm -rf /orientdb/databases/*
-
+    wget  $ORIENTDB_DOWNLOAD_URL && \
+    echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-gremlin-$ORIENTDB_VERSION.tar.gz" | md5sum -c - && \
+    echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-gremlin-$ORIENTDB_VERSION.tar.gz" | sha1sum -c -&& \
+    tar -xvzf orientdb-community-gremlin-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 && \
+    mkdir /licenses && \
+    cp /orientdb/license.txt /licenses/ && \
+    rm orientdb-community-gremlin-$ORIENTDB_VERSION.tar.gz && \
+    rm -rf /orientdb/databases/* && \
+    chown -R 99 /orientdb && \
+    chmod -R g=u /orientdb
 
 ADD help.1 /help.1
 
@@ -51,6 +61,9 @@ EXPOSE 2424
 
 #OrientDb http
 EXPOSE 2480
+
+#Switch to non-root user
+USER 99
 
 # Default command start the server
 CMD ["server.sh"]

@@ -35,11 +35,11 @@ RUN mkdir -p /var/www/data \
 ENV MEDIAWIKI_MAJOR_VERSION 1.27
 ENV MEDIAWIKI_BRANCH REL1_27
 ENV MEDIAWIKI_VERSION 1.27.3
-ENV MEDIAWIKI_MD5 7aefefb0bd5ba8d08ed721f91f8b74ce
+ENV MEDIAWIKI_SHA512 bc6228342b589a3acb0f5623b9ef45982d7aab032ff322aaf7bda7ac3ee16a7732b8013698d8f509da4310bbb65c12a73b7bbe4612d5e0e3d93965199efdc8eb
 
 # MediaWiki setup
 RUN curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz \
-	&& echo "${MEDIAWIKI_MD5} *mediawiki.tar.gz" | md5sum -c - \
+	&& echo "${MEDIAWIKI_SHA512} *mediawiki.tar.gz" | sha512sum -c - \
 	&& tar -xz --strip-components=1 -f mediawiki.tar.gz \
 	&& rm mediawiki.tar.gz \
 	&& chown -R www-data:www-data extensions skins cache images

@@ -1,5 +1,4 @@
 FROM php:7.0-apache
-MAINTAINER Gabriel Wicke <gwicke@wikimedia.org>
 
 # System Dependencies.
 RUN apt-get update && apt-get install -y \
@@ -13,7 +12,7 @@ RUN docker-php-ext-install mbstring mysqli opcache intl
 
 # Install the default object cache.
 RUN pecl channel-update pecl.php.net \
-	&& pecl install apcu \
+	&& pecl install apcu-5.1.8 \
 	&& docker-php-ext-enable apcu
 
 # set recommended PHP.ini settings

@@ -2,6 +2,8 @@ FROM ubuntu:16.04
 
 MAINTAINER Guillaume Rosinosky <guillaume.rosinosky@bonitasoft.com>
 
+ARG BASE_URL
+
 ENV BONITA_VERSION 7.5.2
 ENV PERF_REFPATH /opt/PerfLauncher
 ENV PERF_MODE unitrunner

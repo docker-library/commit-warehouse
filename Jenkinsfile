@@ -16,6 +16,16 @@ pipeline {
         )
       }
     }
+    stage('Test community') {
+      steps {
+        sh 'cd test && ./runTests.sh ../bonita/$BONITA_MINOR_VERSION'
+      }
+    }
+    stage('Test subscription') {
+      steps {
+        sh 'cd test && ./runTests.sh ../bonita-subscription/$BONITA_MINOR_VERSION'
+      }
+    }
     stage('Archive artifacts') {
       steps {
         archiveArtifacts(artifacts: 'bonita*.tar.gz', onlyIfSuccessful: true)
@@ -26,4 +36,3 @@ pipeline {
     BONITA_MINOR_VERSION = '7.5'
   }
 }
-

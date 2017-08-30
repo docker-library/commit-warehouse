@@ -1,0 +1,19 @@
+gossfile:
+  goss_common.yaml: {}
+
+command:
+  echo "subscription_env" && env | sort:
+    title: Checking subscription environment variables
+    exit-status: 0
+    stdout:
+    - BASE_URL
+    - BONITA_DBTOOL
+    - BONITA_DBTOOL_SHA256
+    - BONITA_DBTOOL_URL
+    - BONITA_DBTOOL_VERSION
+    - ORACLE_JDBC_DRIVER
+    - ORACLE_SHA256
+    - ORACLE_URL
+  find /opt/bonita/Bonita*-Tomcat*/setup/platform_conf/initial -name *.properties | xargs -n10 grep '^bonita.cluster={{getEnv "CLUSTER_MODE"}}' | [ $(wc -l) -gt 0 ]:
+    title: Checking custom CLUSTER_MODE
+    exit-status: 0

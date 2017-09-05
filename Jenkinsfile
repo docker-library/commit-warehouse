@@ -8,7 +8,7 @@ pipeline {
             sh './build.sh bonita/$BONITA_MINOR_VERSION'
           },
           "Build subscription": {
-            sh './build.sh bonita-subscription/$BONITA_MINOR_VERSION --build-arg BASE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources --build-arg ORACLE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources --build-arg BONITA_DBTOOL_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources'
+            sh './build.sh bonita-subscription/$BONITA_MINOR_VERSION --build-arg BASE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources --build-arg ORACLE_BASE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources --build-arg BONITA_DBTOOL_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources'
           },
           "Build perf-tool": {
             sh './build.sh bonita-perf-tool/$BONITA_MINOR_VERSION --build-arg BASE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources'

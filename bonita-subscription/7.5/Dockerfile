@@ -32,8 +32,8 @@ ARG BONITA_VERSION
 ARG TOMCAT_VERSION
 ARG BONITA_SHA256
 ARG BASE_URL
-ARG ORACLE_SHA256
-ARG ORACLE_URL
+ARG ORACLE_JDBC_DRIVER_SHA256
+ARG ORACLE_BASE_URL
 ARG BONITA_DBTOOL_SHA256
 ARG BONITA_DBTOOL_URL
 
@@ -43,10 +43,10 @@ ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/7.x/7.5.x/${BON
 ENV BONITA_URL ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
 ENV BONITA_SHA256  ${BONITA_SHA256:-01395b1b7ceefb22b3de31d09d7cde065dcbf51c5661aea6bfe66dcab0b1de93}
 ENV ORACLE_JDBC_DRIVER ojdbc-6.jar
-ENV ORACLE_SHA256 ${ORACLE_SHA256:-a6e151e3c30efbfb3d86ad729dd2f9136a093815baebcfe81e6d0b26893180b2}
-ENV ORACLE_URL ${ORACLE_URL:-http://repositories.rd.lan/archiva/repository/releases/com/oracle/ojdbc/6/}
-ENV BONITA_DBTOOL_VERSION 7.0.0-05
-ENV BONITA_DBTOOL_SHA256 ${BONITA_DBTOOL_SHA256:-33280c0b4591620f03b97436e577de6573b00abf7e494db45470a807f5ecdfcb}
+ENV ORACLE_JDBC_DRIVER_SHA256 ${ORACLE_JDBC_DRIVER_SHA256:-a6e151e3c30efbfb3d86ad729dd2f9136a093815baebcfe81e6d0b26893180b2}
+ENV ORACLE_BASE_URL ${ORACLE_BASE_URL:-http://repositories.rd.lan/archiva/repository/releases/com/oracle/ojdbc/6/}
+ENV BONITA_DBTOOL_VERSION 7.0.0-06
+ENV BONITA_DBTOOL_SHA256 ${BONITA_DBTOOL_SHA256:-8489e2ff8b143909759fd41de621f917419d4078c5f969247702073696e03615}
 ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
 ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/repository/releases/org/bonitasoft/tools/bonita-deployer/${BONITA_DBTOOL_VERSION}}
 
@@ -57,8 +57,8 @@ ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/re
 RUN mkdir /opt/files 
 
 # retrieve oracle JDBC drivers
-RUN wget -q ${ORACLE_URL}/${ORACLE_JDBC_DRIVER} -O /opt/files/${ORACLE_JDBC_DRIVER} \
-  && echo "$ORACLE_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c -
+RUN wget -q ${ORACLE_BASE_URL}/${ORACLE_JDBC_DRIVER} -O /opt/files/${ORACLE_JDBC_DRIVER} \
+  && echo "$ORACLE_JDBC_DRIVER_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c -
 
 # retrieve bonita deployer databasases tool
 RUN wget -q ${BONITA_DBTOOL_URL}/${BONITA_DBTOOL}.zip -O /opt/files/${BONITA_DBTOOL}.zip \

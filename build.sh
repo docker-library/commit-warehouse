@@ -9,7 +9,7 @@ then
     echo "Examples:"
     echo "  $> $SCRIPT_NAME bonita/7.5"
     echo "  $> $SCRIPT_NAME bonita-perf-tool/7.5"
-    echo "  $> $SCRIPT_NAME bonita-subscription/7.5 --build-arg ORACLE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources"
+    echo "  $> $SCRIPT_NAME bonita-subscription/7.5 --build-arg ORACLE_BASE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources"
     exit 1
 fi
 

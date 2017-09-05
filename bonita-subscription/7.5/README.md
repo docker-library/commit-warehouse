@@ -46,7 +46,7 @@ You can access to the portal on http://localhost:8080/bonita and login using the
 ### Oracle
 
 	docker run --name mydboracle -d alexeiled/docker-oracle-xe-11g
-	docker run --name bonita_oracle --link mydboracle:oracle -e DB_ADMIN_PASS=oracle -e DB_NAME=xe -h bonita -v ~/Documents/Docker/Volumes/bonita-subscription-7.2/:/opt/bonita_lic/ -d -p 8080:8080 bonitasoft/bonita-subscription:7.2.1
+	docker run --name bonita_oracle --link mydboracle:oracle -e DB_ADMIN_USER="sys as sysdba" -e DB_ADMIN_PASS=oracle -e DB_NAME=xe -e BIZ_DB_NAME=xe -h bonita -v ~/Documents/Docker/Volumes/bonita-subscription-7.5/:/opt/bonita_lic/ -d -p 8080:8080 bonitasoft/bonita-subscription:7.5.2
 
 ## Modify default credentials
 

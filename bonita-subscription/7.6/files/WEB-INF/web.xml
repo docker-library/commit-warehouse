@@ -238,6 +238,8 @@
         <url-pattern>/portal/form/*</url-pattern>
         <url-pattern>/mobile/*</url-pattern>
         <url-pattern>/apps/*</url-pattern>
+        <!-- Intercept logout request to handle SAML global logout -->
+        <url-pattern>/logoutservice</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AuthenticationFilter</filter-name>
@@ -720,6 +722,7 @@
     <servlet-mapping>
         <servlet-name>logoutService</servlet-name>
         <url-pattern>/logoutservice</url-pattern>
+        <url-pattern>/samlLogout</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>platformLoginService</servlet-name>

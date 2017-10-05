@@ -1,7 +1,12 @@
+#### OrientDB image for Kubernetes
+
+Project to produce an OrientDB Docker image for Kubertnetes/GKE.
 
 This project uses hazelcast-kubernetes artifact:
 
 https://github.com/hazelcast/hazelcast-kubernetes
+
+and provides a basic config file that uses the Kube service discovery
 
 #### Create the image
 

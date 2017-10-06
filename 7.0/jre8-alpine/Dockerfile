@@ -24,7 +24,7 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 9B90BFD14309C7DA5EF58
 RUN  set -x; \
          curl -fSL -o Lightstreamer.tar.gz ${LIGHTSTREAMER_URL_DOWNLOAD} \
          && curl -fSL -o Lightstreamer.tar.gz.asc ${LIGHTSTREAMER_URL_DOWNLOAD}.asc \
-#         && gpg --batch --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
+         && gpg --batch --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
          && tar -xvf Lightstreamer.tar.gz --strip-components=1 \
 
 # Replace the fictitious jdk path with the JAVA_HOME environment variable in the launch script file

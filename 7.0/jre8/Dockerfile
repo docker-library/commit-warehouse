@@ -13,18 +13,22 @@ ENV LIGHTSTREAMER_URL_DOWNLOAD http://www.lightstreamer.com/repo/distros/Lightst
 # Set the temporary working dir
 WORKDIR /lightstreamer
 
-# Download the package from the Lightstreamer site and replace the fictitious jdk path with 
-# the JAVA_HOME environment variable in the launch script file.
-# Finally, adjust logging configuration in order to log only on standard output.
-RUN set -x \
-        && curl -fSL -o Lightstreamer.tar.gz ${LIGHTSTREAMER_URL_DOWNLOAD} \
+# Download the package from the Lightstreamer site, verify the signature, and unpack
+RUN set -x; \
+        curl -fSL -o Lightstreamer.tar.gz ${LIGHTSTREAMER_URL_DOWNLOAD} \
         && curl -fSL -o Lightstreamer.tar.gz.asc ${LIGHTSTREAMER_URL_DOWNLOAD}.asc \
         && gpg --batch --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
         && tar -xvf Lightstreamer.tar.gz --strip-components=1 \
-        && rm Lightstreamer.tar.gz Lightstreamer.tar.gz.asc \
+
+# Replace replace the fictitious jdk path with the JAVA_HOME environment variable in the launch script file
         && sed -i -- 's/\/usr\/jdk1.8.0/$JAVA_HOME/' bin/unix-like/LS.sh \
+
+# Adjust the logging configuration in order to log only on standard output
         && sed -i -e '123,$s/<appender-ref ref="LSDailyRolling" \/>/<appender-ref ref="LSConsole" \/>/' \
-                  -e '/<appender-ref ref="LSDailyRolling" \/>/ d' conf/lightstreamer_log_conf.xml
+                  -e '/<appender-ref ref="LSDailyRolling" \/>/ d' conf/lightstreamer_log_conf.xml \
+
+# Finally, remove no longer needed files
+        && rm Lightstreamer.tar.gz Lightstreamer.tar.gz.asc
 
 # Export TCP port 8080
 EXPOSE 8080

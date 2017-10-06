@@ -4,37 +4,39 @@ FROM openjdk:8-jre-alpine
 LABEL maintainer="Lightstreamer Server Development Team <support@lightstreamer.com>"
 
 # Set environment variables to identify the right Lightstreamer version
-ENV LIGHSTREAMER_VERSION 7_0_0_b1_20170704
-ENV LIGHSTREAMER_URL_DOWNLOAD http://www.lightstreamer.com/repo/distros/Lightstreamer_${LIGHSTREAMER_VERSION}.tar.gz
+ENV LIGHTSTREAMER_VERSION 7_0_0_b1_20170704
+ENV LIGHTSTREAMER_URL_DOWNLOAD http://www.lightstreamer.com/repo/distros/Lightstreamer_${LIGHTSTREAMER_VERSION}.tar.gz
 
 # Set the temporary working dir
 WORKDIR /lightstreamer
 
-# Finally, adjust logging configuration to log only on standard output.
-RUN set -x \
-       apk add update \
+# Install the required packages
+RUN set -x; \
+        apk add --no-cache --virtual .deps \
+                   gnupg \
+                   tar \
+                   curl
+               
+# Import Lighstreamer's public key
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 9B90BFD14309C7DA5EF58D7D4A8C08966F29B4D2
 
+# Download the distribution from the Lightstreamer site, verify the signature, and unpack
+RUN  set -x; \
+         curl -fSL -o Lightstreamer.tar.gz ${LIGHTSTREAMER_URL_DOWNLOAD} \
+         && curl -fSL -o Lightstreamer.tar.gz.asc ${LIGHTSTREAMER_URL_DOWNLOAD}.asc \
+#         && gpg --batch --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
+         && tar -xvf Lightstreamer.tar.gz --strip-components=1 \
 
-# Install required packages
-        && apk add --no-cache --virtual .fetch-deps \
-                gnupg \
-                tar \
-                openssl \
-# Import Lighstreamer's public key (it seems that current gpg version has an issue while contacting keyserver, therefore a workaround is required)
-        && wget "https://ha.pool.sks-keyservers.net/pks/lookup?op=get&search=0x4A8C08966F29B4D2" -O - | gpg --import \
+# Replace the fictitious jdk path with the JAVA_HOME environment variable in the launch script file
+         && sed -i -- 's/\/usr\/jdk1.8.0/$JAVA_HOME/' bin/unix-like/LS.sh \
 
-# Download the package from the Lightstreamer site and replace the fictitious jdk path with 
-# the JAVA_HOME environment variable in the launch script file.
+# Adjust the logging configuration in order to log only on standard output.
+         && sed -i -e '123,$s/<appender-ref ref="LSDailyRolling" \/>/<appender-ref ref="LSConsole" \/>/' \
+                   -e '/<appender-ref ref="LSDailyRolling" \/>/ d' conf/lightstreamer_log_conf.xml \
 
-        && wget -O Lightstreamer.tar.gz ${LIGHSTREAMER_URL_DOWNLOAD} \
-        && wget -O Lightstreamer.tar.gz.asc ${LIGHSTREAMER_URL_DOWNLOAD}.asc \
-        && gpg --batch --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
-        && tar -xvf Lightstreamer.tar.gz --strip-components=1 \
-        && rm Lightstreamer.tar.gz Lightstreamer.tar.gz.asc \
-        && sed -i -- 's/\/usr\/jdk1.8.0/$JAVA_HOME/' bin/unix-like/LS.sh \
-        && sed -i -e '123,$s/<appender-ref ref="LSDailyRolling" \/>/<appender-ref ref="LSConsole" \/>/' \
-                  -e '/<appender-ref ref="LSDailyRolling" \/>/ d' conf/lightstreamer_log_conf.xml \
-        && apk del gnupg tar openssl
+# Finally, remove no longer needed packages and files
+         && apk del .deps \
+         && rm Lightstreamer.tar.gz Lightstreamer.tar.gz.asc
 
 # Export TCP port 8080
 EXPOSE 8080

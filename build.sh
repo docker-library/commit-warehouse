@@ -29,7 +29,8 @@ IMAGE_NAME=bonitasoft/${FOLDER_NAME}:${BONITA_VERSION}
 ARCHIVE_NAME=${FOLDER_NAME}_${BONITA_VERSION}.tar.gz
 
 echo ". Building image <${IMAGE_NAME}>"
-docker build $DOCKER_BUILD_ARGS --no-cache=true -t ${IMAGE_NAME} "${BUILD_PATH}"
+build_cmd="docker build ${DOCKER_BUILD_ARGS} --no-cache=true -t ${IMAGE_NAME} ${BUILD_PATH}"
+eval $build_cmd
 
 echo ". Saving image to archive file <${ARCHIVE_NAME}>"
 docker save ${IMAGE_NAME} | gzip > ${ARCHIVE_NAME}

@@ -10,6 +10,11 @@ then
     echo "  $> $SCRIPT_NAME bonita/7.5"
     echo "  $> $SCRIPT_NAME bonita-perf-tool/7.5"
     echo "  $> $SCRIPT_NAME bonita-subscription/7.5 --build-arg ORACLE_BASE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources"
+    echo ""
+    echo "Example with wget credentials:"
+    echo "  $> $SCRIPT_NAME bonita-subscription/7.5 \\"
+    echo "       '--build-arg BASE_URL=\"--user=adam --password=secretA https://repositories.cloud.bonitasoft.com/bonita-folder\" \\"
+    echo "        --build-arg ORACLE_BASE_URL=\"--user=bob --password=secretB https://repositories.cloud.bonitasoft.com/oracle-folder\"'"
     exit 1
 fi
 
@@ -29,7 +34,8 @@ IMAGE_NAME=bonitasoft/${FOLDER_NAME}:${BONITA_VERSION}
 ARCHIVE_NAME=${FOLDER_NAME}_${BONITA_VERSION}.tar.gz
 
 echo ". Building image <${IMAGE_NAME}>"
-docker build $DOCKER_BUILD_ARGS --no-cache=true -t ${IMAGE_NAME} "${BUILD_PATH}"
+build_cmd="docker build ${DOCKER_BUILD_ARGS} --no-cache=true -t ${IMAGE_NAME} ${BUILD_PATH}"
+eval $build_cmd
 
 echo ". Saving image to archive file <${ARCHIVE_NAME}>"
 docker save ${IMAGE_NAME} | gzip > ${ARCHIVE_NAME}

@@ -10,6 +10,11 @@ then
     echo "  $> $SCRIPT_NAME bonita/7.5"
     echo "  $> $SCRIPT_NAME bonita-perf-tool/7.5"
     echo "  $> $SCRIPT_NAME bonita-subscription/7.5 --build-arg ORACLE_BASE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources"
+    echo ""
+    echo "Example with wget credentials:"
+    echo "  $> $SCRIPT_NAME bonita-subscription/7.5 \\"
+    echo "       '--build-arg BASE_URL=\"--user=adam --password=secretA https://repositories.cloud.bonitasoft.com/bonita-folder\" \\"
+    echo "        --build-arg ORACLE_BASE_URL=\"--user=bob --password=secretB https://repositories.cloud.bonitasoft.com/oracle-folder\"'"
     exit 1
 fi
 

@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install -y \
 		git \
 		imagemagick \
 		libicu-dev \
+		# Required for SytaxHighlighting
+		python \
 	--no-install-recommends && rm -r /var/lib/apt/lists/*
 
 # Install the PHP extensions we need

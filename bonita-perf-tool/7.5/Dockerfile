@@ -20,14 +20,14 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -y \
   openjdk-8-jre-headless \
   unzip \
-  wget \
+  curl \
   gettext \
   && rm -rf /var/lib/apt/lists/*
 
 COPY startup.sh /opt/startup.sh
 COPY config /opt/config
 
-RUN wget -q ${BASE_URL}/${PERF_TOOL_ARCHIVE_FILE} -O /opt/PerfLauncher.zip \
+RUN curl -sSL ${BASE_URL}/${PERF_TOOL_ARCHIVE_FILE} -o /opt/PerfLauncher.zip \
   && unzip /opt/PerfLauncher.zip -d /opt/PerfLauncher
 
 # command to run when container starts

@@ -5,13 +5,13 @@ pipeline {
       steps {
         parallel(
           "Build community": {
-            sh './build.sh bonita/$BONITA_MINOR_VERSION'
+            sh './build.sh -- bonita/$BONITA_MINOR_VERSION'
           },
           "Build subscription": {
-            sh './build.sh bonita-subscription/$BONITA_MINOR_VERSION --build-arg BASE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources --build-arg ORACLE_BASE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources --build-arg BONITA_DBTOOL_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources'
+            sh './build.sh -a $DOCKER_BUILD_ARGS_FILE -- bonita-subscription/$BONITA_MINOR_VERSION'
           },
           "Build perf-tool": {
-            sh './build.sh bonita-perf-tool/$BONITA_MINOR_VERSION --build-arg BASE_URL=https://jenkins.cloud.bonitasoft.com/userContent/resources'
+            sh './build.sh -a $DOCKER_BUILD_ARGS_FILE -- bonita-perf-tool/$BONITA_MINOR_VERSION'
           }
         )
       }
@@ -34,5 +34,6 @@ pipeline {
   }
   environment {
     BONITA_MINOR_VERSION = '7.5'
+    DOCKER_BUILD_ARGS_FILE = "$JENKINS_HOME/build_args"
   }
 }

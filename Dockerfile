@@ -18,6 +18,9 @@ ENV RAPIDOID_URL https://repo1.maven.org/maven2/org/rapidoid/rapidoid-platform/$
 COPY entrypoint.sh /opt/
 
 RUN set -xe \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates curl dirmngr gnupg \
     && mkdir /app \
     && mkdir -p "$RAPIDOID_TMP" \
 	&& curl -SL "$RAPIDOID_URL" -o $RAPIDOID_JAR \
@@ -26,6 +29,8 @@ RUN set -xe \
 	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys $GPG_KEY \
 	&& gpg --batch --verify $RAPIDOID_JAR.asc $RAPIDOID_JAR \
 	&& rm -r "$GNUPGHOME" \
-	&& rm "$RAPIDOID_JAR.asc"
+	&& rm "$RAPIDOID_JAR.asc" \
+	&& rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["/opt/entrypoint.sh"]
+

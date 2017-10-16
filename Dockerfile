@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk
+FROM openjdk:8-jre-slim
 MAINTAINER Nikolche Mihajlovski
 
 # GPG key of Rapidoid's author/maintainer (616EF49C: Nikolche Mihajlovski <nikolce.mihajlovski@gmail.com>)

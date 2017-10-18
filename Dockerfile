@@ -28,7 +28,7 @@ RUN set -xe \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys $GPG_KEY \
 	&& gpg --batch --verify $RAPIDOID_JAR.asc $RAPIDOID_JAR \
-	&& rm -r "$GNUPGHOME" \
+	&& rm -rf "$GNUPGHOME" \
 	&& rm "$RAPIDOID_JAR.asc" \
 	&& rm -rf /var/lib/apt/lists/*
 

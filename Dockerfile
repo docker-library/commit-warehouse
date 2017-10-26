@@ -21,7 +21,7 @@ RUN set -xe \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
         ca-certificates curl dirmngr gnupg \
-    && mkdir /app \
+    && mkdir /platform \
     && mkdir -p "$RAPIDOID_TMP" \
 	&& curl -SL "$RAPIDOID_URL" -o $RAPIDOID_JAR \
 	&& curl -SL "$RAPIDOID_URL.asc" -o $RAPIDOID_JAR.asc \

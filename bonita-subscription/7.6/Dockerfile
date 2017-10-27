@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-MAINTAINER Jérémy Jacquier-Roux <jeremy.jacquier-roux@bonitasoft.com>
+LABEL authors="Jérémy Jacquier-Roux <jeremy.jacquier-roux@bonitasoft.com>, Truc Nguyen <truc.nguyen@bonitasoft.com>"
 
 # install packages
 RUN apt-get update && apt-get install -y \
@@ -8,23 +8,21 @@ RUN apt-get update && apt-get install -y \
   openjdk-8-jre-headless \
   postgresql-client \
   unzip \
-  wget \
+  curl \
   zip \
   ant \
   && rm -rf /var/lib/apt/lists/*
-
-RUN mkdir /opt/custom-init.d/
 
 # create user to launch Bonita as non-root
 RUN groupadd -r bonita -g 1000 \
   && useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita
 
 # grab gosu
-RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
-RUN wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture)" -O /usr/local/bin/gosu \
-  && wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture).asc" -O /usr/local/bin/gosu.asc \
-  && gpg --verify /usr/local/bin/gosu.asc \
-  && rm /usr/local/bin/gosu.asc \
+RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+  && curl -sSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture)" -o /usr/local/bin/gosu \
+  && curl -sSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture).asc" -o /tmp/gosu.asc \
+  && gpg --batch --verify /tmp/gosu.asc /usr/local/bin/gosu \
+  && rm /tmp/gosu.asc \
   && chmod +x /usr/local/bin/gosu
 
 # use --build-arg key=value in docker build command to override arguments
@@ -39,7 +37,6 @@ ARG BONITA_DBTOOL_URL
 
 ENV BONITA_VERSION ${BONITA_VERSION:-7.6.0.beta-02}
 ENV TOMCAT_VERSION ${TOMCAT_VERSION:-8.5.23}
-#ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/7.x/7.6.x/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
 ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/_Early_Access/20171025_195149/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
 ENV BONITA_URL ${BASE_URL}/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
 ENV BONITA_SHA256  ${BONITA_SHA256:-9b02525fd1faa82ff6136809cc3df28534ef3d9280d9799b81ba61060e0c749a}
@@ -51,31 +48,24 @@ ENV BONITA_DBTOOL_SHA256 ${BONITA_DBTOOL_SHA256:-8489e2ff8b143909759fd41de621f91
 ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
 ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/repository/releases/org/bonitasoft/tools/bonita-deployer/${BONITA_DBTOOL_VERSION}}
 
-#cluster
-#ENV CLUSTER_MODE true
-
-#create destination folder for downloads
-RUN mkdir /opt/files 
+# create destination folder for downloads
+RUN mkdir /opt/custom-init.d/ \
+  && mkdir /opt/files
 
 # retrieve oracle JDBC drivers
-RUN wget -q ${ORACLE_BASE_URL}/${ORACLE_JDBC_DRIVER} -O /opt/files/${ORACLE_JDBC_DRIVER} \
-  && echo "$ORACLE_JDBC_DRIVER_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c -
-
 # retrieve bonita deployer databasases tool
-RUN wget -q ${BONITA_DBTOOL_URL}/${BONITA_DBTOOL}.zip -O /opt/files/${BONITA_DBTOOL}.zip \
+RUN curl -sSL ${ORACLE_BASE_URL}/${ORACLE_JDBC_DRIVER} -o /opt/files/${ORACLE_JDBC_DRIVER} \
+  && echo "$ORACLE_JDBC_DRIVER_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c - \
+  && curl -sSL ${BONITA_DBTOOL_URL}/${BONITA_DBTOOL}.zip -o /opt/files/${BONITA_DBTOOL}.zip \
   && echo "$BONITA_DBTOOL_SHA256" /opt/files/${BONITA_DBTOOL}.zip | sha256sum -c -
 
 COPY files /opt/files
 COPY templates /opt/templates
 
 # add Bonita archive to the container
-RUN wget -q ${BONITA_URL} -O /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
-
-# display downloaded checksum
-RUN sha256sum /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
-
-# check with expected checksum
-RUN echo "$BONITA_SHA256" /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
+RUN curl -sSL ${BONITA_URL} -o /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
+  && sha256sum /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
+  && echo "$BONITA_SHA256" /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
 
 # create Volume to store Bonita files
 VOLUME /opt/bonita

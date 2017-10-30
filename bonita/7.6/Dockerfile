@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN mkdir /opt/custom-init.d/
 
-# create user to launch Bonita BPM as non-root
+# create user to launch Bonita as non-root
 RUN groupadd -r bonita -g 1000 \
   && useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita
 
@@ -32,22 +32,22 @@ ARG TOMCAT_VERSION
 ARG BONITA_SHA256
 ARG BONITA_URL
 
-ENV BONITA_VERSION ${BONITA_VERSION:-7.5.4}
-ENV TOMCAT_VERSION ${TOMCAT_VERSION:-7.0.76}
-ENV BONITA_SHA256  ${BONITA_SHA256:-b7ccec231d9083b1b532b0aeaa4de3d38d91cae12df1725f8a802be5be170d21}
-ENV BONITA_URL ${BONITA_URL:-http://download.forge.ow2.org/bonita/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip}
+ENV BONITA_VERSION ${BONITA_VERSION:-7.6.0.beta-02}
+ENV TOMCAT_VERSION ${TOMCAT_VERSION:-8.5.23}
+ENV BONITA_SHA256  ${BONITA_SHA256:-3264c97f4b25a3586dd6417dd7803c80025dbcc0f96e8cb7b5e51538acff3e53}
+ENV BONITA_URL ${BONITA_URL:-http://download.forge.ow2.org/bonita/BonitaCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip}
 
-# add Bonita BPM archive to the container
+# add Bonita archive to the container
 RUN mkdir /opt/files \
-  && curl -sSL ${BONITA_URL} -o /opt/files/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
+  && curl -sSL ${BONITA_URL} -o /opt/files/BonitaCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
 
 # display downloaded checksum
-RUN sha256sum /opt/files/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
+RUN sha256sum /opt/files/BonitaCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
 
 # check with expected checksum
-RUN echo "$BONITA_SHA256" /opt/files/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
+RUN echo "$BONITA_SHA256" /opt/files/BonitaCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
 
-# create Volume to store Bonita BPM files
+# create Volume to store Bonita files
 VOLUME /opt/bonita
 
 COPY files /opt/files

@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
   ant \
   && rm -rf /var/lib/apt/lists/*
 
-# create user to launch Bonita BPM as non-root
+# create user to launch Bonita as non-root
 RUN groupadd -r bonita -g 1000 \
   && useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita
 
@@ -35,11 +35,11 @@ ARG ORACLE_BASE_URL
 ARG BONITA_DBTOOL_SHA256
 ARG BONITA_DBTOOL_URL
 
-ENV BONITA_VERSION ${BONITA_VERSION:-7.5.4}
-ENV TOMCAT_VERSION ${TOMCAT_VERSION:-7.0.76}
-ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/7.x/7.5.x/${BONITA_VERSION}/BonitaBPMSubscription-${BONITA_VERSION}/}
-ENV BONITA_URL ${BASE_URL}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
-ENV BONITA_SHA256  ${BONITA_SHA256:-404b812bbd391920465bc305e62941615e9abea20c2ad1bec4f7389ff75a9bf9}
+ENV BONITA_VERSION ${BONITA_VERSION:-7.6.0.beta-02}
+ENV TOMCAT_VERSION ${TOMCAT_VERSION:-8.5.23}
+ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/_Early_Access/20171025_195149/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
+ENV BONITA_URL ${BASE_URL}/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
+ENV BONITA_SHA256  ${BONITA_SHA256:-9b02525fd1faa82ff6136809cc3df28534ef3d9280d9799b81ba61060e0c749a}
 ENV ORACLE_JDBC_DRIVER ojdbc-6.jar
 ENV ORACLE_JDBC_DRIVER_SHA256 ${ORACLE_JDBC_DRIVER_SHA256:-a6e151e3c30efbfb3d86ad729dd2f9136a093815baebcfe81e6d0b26893180b2}
 ENV ORACLE_BASE_URL ${ORACLE_BASE_URL:-http://repositories.rd.lan/archiva/repository/releases/com/oracle/ojdbc/6/}
@@ -62,15 +62,15 @@ RUN curl -sSL ${ORACLE_BASE_URL}/${ORACLE_JDBC_DRIVER} -o /opt/files/${ORACLE_JD
 COPY files /opt/files
 COPY templates /opt/templates
 
-# add Bonita BPM archive to the container
-RUN curl -sSL ${BONITA_URL} -o /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
-  && sha256sum /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
-  && echo "$BONITA_SHA256" /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
+# add Bonita archive to the container
+RUN curl -sSL ${BONITA_URL} -o /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
+  && sha256sum /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
+  && echo "$BONITA_SHA256" /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
 
-# create Volume to store Bonita BPM files
+# create Volume to store Bonita files
 VOLUME /opt/bonita
 
-# create Volume to store Bonita BPM licenses (*.lic)
+# create Volume to store Bonita licenses (*.lic)
 VOLUME /opt/bonita_lic
 
 # expose Tomcat port

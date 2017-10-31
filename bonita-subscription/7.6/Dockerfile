@@ -30,8 +30,6 @@ ARG BONITA_VERSION
 ARG TOMCAT_VERSION
 ARG BONITA_SHA256
 ARG BASE_URL
-ARG ORACLE_JDBC_DRIVER_SHA256
-ARG ORACLE_BASE_URL
 ARG BONITA_DBTOOL_SHA256
 ARG BONITA_DBTOOL_URL
 
@@ -40,11 +38,8 @@ ENV TOMCAT_VERSION ${TOMCAT_VERSION:-8.5.23}
 ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/_Early_Access/20171025_195149/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
 ENV BONITA_URL ${BASE_URL}/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
 ENV BONITA_SHA256  ${BONITA_SHA256:-9b02525fd1faa82ff6136809cc3df28534ef3d9280d9799b81ba61060e0c749a}
-ENV ORACLE_JDBC_DRIVER ojdbc-6.jar
-ENV ORACLE_JDBC_DRIVER_SHA256 ${ORACLE_JDBC_DRIVER_SHA256:-a6e151e3c30efbfb3d86ad729dd2f9136a093815baebcfe81e6d0b26893180b2}
-ENV ORACLE_BASE_URL ${ORACLE_BASE_URL:-http://repositories.rd.lan/archiva/repository/releases/com/oracle/ojdbc/6/}
-ENV BONITA_DBTOOL_VERSION 7.0.0-06
-ENV BONITA_DBTOOL_SHA256 ${BONITA_DBTOOL_SHA256:-8489e2ff8b143909759fd41de621f917419d4078c5f969247702073696e03615}
+ENV BONITA_DBTOOL_VERSION 7.0.0-07
+ENV BONITA_DBTOOL_SHA256 ${BONITA_DBTOOL_SHA256:-219b63b8d2735cdf444af62c77042a1f7d92a4e0b2fa2d88ef0bd5a1b01a05b0}
 ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
 ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/repository/releases/org/bonitasoft/tools/bonita-deployer/${BONITA_DBTOOL_VERSION}}
 
@@ -52,11 +47,8 @@ ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/re
 RUN mkdir /opt/custom-init.d/ \
   && mkdir /opt/files
 
-# retrieve oracle JDBC drivers
 # retrieve bonita deployer databasases tool
-RUN curl -fsSL ${ORACLE_BASE_URL}/${ORACLE_JDBC_DRIVER} -o /opt/files/${ORACLE_JDBC_DRIVER} \
-  && echo "$ORACLE_JDBC_DRIVER_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c - \
-  && curl -fsSL ${BONITA_DBTOOL_URL}/${BONITA_DBTOOL}.zip -o /opt/files/${BONITA_DBTOOL}.zip \
+RUN curl -fsSL ${BONITA_DBTOOL_URL}/${BONITA_DBTOOL}.zip -o /opt/files/${BONITA_DBTOOL}.zip \
   && echo "$BONITA_DBTOOL_SHA256" /opt/files/${BONITA_DBTOOL}.zip | sha256sum -c -
 
 COPY files /opt/files

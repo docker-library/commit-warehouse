@@ -91,7 +91,7 @@ fi
 
 if [ ! -d ${BONITA_PATH}/${BONITA_DBTOOL} ]
 then
-		unzip -q ${BONITA_FILES}/${BONITA_DBTOOL}.zip -d ${BONITA_PATH}
+	unzip -q ${BONITA_FILES}/${BONITA_DBTOOL}.zip -d ${BONITA_PATH}
 fi
 
 if [ "${ENSURE_DB_CHECK_AND_CREATION}" = 'true' ]

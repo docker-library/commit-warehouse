@@ -98,17 +98,18 @@ fi
 # append build args found on command line
 BUILD_ARGS="$BUILD_ARGS $*"
 
-BONITA_VERSION=$(grep -oP "^ENV BONITA_VERSION \K.*" "${BUILD_PATH}/Dockerfile" | sed 's/.*:-\(.*\)}$/\1/' | xargs)
 FOLDER_NAME=$(basename $(dirname "${BUILD_PATH}"))
-IMAGE_NAME=bonitasoft/${FOLDER_NAME}:${BONITA_VERSION}
-ARCHIVE_NAME=${FOLDER_NAME}_${BONITA_VERSION}.tar.gz
+IMAGE_NAME=bonitasoft/${FOLDER_NAME}
 
 echo ". Building image <${IMAGE_NAME}>"
 echo "Docker build caching strategy: --no-cache=${no_cache}"
-build_cmd="docker build ${BUILD_ARGS} -t ${IMAGE_NAME} ${BUILD_PATH}"
+build_cmd="docker build ${BUILD_ARGS} -t ${IMAGE_NAME}:latest ${BUILD_PATH}"
 eval $build_cmd
+BONITA_VERSION=$(docker inspect ${IMAGE_NAME}:latest -f '{{range .Config.Env}}{{println .}}{{end}}' | sed -n 's/^BONITA_VERSION=\(.*\)$/\1/p')
+docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:${BONITA_VERSION}
 
+ARCHIVE_NAME=${FOLDER_NAME}_${BONITA_VERSION}.tar.gz
 echo ". Saving image to archive file <${ARCHIVE_NAME}>"
-docker save ${IMAGE_NAME} | gzip > ${ARCHIVE_NAME}
+docker save ${IMAGE_NAME}:${BONITA_VERSION} | gzip > ${ARCHIVE_NAME}
 
 echo ". Done!"

@@ -19,8 +19,8 @@ RUN groupadd -r bonita -g 1000 \
 
 # grab gosu
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
-  && curl -sSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture)" -o /usr/local/bin/gosu \
-  && curl -sSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture).asc" -o /tmp/gosu.asc \
+  && curl -fsSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture)" -o /usr/local/bin/gosu \
+  && curl -fsSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture).asc" -o /tmp/gosu.asc \
   && gpg --batch --verify /tmp/gosu.asc /usr/local/bin/gosu \
   && rm /tmp/gosu.asc \
   && chmod +x /usr/local/bin/gosu
@@ -54,16 +54,16 @@ RUN mkdir /opt/custom-init.d/ \
 
 # retrieve oracle JDBC drivers
 # retrieve bonita deployer databasases tool
-RUN curl -sSL ${ORACLE_BASE_URL}/${ORACLE_JDBC_DRIVER} -o /opt/files/${ORACLE_JDBC_DRIVER} \
+RUN curl -fsSL ${ORACLE_BASE_URL}/${ORACLE_JDBC_DRIVER} -o /opt/files/${ORACLE_JDBC_DRIVER} \
   && echo "$ORACLE_JDBC_DRIVER_SHA256" /opt/files/${ORACLE_JDBC_DRIVER} | sha256sum -c - \
-  && curl -sSL ${BONITA_DBTOOL_URL}/${BONITA_DBTOOL}.zip -o /opt/files/${BONITA_DBTOOL}.zip \
+  && curl -fsSL ${BONITA_DBTOOL_URL}/${BONITA_DBTOOL}.zip -o /opt/files/${BONITA_DBTOOL}.zip \
   && echo "$BONITA_DBTOOL_SHA256" /opt/files/${BONITA_DBTOOL}.zip | sha256sum -c -
 
 COPY files /opt/files
 COPY templates /opt/templates
 
 # add Bonita BPM archive to the container
-RUN curl -sSL ${BONITA_URL} -o /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
+RUN curl -fsSL ${BONITA_URL} -o /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
   && sha256sum /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
   && echo "$BONITA_SHA256" /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
 

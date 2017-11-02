@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y \
 COPY startup.sh /opt/startup.sh
 COPY config /opt/config
 
-RUN curl -sSL ${BASE_URL}/${PERF_TOOL_ARCHIVE_FILE} -o /opt/PerfLauncher.zip \
+RUN curl -fsSL ${BASE_URL}/${PERF_TOOL_ARCHIVE_FILE} -o /opt/PerfLauncher.zip \
   && unzip /opt/PerfLauncher.zip -d /opt/PerfLauncher
 
 # command to run when container starts

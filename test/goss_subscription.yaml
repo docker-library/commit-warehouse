@@ -6,10 +6,7 @@ command:
     title: Checking subscription environment variables
     exit-status: 0
     stdout:
-    - BASE_URL
     - BONITA_DBTOOL
-    - BONITA_DBTOOL_SHA256
-    - BONITA_DBTOOL_URL
     - BONITA_DBTOOL_VERSION
   find /opt/bonita/Bonita*-Tomcat*/setup/platform_conf/initial -name *.properties | xargs -n10 grep '^bonita.cluster={{getEnv "CLUSTER_MODE"}}' | [ $(wc -l) -gt 0 ]:
     title: Checking custom CLUSTER_MODE

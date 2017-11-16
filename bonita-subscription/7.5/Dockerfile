@@ -1,29 +1,16 @@
-FROM ubuntu:16.04
-
-LABEL authors="Jérémy Jacquier-Roux <jeremy.jacquier-roux@bonitasoft.com>, Truc Nguyen <truc.nguyen@bonitasoft.com>"
+FROM ubuntu:16.04 as builder
 
 # install packages
-RUN apt-get update && apt-get install -y \
-  mysql-client-core-5.7 \
-  openjdk-8-jre-headless \
-  postgresql-client \
-  unzip \
-  curl \
-  zip \
-  ant \
+RUN apt-get update \
+  && apt-get install -y curl \
   && rm -rf /var/lib/apt/lists/*
-
-# create user to launch Bonita BPM as non-root
-RUN groupadd -r bonita -g 1000 \
-  && useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita
 
 # grab gosu
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
-  && curl -fsSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture)" -o /usr/local/bin/gosu \
+  && curl -fsSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture)" -o /tmp/gosu \
   && curl -fsSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture).asc" -o /tmp/gosu.asc \
-  && gpg --batch --verify /tmp/gosu.asc /usr/local/bin/gosu \
-  && rm /tmp/gosu.asc \
-  && chmod +x /usr/local/bin/gosu
+  && gpg --batch --verify /tmp/gosu.asc /tmp/gosu \
+  && chmod +x /tmp/gosu
 
 # use --build-arg key=value in docker build command to override arguments
 ARG BONITA_VERSION
@@ -47,7 +34,7 @@ ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/re
 RUN mkdir /opt/custom-init.d/ \
   && mkdir /opt/files
 
-# retrieve bonita deployer databasases tool
+# retrieve bonita deployer databases tool
 RUN curl -fsSL ${BONITA_DBTOOL_URL}/${BONITA_DBTOOL}.zip -o /opt/files/${BONITA_DBTOOL}.zip \
   && echo "$BONITA_DBTOOL_SHA256" /opt/files/${BONITA_DBTOOL}.zip | sha256sum -c -
 
@@ -59,17 +46,42 @@ RUN curl -fsSL ${BONITA_URL} -o /opt/files/BonitaBPMSubscription-${BONITA_VERSIO
   && sha256sum /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
   && echo "$BONITA_SHA256" /opt/files/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
 
-# create Volume to store Bonita BPM files
-VOLUME /opt/bonita
 
-# create Volume to store Bonita BPM licenses (*.lic)
-VOLUME /opt/bonita_lic
 
-# expose Tomcat port
-EXPOSE 8080
+FROM ubuntu:16.04
 
-# expose Hazelcast port
-EXPOSE 5701
+LABEL authors="Jérémy Jacquier-Roux <jeremy.jacquier-roux@bonitasoft.com>, Truc Nguyen <truc.nguyen@bonitasoft.com>"
+
+# install packages
+RUN apt-get update && apt-get install -y \
+  mysql-client-core-5.7 \
+  openjdk-8-jre-headless \
+  postgresql-client \
+  unzip \
+  curl \
+  zip \
+  ant \
+  && rm -rf /var/lib/apt/lists/*
+
+ARG BONITA_VERSION
+ARG TOMCAT_VERSION
+ENV BONITA_VERSION ${BONITA_VERSION:-7.5.4}
+ENV TOMCAT_VERSION ${TOMCAT_VERSION:-7.0.76}
+ENV BONITA_DBTOOL_VERSION 7.0.0-07
+ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
+
+COPY --from=builder /opt /opt
+COPY --from=builder /tmp/gosu /usr/local/bin/gosu
+
+# create user to launch Bonita as non-root
+RUN groupadd -r bonita -g 1000 \
+  && useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita
+
+# volumes
+VOLUME ["/opt/bonita", "/opt/bonita_lic"]
+
+# exposed ports (Tomcat, Hazelcast)
+EXPOSE 8080 5701
 
 # command to run when the container starts
 CMD ["/opt/files/startup.sh"]

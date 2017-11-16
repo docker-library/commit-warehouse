@@ -56,8 +56,6 @@ command:
     title: Checking environment variables
     exit-status: 0
     stdout:
-    - BONITA_SHA256
-    - BONITA_URL
     - BONITA_VERSION
     - TOMCAT_VERSION
   ps -eo args | grep java:

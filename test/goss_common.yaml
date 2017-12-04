@@ -91,9 +91,16 @@ command:
 file:
   /goss/docker_output.log:
     title: Checking that custom-init.d script is executed
+    # required attributes
     exists: true
     contains:
-    - 'GOSS: custom-init.d script hello world!'
+    - 'GOSS: custom-init.d script /opt/custom-init.d/init-hello.sh!'
+
+command:
+  cat /goss/docker_output.log | tr -d '\n' | grep -c "init-1.sh.*init-2.sh.*init-13.sh.*init-hello.sh.*_init-0.sh":
+    title: Checking that custom-init.d scripts are executed in order
+    exit-status: 0
+    stdout: ["1"]
 
 http:
   http://localhost:8080/bonita:

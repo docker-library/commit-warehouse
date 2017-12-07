@@ -5,25 +5,25 @@ then
 	exit 1
 fi
 NEW_RELEASE=$1
-MINOR=7.5
+MINOR=7.6
 EDITION=$2
 LAST_RELEASE=`grep "^ENV BONITA_VERSION" bonita/${MINOR}/Dockerfile | awk '{ print $3 }'`
 BASE_URL="http://repositories.rd.lan/nas/releases/7.x/${MINOR}.x/${NEW_RELEASE}"
-TOMCAT_VERSION="7.0.76"
+TOMCAT_VERSION="8.5.23"
 
 echo "updating $ed"
 case $EDITION in
 "community")
-        BUNDLE="BonitaBPMCommunity-${NEW_RELEASE}-Tomcat-${TOMCAT_VERSION}"
+        BUNDLE="BonitaCommunity-${NEW_RELEASE}-Tomcat-${TOMCAT_VERSION}"
 	DIR="bonita"
         LAST_RELEASE=`grep "^ENV BONITA_VERSION" ${DIR}/${MINOR}/Dockerfile | awk '{ print $3 }'`
-        wget ${BASE_URL}/BonitaBPMCommunity-${NEW_RELEASE}/${BUNDLE}.zip -O /tmp/${BUNDLE}.zip
+        wget ${BASE_URL}/BonitaCommunity-${NEW_RELEASE}/${BUNDLE}.zip -O /tmp/${BUNDLE}.zip
 	;;
 "subscription")
-        BUNDLE="BonitaBPMSubscription-${NEW_RELEASE}-Tomcat-${TOMCAT_VERSION}"
+        BUNDLE="BonitaSubscription-${NEW_RELEASE}-Tomcat-${TOMCAT_VERSION}"
         DIR="bonita-subscription"
         LAST_RELEASE=`grep "^ENV BONITA_VERSION" ${DIR}/${MINOR}/Dockerfile | awk '{ print $3 }'`
-        wget ${BASE_URL}/BonitaBPMSubscription-${NEW_RELEASE}/${BUNDLE}.zip -O /tmp/${BUNDLE}.zip
+        wget ${BASE_URL}/BonitaSubscription-${NEW_RELEASE}/${BUNDLE}.zip -O /tmp/${BUNDLE}.zip
         ;;
 esac
 

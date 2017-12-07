@@ -105,6 +105,13 @@
     <filter>
         <filter-name>SAMLFilter</filter-name>
         <filter-class>org.bonitasoft.console.common.server.auth.impl.saml.BonitaSAML2Filter</filter-class>
+        <!--
+            We need to let a set of URL not filtered (REST APIs)
+        -->
+        <!-- init-param>
+            <param-name>excludePattern</param-name>
+            <param-value>^/(bonita/)?(apps/.+/API/.+)|(portal/resource/.+/API/.+)</param-value>
+        </init-param -->
     </filter>
     <!-- Authentication filter -->
     <filter>
@@ -168,6 +175,8 @@
         <url-pattern>/portal/ReportScreenshotServlet</url-pattern>
         <url-pattern>/portal/themeDownload</url-pattern>
         <url-pattern>/portal/exportProfiles</url-pattern>
+        <url-pattern>/portal/exportApplications</url-pattern>
+        <url-pattern>/portal/exportAccessControl</url-pattern>
         <url-pattern>/portal/casehistory</url-pattern>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
@@ -199,10 +208,9 @@
         <url-pattern>/APIToolkit/*</url-pattern>
         <!-- see TokenValidatorFilter comment -->
         <url-pattern>/portal/custom-page/API/*</url-pattern>
-        <!-- Uncomment those lines to apply security checks also on portal servlets -->
-        <!-- <url-pattern>/portal/formsDocumentDownload</url-pattern> -->
-        <!-- <url-pattern>/portal/documentDownload</url-pattern> -->
-        <!-- <url-pattern>/portal/downloadDocument</url-pattern> -->
+        <url-pattern>/portal/formsDocumentDownload</url-pattern>
+        <url-pattern>/portal/documentDownload</url-pattern>
+        <url-pattern>/portal/downloadDocument</url-pattern>
         <!-- Add more servlet mappings here -->
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
@@ -432,6 +440,10 @@
         <servlet-name>exportProcessActorsServlet</servlet-name>
         <servlet-class>org.bonitasoft.console.server.servlet.ProcessActorsExportServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>accessControlExportServlet</servlet-name>
+        <servlet-class>org.bonitasoft.console.server.servlet.AccessControlExportServlet</servlet-class>
+    </servlet>
 
     <servlet>
         <servlet-name>formsService</servlet-name>
@@ -655,6 +667,10 @@
         <url-pattern>/portal/applicationsUpload</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>xmlUploadServlet</servlet-name>
+        <url-pattern>/portal/bdmAccessControlUpload</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>zipUploadServlet</servlet-name>
         <url-pattern>/portal/connectorImplementation</url-pattern>
     </servlet-mapping>
@@ -709,6 +725,10 @@
     <servlet-mapping>
         <servlet-name>exportProcessActorsServlet</servlet-name>
         <url-pattern>/portal/exportActors</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>accessControlExportServlet</servlet-name>
+        <url-pattern>/portal/exportAccessControl</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>iconServlet</servlet-name>

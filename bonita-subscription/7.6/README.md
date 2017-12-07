@@ -1,6 +1,6 @@
-# What is Bonita BPM?
+# What is Bonita?
 
-Bonita BPM is an open-source business process management and workflow suite created in 2001. It was started in France National Institute for Research in Computer Science, and then had incubated several years inside of the French computer science company Groupe Bull. Since 2009, the development of Bonita is supported by a company dedicated to this activity: Bonitasoft.
+Bonita is an open-source business process management and workflow suite created in 2001. It was started in France National Institute for Research in Computer Science, and then had incubated several years inside of the French computer science company Groupe Bull. Since 2009, the development of Bonita is supported by a company dedicated to this activity: Bonitasoft.
 
 > [wikipedia.org/wiki/Bonita_BPM](http://en.wikipedia.org/wiki/Bonita_BPM)
 
@@ -12,26 +12,26 @@ Bonita BPM is an open-source business process management and workflow suite crea
 
 First genereate a request key into a container with a specific hostname (-h):
 
-	docker run --rm --name=bonita -h bonita -ti bonitasoft/bonita-subscription:7.4.0 /bin/bash
-	unzip /opt/files/BonitaBPMSubscription-7.4.0-Tomcat-7.0.67.zip
-	cd BonitaBPMSubscription-7.4.0-Tomcat-7.0.67/server/request_key_utils/
+	docker run --rm --name=bonita -h bonita -ti bonitasoft/bonita-subscription:7.6.0 /bin/bash
+	unzip /opt/files/BonitaSubscription-7.6.0-Tomcat-8.5.23.zip
+	cd BonitaSubscription-7.6.0-Tomcat-8.5.23/server/request_key_utils/
 	./generateRequestKey.sh
 	exit
 	
 Retrieve the licence from the [customer portal](https://customer.bonitasoft.com) and place it to a directory on your host :	
 
     mkdir ~/Documents/Docker/Volumes/bonita-subscription
-    cp ~/Téléchargements/BonitaBPMSubscription-7.4-Cloud_Techuser-bonita-20170124-20170331.lic ~/Documents/Docker/Volumes/bonita-subscription
+    cp ~/Téléchargements/BonitaSubscription-7.6-Cloud_Techuser-bonita-20170124-20170331.lic ~/Documents/Docker/Volumes/bonita-subscription
 
 Then we can launch the Bonita container with the same hostname (-h) and this host directory mounted (-v) :
 
 	docker run --name bonita -h bonita -v ~/Documents/Docker/Volumes/bonita-subscription/:/opt/bonita_lic/ -d -p 8080:8080 bonita
 	
-This will start a container running the [Tomcat Bundle](http://documentation.bonitasoft.com/tomcat-bundle-1) with Bonita BPM Engine + Portal. As you didn't sepecify any environment variables it's almost like if you have launched the Bundle on your host using startup.{sh|bat} (with security hardening on REST and HTTP APIs, cf Security part). It means that Bonita BPM uses a H2 database here.
+This will start a container running the [Tomcat Bundle](http://documentation.bonitasoft.com/tomcat-bundle-1) with Bonita Engine + Portal. As you didn't sepecify any environment variables it's almost like if you have launched the Bundle on your host using startup.{sh|bat} (with security hardening on REST and HTTP APIs, cf Security part). It means that Bonita uses a H2 database here.
 
 You can access to the portal on http://localhost:8080/bonita and login using the default credentials : install / install
 
-## Link Bonita BPM to a database
+## Link Bonita to a database
 
 ### MySQL
 
@@ -46,7 +46,7 @@ You can access to the portal on http://localhost:8080/bonita and login using the
 ### Oracle
 
 	docker run --name mydboracle -d alexeiled/docker-oracle-xe-11g
-	docker run --name bonita_oracle --link mydboracle:oracle -e DB_ADMIN_USER="sys as sysdba" -e DB_ADMIN_PASS=oracle -e DB_NAME=xe -e BIZ_DB_NAME=xe -h bonita -v ~/Documents/Docker/Volumes/bonita-subscription-7.5/:/opt/bonita_lic/ -d -p 8080:8080 bonitasoft/bonita-subscription:7.5.2
+	docker run --name bonita_oracle --link mydboracle:oracle -e DB_ADMIN_USER="sys as sysdba" -e DB_ADMIN_PASS=oracle -e DB_NAME=xe -e BIZ_DB_NAME=xe -h bonita -v ~/Documents/Docker/Volumes/bonita-subscription-7.6/:/opt/bonita_lic/ -d -p 8080:8080 bonitasoft/bonita-subscription:7.6.0
 
 ## Modify default credentials
 
@@ -68,9 +68,9 @@ But for specific needs you can override this behavior by setting HTTP_API to tru
 	docker run  -e HTTP_API=true -e REST_API_DYN_AUTH_CHECKS=false --name bonita -h bonita -v ~/Documents/Docker/Volumes/bonita-subscription/:/opt/bonita_home/ -d -p 8080:8080 bonita
 
 # License
-Bonita BPM image includes two parts :
- * Bonita BPM Engine under [LGPL v2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
- * Bonita BPM Portal under [GPL v2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+Bonita image includes two parts :
+ * Bonita Engine under [LGPL v2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
+ * Bonita Portal under [GPL v2.0](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
 
 # User Feedback
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Set some JVM system properties required by Bonita BPM
+# Set some JVM system properties required by Bonita
 
 PLATFORM_SETUP="-Dorg.bonitasoft.platform.setup.folder=${CATALINA_HOME}/../setup"
 #When changing org.bonitasoft.h2.database.dir location, update ${CATALINA_HOME}/conf/bitronix-resources.properties datasources accordingly.
@@ -26,7 +26,7 @@ JAVA_OPTS="{{JAVA_OPTS}}"
 CATALINA_OPTS="${CATALINA_OPTS} ${PLATFORM_SETUP} ${H2_DATABASE_DIR} ${DB_OPTS} ${BDM_DB_OPTS} ${BTM_OPTS} ${JAVA_OPTS} ${INCIDENT_LOG_DIR} -Dfile.encoding=UTF-8 -Xshare:auto -XX:+HeapDumpOnOutOfMemoryError"
 export CATALINA_OPTS
 
-# Only set CATALINA_PID if not already set (check for empty value) by startup script (usually done by /etc/init.d/tomcat7 but not by startup.sh nor catalina.sh)
+# Only set CATALINA_PID if not already set (check for empty value) by startup script (usually done by /etc/init.d/tomcat8 but not by startup.sh nor catalina.sh)
 if [ -z ${CATALINA_PID+x} ]; then
         CATALINA_PID=${CATALINA_BASE}/catalina.pid;
         export CATALINA_PID;

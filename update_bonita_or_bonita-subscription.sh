@@ -8,7 +8,7 @@ NEW_RELEASE=$1
 MINOR=7.6
 EDITION=$2
 LAST_RELEASE=`grep "^ENV BONITA_VERSION" bonita/${MINOR}/Dockerfile | awk '{ print $3 }'`
-BASE_URL="http://repositories.rd.lan/nas/releases/7.x/${MINOR}.x/${NEW_RELEASE}"
+BASE_URL="http://repositories.rd.lan/nas/releases/bonita_platform/7.x/${MINOR}.x/${NEW_RELEASE}"
 TOMCAT_VERSION="8.5.23"
 
 echo "updating $ed"

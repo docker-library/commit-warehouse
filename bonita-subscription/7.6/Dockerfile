@@ -1,9 +1,20 @@
-FROM ubuntu:16.04 as builder
+FROM ubuntu:16.04 as base
+
+# common variables
+ARG BONITA_VERSION
+ARG TOMCAT_VERSION
+ENV BONITA_VERSION ${BONITA_VERSION:-7.6.2}
+ENV TOMCAT_VERSION ${TOMCAT_VERSION:-8.5.23}
+ENV BONITA_DBTOOL_VERSION 7.0.0-07
+ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
 
 # install packages
-RUN apt-get update \
-  && apt-get install -y curl \
+RUN apt-get update && apt-get install -y curl \
   && rm -rf /var/lib/apt/lists/*
+
+
+
+FROM base as builder
 
 # grab gosu
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
@@ -13,21 +24,15 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364
   && chmod +x /tmp/gosu
 
 # use --build-arg key=value in docker build command to override arguments
-ARG BONITA_VERSION
-ARG TOMCAT_VERSION
 ARG BONITA_SHA256
 ARG BASE_URL
 ARG BONITA_DBTOOL_SHA256
 ARG BONITA_DBTOOL_URL
 
-ENV BONITA_VERSION ${BONITA_VERSION:-7.6.1}
-ENV TOMCAT_VERSION ${TOMCAT_VERSION:-8.5.23}
 ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/bonita_platform/7.x/7.6.x/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
 ENV BONITA_URL ${BASE_URL}/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
-ENV BONITA_SHA256  ${BONITA_SHA256:-9c3df689010e82fe6f7c83473011e08c9774bcf57c38053ffdbb83efc531ab5e}
-ENV BONITA_DBTOOL_VERSION 7.0.0-07
+ENV BONITA_SHA256  ${BONITA_SHA256:-f99304e365f8849dc466b0b726894cfa31394088b9d9c1f041091c645ad00c11}
 ENV BONITA_DBTOOL_SHA256 ${BONITA_DBTOOL_SHA256:-ab285b1babd64ab5e65e1cff976d009a2ed3b4a686079c65843ef26c382bd23f}
-ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
 ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/repository/releases/org/bonitasoft/tools/bonita-deployer/${BONITA_DBTOOL_VERSION}}
 
 # create destination folder for downloads
@@ -48,7 +53,7 @@ RUN curl -fsSL ${BONITA_URL} -o /opt/files/BonitaSubscription-${BONITA_VERSION}-
 
 
 
-FROM ubuntu:16.04
+FROM base
 
 LABEL authors="Jérémy Jacquier-Roux <jeremy.jacquier-roux@bonitasoft.com>, Truc Nguyen <truc.nguyen@bonitasoft.com>"
 
@@ -58,17 +63,10 @@ RUN apt-get update && apt-get install -y \
   openjdk-8-jre-headless \
   postgresql-client \
   unzip \
-  curl \
   zip \
   ant \
   && rm -rf /var/lib/apt/lists/*
 
-ARG BONITA_VERSION
-ARG TOMCAT_VERSION
-ENV BONITA_VERSION ${BONITA_VERSION:-7.6.1}
-ENV TOMCAT_VERSION ${TOMCAT_VERSION:-8.5.23}
-ENV BONITA_DBTOOL_VERSION 7.0.0-07
-ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
 
 COPY --from=builder /opt /opt
 COPY --from=builder /tmp/gosu /usr/local/bin/gosu

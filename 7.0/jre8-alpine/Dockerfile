@@ -18,7 +18,7 @@ RUN set -x; \
                    curl
 
 # Import Lighstreamer's public key
-RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 9B90BFD14309C7DA5EF58D7D4A8C08966F29B4D2
+RUN gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9B90BFD14309C7DA5EF58D7D4A8C08966F29B4D2
 
 # Download the distribution from the Lightstreamer site, verify the signature, and unpack
 RUN  set -x; \

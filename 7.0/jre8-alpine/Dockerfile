@@ -15,28 +15,28 @@ RUN set -x; \
         apk add --no-cache --virtual .deps \
                    gnupg \
                    tar \
-                   curl
+                   curl \
 
 # Import Lighstreamer's public key
-RUN gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9B90BFD14309C7DA5EF58D7D4A8C08966F29B4D2
+        && gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9B90BFD14309C7DA5EF58D7D4A8C08966F29B4D2 \
 
 # Download the distribution from the Lightstreamer site, verify the signature, and unpack
-RUN  set -x; \
-         curl -fSL -o Lightstreamer.tar.gz ${LIGHTSTREAMER_URL_DOWNLOAD} \
-         && curl -fSL -o Lightstreamer.tar.gz.asc ${LIGHTSTREAMER_URL_DOWNLOAD}.asc \
-         && gpg --batch --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
-         && tar -xvf Lightstreamer.tar.gz --strip-components=1 \
+        &&  set -x; \
+               curl -fSL -o Lightstreamer.tar.gz ${LIGHTSTREAMER_URL_DOWNLOAD} \
+               && curl -fSL -o Lightstreamer.tar.gz.asc ${LIGHTSTREAMER_URL_DOWNLOAD}.asc \
+               && gpg --batch --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \
+               && tar -xvf Lightstreamer.tar.gz --strip-components=1 \
 
 # Replace the fictitious jdk path with the JAVA_HOME environment variable in the launch script file
-         && sed -i -- 's/\/usr\/jdk1.8.0/$JAVA_HOME/' bin/unix-like/LS.sh \
+               && sed -i -- 's/\/usr\/jdk1.8.0/$JAVA_HOME/' bin/unix-like/LS.sh \
 
 # Adjust the logging configuration in order to log only on standard output.
-         && sed -i -e '123,$s/<appender-ref ref="LSDailyRolling" \/>/<appender-ref ref="LSConsole" \/>/' \
-                   -e '/<appender-ref ref="LSDailyRolling" \/>/ d' conf/lightstreamer_log_conf.xml \
+               && sed -i -e '123,$s/<appender-ref ref="LSDailyRolling" \/>/<appender-ref ref="LSConsole" \/>/' \
+                         -e '/<appender-ref ref="LSDailyRolling" \/>/ d' conf/lightstreamer_log_conf.xml \
 
 # Finally, remove no longer needed packages and files
-         && apk del .deps \
-         && rm Lightstreamer.tar.gz Lightstreamer.tar.gz.asc
+               && apk del .deps \
+               && rm Lightstreamer.tar.gz Lightstreamer.tar.gz.asc
 
 # Export TCP port 8080
 EXPOSE 8080

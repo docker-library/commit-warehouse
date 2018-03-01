@@ -11,7 +11,7 @@ ENV LIGHTSTREAMER_URL_DOWNLOAD http://www.lightstreamer.com/repo/distros/Lightst
 WORKDIR /lightstreamer
 
 # Install the required packages
-RUN set -x; \
+RUN set -ex; \
         apk add --no-cache --virtual .deps \
                    gnupg \
                    tar \
@@ -21,7 +21,7 @@ RUN set -x; \
         && gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9B90BFD14309C7DA5EF58D7D4A8C08966F29B4D2 \
 
 # Download the distribution from the Lightstreamer site, verify the signature, and unpack
-        &&  set -x; \
+        &&  set -ex; \
                curl -fSL -o Lightstreamer.tar.gz ${LIGHTSTREAMER_URL_DOWNLOAD} \
                && curl -fSL -o Lightstreamer.tar.gz.asc ${LIGHTSTREAMER_URL_DOWNLOAD}.asc \
                && gpg --batch --verify Lightstreamer.tar.gz.asc Lightstreamer.tar.gz \

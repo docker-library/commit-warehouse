@@ -17,6 +17,14 @@ HTTP_API=${HTTP_API:-false}
 # Clustering mode 
 CLUSTER_MODE=${CLUSTER_MODE:-false}
 
+# In order to keep consistency between nodes, the Hibernate cache must be disabled
+if [ "${CLUSTER_MODE}" = 'true' ]
+then
+	USE_SECOND_LEVEL_CACHE='false'
+else
+	USE_SECOND_LEVEL_CACHE='true'
+fi
+
 # retrieve the db parameters from the container linked
 if [ -n "$POSTGRES_PORT_5432_TCP_PORT" ]
 then
@@ -171,7 +179,8 @@ find ${BONITA_PATH}/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION
     -e 's/^platform.tenant.default.password\s*=.*/'"platform.tenant.default.password=${TENANT_PASSWORD}"'/' \
     -e 's/^#platformAdminUsername\s*=.*/'"platformAdminUsername=${PLATFORM_LOGIN}"'/' \
     -e 's/^#platformAdminPassword\s*=.*/'"platformAdminPassword=${PLATFORM_PASSWORD}"'/' \
-    -e 's/^#bonita.cluster\s*=.*/'"bonita.cluster=${CLUSTER_MODE}"'/'
+    -e 's/^#bonita.cluster\s*=.*/'"bonita.cluster=${CLUSTER_MODE}"'/' \
+    -e 's/^#bonita.platform.persistence.use_second_level_cache\s*=.*/'"bonita.platform.persistence.use_second_level_cache=${USE_SECOND_LEVEL_CACHE}"'/'
 
 sed -i -e 's/{{JAVA_OPTS}}/'"${JAVA_OPTS}"'/' ${BONITA_PATH}/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/setup/tomcat-templates/setenv.sh
 

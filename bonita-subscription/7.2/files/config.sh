@@ -18,6 +18,14 @@ HTTP_API=${HTTP_API:-false}
 CLUSTER_MODE=${CLUSTER_MODE:-false}
 BONITA_HOME_COMMON_PATH=${BONITA_HOME_COMMON_PATH:-/opt/bonita_home}
 
+# In order to keep consistency between nodes, the Hibernate cache must be disabled
+if [ "${CLUSTER_MODE}" = 'true' ]
+then
+	USE_SECOND_LEVEL_CACHE='false'
+else
+	USE_SECOND_LEVEL_CACHE='true'
+fi
+
 # retrieve the db parameters from the container linked
 if [ -n "$POSTGRES_PORT_5432_TCP_PORT" ]
 then
@@ -181,6 +189,7 @@ sed -e 's/{{PLATFORM_LOGIN}}/'"${PLATFORM_LOGIN}"'/' \
     -e 's/{{PLATFORM_PASSWORD}}/'"${PLATFORM_PASSWORD}"'/' \
     -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/bonita/engine-server/conf/platform/bonita-platform-community-custom.properties
 sed -e 's/{{CLUSTER_MODE}}/'"${CLUSTER_MODE}"'/' \
+    -e 's/{{USE_SECOND_LEVEL_CACHE}}/'"${USE_SECOND_LEVEL_CACHE}"'/' \
     -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/bonita/engine-server/conf/platform/bonita-platform-sp-custom.properties
 sed 's@{{BONITA_HOME_PATH}}@'"${BONITA_HOME_COMMON_PATH}"'@' -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/bin/setenv.sh
 sed 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' -i ${BONITA_PATH}/BonitaBPMSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/bin/setenv.sh

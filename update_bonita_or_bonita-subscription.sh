@@ -1,17 +1,20 @@
 #!/bin/bash
+
+set -euxo pipefail
+
 if [ "$#" -ne 2 ]; 
 then
 	echo "Usage : `basename "$0"` x.y.z [community|subscription]"
 	exit 1
 fi
 NEW_RELEASE=$1
-MINOR=7.6
+MINOR=$(echo $NEW_RELEASE | cut -d"." -f1-2)
 EDITION=$2
 LAST_RELEASE=`grep "^ENV BONITA_VERSION" bonita/${MINOR}/Dockerfile | awk '{ print $3 }'`
 BASE_URL="http://repositories.rd.lan/nas/releases/bonita_platform/7.x/${MINOR}.x/${NEW_RELEASE}"
 TOMCAT_VERSION="8.5.23"
 
-echo "updating $ed"
+echo "updating $EDITION"
 case $EDITION in
 "community")
         BUNDLE="BonitaCommunity-${NEW_RELEASE}-Tomcat-${TOMCAT_VERSION}"

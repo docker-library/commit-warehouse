@@ -84,3 +84,6 @@ EXPOSE 8080 5701
 
 # command to run when the container starts
 CMD ["/opt/files/startup.sh"]
+
+
+HEALTHCHECK --interval=10s --start-period=5m --retries=18 CMD ["/opt/files/healthcheck.sh"]

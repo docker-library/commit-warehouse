@@ -3,4 +3,4 @@ set -Eeuo pipefail
 
 cd "$(dirname "$(readlink -f "$BASH_SOURCE")")"
 
-exec ./bad.sh --all
+exec ./push.sh --all

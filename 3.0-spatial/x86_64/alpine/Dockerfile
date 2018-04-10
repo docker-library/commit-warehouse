@@ -10,11 +10,11 @@ MAINTAINER OrientDB LTD (info@orientdb.com)
 #   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 
-ENV ORIENTDB_VERSION 3.0.0RC2
-ENV ORIENTDB_DOWNLOAD_MD5 c59fc0fd19539755202fbbe3d0c62675
-ENV ORIENTDB_DOWNLOAD_SHA1 07a9531cb8ff6fa9cfda0e4e58e4fd99396dd418
+ENV ORIENTDB_VERSION 3.0.0
+ENV ORIENTDB_DOWNLOAD_MD5 6e60393e6739e3d60cd8068a2171b3fd
+ENV ORIENTDB_DOWNLOAD_SHA1 c4b3298466b1083a629248673552072ac13a4fb4
 
-ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community-spatial/$ORIENTDB_VERSION/orientdb-community-spatial-$ORIENTDB_VERSION.tar.gz
+ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-tp3/$ORIENTDB_VERSION/orientdb-tp3-$ORIENTDB_VERSION.tar.gz
 
 RUN apk add --update tar curl \
     && rm -rf /var/cache/apk/*
@@ -22,10 +22,10 @@ RUN apk add --update tar curl \
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \
   wget  $ORIENTDB_DOWNLOAD_URL \
-  && echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-spatial-$ORIENTDB_VERSION.tar.gz" | md5sum -c - \
-  && echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-spatial-$ORIENTDB_VERSION.tar.gz" | sha1sum -c - \
-  && tar -xvzf orientdb-community-spatial-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 \
-  && rm orientdb-community-spatial-$ORIENTDB_VERSION.tar.gz \
+  && echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-tp3-$ORIENTDB_VERSION.tar.gz" | md5sum -c - \
+  && echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-tp3-$ORIENTDB_VERSION.tar.gz" | sha1sum -c - \
+  && tar -xvzf orientdb-tp3-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 \
+  && rm orientdb-tp3-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*
 
 

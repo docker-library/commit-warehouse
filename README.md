@@ -4,9 +4,6 @@ A project that produces a Docker image of [Silverpeas 6](http://www.silverpeas.o
 It is dedicated for building the [official images of Silverpeas 6](https://hub.docker.com/_/silverpeas/)
 in the [Docker Hub](https://hub.docker.com/).
 
-Be caution, Silverpeas 6 is currently in development and it is not production-ready. 
-Silverpeas 6.0-SNAPSHOT is the development version of 6.0.
-
 ## Docker descriptor generation
 
 The `Dockerfile` used to build a Docker image of Silverpeas 6 is generated from the template 

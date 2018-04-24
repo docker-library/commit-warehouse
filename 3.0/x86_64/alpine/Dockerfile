@@ -11,10 +11,10 @@ MAINTAINER OrientDB LTD (info@orientdb.com)
 ARG ORIENTDB_DOWNLOAD_SERVER
 
 ENV ORIENTDB_VERSION 3.0.0
-ENV ORIENTDB_DOWNLOAD_MD5 6e60393e6739e3d60cd8068a2171b3fd
-ENV ORIENTDB_DOWNLOAD_SHA1 c4b3298466b1083a629248673552072ac13a4fb4
+ENV ORIENTDB_DOWNLOAD_MD5 a37882e6f6f2c47359e656a6b8d2c932
+ENV ORIENTDB_DOWNLOAD_SHA1 65e828817892a84a722e66a1f4e34be953aca448
 
-ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-tp3/$ORIENTDB_VERSION/orientdb-tp3-$ORIENTDB_VERSION.tar.gz
+ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
 RUN apk add --update tar curl \
     && rm -rf /var/cache/apk/*
@@ -22,10 +22,10 @@ RUN apk add --update tar curl \
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \
   wget  $ORIENTDB_DOWNLOAD_URL \
-  && echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-tp3-$ORIENTDB_VERSION.tar.gz" | md5sum -c - \
-  && echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-tp3-$ORIENTDB_VERSION.tar.gz" | sha1sum -c - \
-  && tar -xvzf orientdb-tp3-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 \
-  && rm orientdb-tp3-$ORIENTDB_VERSION.tar.gz \
+  && echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | md5sum -c - \
+  && echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha1sum -c - \
+  && tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 \
+  && rm orientdb-community-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*
 
 

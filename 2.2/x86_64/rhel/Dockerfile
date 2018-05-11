@@ -10,16 +10,16 @@ MAINTAINER OrientDB LTD (info@orientdb.com)
 #   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 
-ENV ORIENTDB_VERSION 2.2.34
-ENV ORIENTDB_DOWNLOAD_MD5 3305f8e93e5bbc1f256fb8400783af4e
-ENV ORIENTDB_DOWNLOAD_SHA1 371e6819f7d6969e952776aedb26f15a9ff1fb7e
+ENV ORIENTDB_VERSION 2.2.35
+ENV ORIENTDB_DOWNLOAD_MD5 9cc574028860b85f1b910a3c43e43082
+ENV ORIENTDB_DOWNLOAD_SHA1 e9fca1028228249fa3f81094df2246802e880b52
 
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
 LABEL name="orientdb/orientdb" \
       vendor="OrientDB LTD." \
       version="2.2" \
-      release=“34” \
+      release=“35” \
       summary="OrientDB multi-model database" \
       description="OrientDB multi-model database" \
 ### Recommended labels below

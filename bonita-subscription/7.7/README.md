@@ -12,16 +12,16 @@ Bonita is an open-source business process management and workflow suite created 
 
 First genereate a request key into a container with a specific hostname (-h):
 
-	docker run --rm --name=bonita -h bonita -ti bonitasoft/bonita-subscription:7.6.0 /bin/bash
-	unzip /opt/files/BonitaSubscription-7.6.0-Tomcat-8.5.23.zip
-	cd BonitaSubscription-7.6.0-Tomcat-8.5.23/server/request_key_utils/
+	docker run --rm --name=bonita -h bonita -ti bonitasoft/bonita-subscription:7.7.0 /bin/bash
+	unzip /opt/files/BonitaSubscription-7.7.0-Tomcat-8.5.31.zip
+	cd BonitaSubscription-7.7.0-Tomcat-8.5.31/server/request_key_utils/
 	./generateRequestKey.sh
 	exit
 	
 Retrieve the licence from the [customer portal](https://customer.bonitasoft.com) and place it to a directory on your host :	
 
     mkdir ~/Documents/Docker/Volumes/bonita-subscription
-    cp ~/Téléchargements/BonitaSubscription-7.6-Cloud_Techuser-bonita-20170124-20170331.lic ~/Documents/Docker/Volumes/bonita-subscription
+    cp ~/Téléchargements/BonitaSubscription-7.7-Cloud_Techuser-bonita-20170124-20170331.lic ~/Documents/Docker/Volumes/bonita-subscription
 
 Then we can launch the Bonita container with the same hostname (-h) and this host directory mounted (-v) :
 
@@ -46,7 +46,7 @@ You can access to the portal on http://localhost:8080/bonita and login using the
 ### Oracle
 
 	docker run --name mydboracle -d alexeiled/docker-oracle-xe-11g
-	docker run --name bonita_oracle --link mydboracle:oracle -e DB_ADMIN_USER="sys as sysdba" -e DB_ADMIN_PASS=oracle -e DB_NAME=xe -e BIZ_DB_NAME=xe -h bonita -v ~/Documents/Docker/Volumes/bonita-subscription-7.6/:/opt/bonita_lic/ -d -p 8080:8080 bonitasoft/bonita-subscription:7.6.0
+	docker run --name bonita_oracle --link mydboracle:oracle -e DB_ADMIN_USER="sys as sysdba" -e DB_ADMIN_PASS=oracle -e DB_NAME=xe -e BIZ_DB_NAME=xe -h bonita -v ~/Documents/Docker/Volumes/bonita-subscription-7.7/:/opt/bonita_lic/ -d -p 8080:8080 bonitasoft/bonita-subscription:7.7.0
 
 ## Modify default credentials
 

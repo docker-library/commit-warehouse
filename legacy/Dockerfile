@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
 		git \
 		imagemagick \
 		libicu-dev \
-		# Required for SytaxHighlighting
+		# Required for SyntaxHighlighting
 		python \
 	--no-install-recommends && rm -r /var/lib/apt/lists/*
 
@@ -33,10 +33,10 @@ RUN mkdir -p /var/www/data \
 	&& chown -R www-data:www-data /var/www/data
 
 # Version
-ENV MEDIAWIKI_MAJOR_VERSION 1.29
-ENV MEDIAWIKI_BRANCH REL1_29
-ENV MEDIAWIKI_VERSION 1.29.2
-ENV MEDIAWIKI_SHA512 53c6ca82280938d1e3281aa296f44c86dcfbbdf82710b7de578e73e1ef3150db145e059c8c8208859bc437f7a7f7a13eed896be9d44fd364a0ee6d78893fbe86
+ENV MEDIAWIKI_MAJOR_VERSION 1.30
+ENV MEDIAWIKI_BRANCH REL1_30
+ENV MEDIAWIKI_VERSION 1.30.0
+ENV MEDIAWIKI_SHA512 ec4aeb08c18af0e52aaf99124d43cd357328221934d593d87f38da804a2f4a5b172a114659f87f6de58c2140ee05ae14ec6a270574f655e7780a950a51178643
 
 # MediaWiki setup
 RUN curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz \

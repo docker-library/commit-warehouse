@@ -25,7 +25,7 @@ RUN mkdir /orientdb && \
   && echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-tp3-$ORIENTDB_VERSION.tar.gz" | md5sum -c - \
   && echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-tp3-$ORIENTDB_VERSION.tar.gz" | sha1sum -c - \
   && tar -xvzf orientdb-tp3-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 \
-  && rm orientdb-tp3-$ORIENTDB_VERSION.tar.gz
+  && rm orientdb-tp3-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*
 
 #overrides internal gremlin-server to set binding to 0.0.0.0 instead of localhost

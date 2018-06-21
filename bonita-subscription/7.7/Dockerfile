@@ -3,7 +3,7 @@ FROM ubuntu:16.04 as base
 # common variables
 ARG BONITA_VERSION
 ARG TOMCAT_VERSION
-ENV BONITA_VERSION ${BONITA_VERSION:-7.7.0.beta-03}
+ENV BONITA_VERSION ${BONITA_VERSION:-7.7.0}
 ENV TOMCAT_VERSION ${TOMCAT_VERSION:-8.5.31}
 ENV BONITA_DBTOOL_VERSION 7.0.0-07
 ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
@@ -32,7 +32,7 @@ ARG BONITA_DBTOOL_URL
 ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/bonita_platform/7.x/7.7.x/7.7.0/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
 #ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/bonita_platform/7.x/7.7.x/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
 ENV BONITA_URL ${BASE_URL}/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
-ENV BONITA_SHA256  ${BONITA_SHA256:-1b6132dea081ae699bd49e3ab0aa2320b65b4c09adefd7a863d42dad098d0042}
+ENV BONITA_SHA256  ${BONITA_SHA256:-821bcd72143851714c551ad88a1f16937c74ea05c9f1e061709f61b2b9f2eb4a}
 ENV BONITA_DBTOOL_SHA256 ${BONITA_DBTOOL_SHA256:-ab285b1babd64ab5e65e1cff976d009a2ed3b4a686079c65843ef26c382bd23f}
 ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/repository/releases/org/bonitasoft/tools/bonita-deployer/${BONITA_DBTOOL_VERSION}}
 

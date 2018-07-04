@@ -7,7 +7,8 @@ fi
 # ensure to apply the proper configuration
 if [ ! -f /opt/${BONITA_VERSION}-configured ]
 then
-	gosu bonita /opt/files/config.sh && touch /opt/${BONITA_VERSION}-configured || exit 1
+	gosu bonita /opt/files/config.sh \
+      && touch /opt/${BONITA_VERSION}-configured || exit 1
 fi
 if [ -d /opt/custom-init.d/ ]
 then
@@ -17,4 +18,4 @@ then
 	done
 fi
 # launch tomcat
-exec gosu bonita /opt/bonita/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-7.0.55/bin/catalina.sh run
+exec gosu bonita /opt/bonita/BonitaCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/server/bin/catalina.sh run

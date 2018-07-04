@@ -1,14 +1,14 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 MAINTAINER Jérémy Jacquier-Roux <jeremy.jacquier-roux@bonitasoft.org>
 
 # install packages
 RUN apt-get update && apt-get install -y \
-  mysql-client-core-5.5 \
-  openjdk-7-jre-headless \
+  mysql-client-core-5.7 \
+  openjdk-8-jre-headless \
   postgresql-client \
   unzip \
-  wget \
+  curl \
   zip \
   && rm -rf /var/lib/apt/lists/*
 
@@ -20,8 +20,8 @@ RUN groupadd -r bonita -g 1000 \
 
 # grab gosu
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
-RUN wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture)" -O /usr/local/bin/gosu \
-  && wget -q "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture).asc" -O /usr/local/bin/gosu.asc \
+RUN curl -fsSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture)" -o /usr/local/bin/gosu \
+  && curl -fsSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture).asc" -o /usr/local/bin/gosu.asc \
   && gpg --verify /usr/local/bin/gosu.asc \
   && rm /usr/local/bin/gosu.asc \
   && chmod +x /usr/local/bin/gosu
@@ -32,14 +32,14 @@ ARG TOMCAT_VERSION
 ARG BONITA_SHA256
 ARG BONITA_URL
 
-ENV BONITA_VERSION ${BONITA_VERSION:-7.4.3}
-ENV TOMCAT_VERSION ${TOMCAT_VERSION:-7.0.67}
-ENV BONITA_SHA256  ${BONITA_SHA256:-5129f43d1aad7e10441e4c0a73e0ab638a64e06fcd2859947b782e08fe9b6bab}
-ENV BONITA_URL ${BONITA_URL:-http://download.forge.ow2.org/bonita/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip}
+ENV BONITA_VERSION ${BONITA_VERSION:-7.5.4}
+ENV TOMCAT_VERSION ${TOMCAT_VERSION:-7.0.76}
+ENV BONITA_SHA256  ${BONITA_SHA256:-b7ccec231d9083b1b532b0aeaa4de3d38d91cae12df1725f8a802be5be170d21}
+ENV BONITA_URL ${BONITA_URL:-https://download.forge.ow2.org/bonita/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip}
 
 # add Bonita BPM archive to the container
 RUN mkdir /opt/files \
-  && wget -q ${BONITA_URL} -O /opt/files/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
+  && curl -fsSL ${BONITA_URL} -o /opt/files/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
 
 # display downloaded checksum
 RUN sha256sum /opt/files/BonitaBPMCommunity-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip

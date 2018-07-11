@@ -5,7 +5,6 @@ PERF_BROKER_ADDRESS=${PERF_BROKER_ADDRESS:-`ifconfig eth0 | grep 'inet addr:'|cu
 JAVA_OPTS=${JAVA_OPTS:-"-Xmx2g -Xms1g -Xss256m -XX:PermSize=256m -XX:MaxPermSize=512m"}
 
 if ! [ -z "$BONITA_PORT_8080_TCP_ADDR" ]; then
-	echo "youpi"
 	PERF_BONITA_URL=http://$BONITA_PORT_8080_TCP_ADDR:8080
 fi
 export PERF_BROKER_ADDRESS 

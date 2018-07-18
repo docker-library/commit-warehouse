@@ -13,6 +13,7 @@ ENV PERF_RESULTS_DIRECTORY /opt/results
 ENV PERF_SERVER_MODE false
 ENV PERF_TOOL_ARCHIVE_FILE PerfLauncher-bonitaBPM6-sp-client-${BONITA_VERSION}-1.0-SNAPSHOT-postgres.zip
 ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/performance_tools/}
+ENV PERF_THINK_TIME ${PERF_THINK_TIME:-30}
 
 # avoid debconf messages
 ENV DEBIAN_FRONTEND noninteractive

@@ -6,11 +6,21 @@ Maintainers: Miguel Moquillon <miguel.moquillon@silverpeas.org> (@mmoqui)
 GitRepo: https://github.com/Silverpeas/docker-silverpeas-prod.git
 EOH
 
-for version in `git tag | tac | grep "^[0-9.]\+$"`; do
-  commit=`git rev-parse ${version}`
+function printVersion() {
   cat <<-EOE
 
-Tags: ${version}
-GitCommit: ${commit}
+Tags: $1
+GitCommit: $2
 	EOE
+}
+
+isFirst=1
+for version in `git tag | tac | grep "^[0-9.]\+$"`; do
+  commit=`git rev-parse ${version}`
+  if [ $isFirst -eq 1 ]; then
+    isFirst=0
+    printVersion "${version}, latest" ${commit}
+  else
+    printVersion "${version}" ${commit}
+  fi
 done

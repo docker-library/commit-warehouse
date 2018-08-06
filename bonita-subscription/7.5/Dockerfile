@@ -7,8 +7,8 @@ RUN apt-get update \
 
 # grab gosu
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
-  && curl -fsSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture)" -o /tmp/gosu \
-  && curl -fsSL "https://github.com/tianon/gosu/releases/download/1.6/gosu-$(dpkg --print-architecture).asc" -o /tmp/gosu.asc \
+  && curl -fsSL "https://github.com/tianon/gosu/releases/download/1.10/gosu-$(dpkg --print-architecture)" -o /tmp/gosu \
+  && curl -fsSL "https://github.com/tianon/gosu/releases/download/1.10/gosu-$(dpkg --print-architecture).asc" -o /tmp/gosu.asc \
   && gpg --batch --verify /tmp/gosu.asc /tmp/gosu \
   && chmod +x /tmp/gosu
 

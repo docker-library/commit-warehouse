@@ -29,8 +29,7 @@ ARG BASE_URL
 ARG BONITA_DBTOOL_SHA256
 ARG BONITA_DBTOOL_URL
 
-ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/bonita_platform/7.x/7.7.x/7.7.0/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
-#ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/bonita_platform/7.x/7.7.x/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
+ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/bonita_platform/7.x/7.7.x/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
 ENV BONITA_URL ${BASE_URL}/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
 ENV BONITA_SHA256  ${BONITA_SHA256:-90347a0a67ecab56aae9bbf11d6e987600f7e5bacfdf3f39c827605c50ffb027}
 ENV BONITA_DBTOOL_SHA256 ${BONITA_DBTOOL_SHA256:-ab285b1babd64ab5e65e1cff976d009a2ed3b4a686079c65843ef26c382bd23f}

@@ -121,6 +121,18 @@
             <param-value>^/(bonita/)?(apps/.+/API/.+)|(portal/resource/.+/API/.+)</param-value>
         </init-param -->
     </filter>
+    <!-- Kerberos Authentication filter -->
+    <filter>
+        <filter-name>KerberosFilter</filter-name>
+        <filter-class>org.bonitasoft.console.common.server.auth.impl.kerberos.filter.BonitaKerberosFilter</filter-class>
+        <!--
+            We need to let a set of URL not filtered (REST APIs)
+        -->
+        <!-- init-param>
+            <param-name>excludePattern</param-name>
+            <param-value>^/(bonita/)?(apps/.+/API/.+)|(portal/resource/.+/API/.+)</param-value>
+        </init-param -->
+    </filter>
     <!-- Authentication filter -->
     <filter>
         <filter-name>AuthenticationFilter</filter-name>
@@ -206,6 +218,7 @@
     <filter-mapping>
         <filter-name>RestAPIAuthorizationFilter</filter-name>
         <url-pattern>/API/*</url-pattern>
+        <url-pattern>/APIv2/*</url-pattern>
         <url-pattern>/APIToolkit/*</url-pattern>
         <!-- see TokenValidatorFilter comment -->
         <url-pattern>/portal/custom-page/API/*</url-pattern>
@@ -251,6 +264,14 @@
         <url-pattern>/apps/*</url-pattern>
         <!-- Intercept logout request to handle SAML global logout -->
         <url-pattern>/logoutservice</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>KerberosFilter</filter-name>
+        <url-pattern>/portal/homepage</url-pattern>
+        <url-pattern>/portal/resource/*</url-pattern>
+        <url-pattern>/portal/form/*</url-pattern>
+        <url-pattern>/mobile/*</url-pattern>
+        <url-pattern>/apps/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AuthenticationFilter</filter-name>
@@ -574,6 +595,17 @@
         <servlet-name>HttpAPIServlet</servlet-name>
         <servlet-class>org.bonitasoft.engine.api.internal.servlet.HttpAPIServlet</servlet-class>
     </servlet>-->
+    
+    
+     <!-- For new experimental engine Rest API -->
+    <servlet>
+        <servlet-name>EngineAPIv2Servlet</servlet-name>
+        <servlet-class>com.bonitasoft.engine.api.internal.servlet.EngineServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EngineAPIv2Servlet</servlet-name>
+        <url-pattern>/APIv2/service/install</url-pattern>
+    </servlet-mapping>
     
     <!-- For mobile -->
     

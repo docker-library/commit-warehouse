@@ -22,8 +22,9 @@ RUN set -ex; \
 # Replace the fictitious jdk path with the JAVA_HOME environment variable in the launch script file
         && sed -i -- 's/\/usr\/jdk1.8.0/$JAVA_HOME/' bin/unix-like/LS.sh \
 # Adjust the logging configuration in order to log only on standard output
-        && sed -i -e '123,$s/<appender-ref ref="LSDailyRolling" \/>/<appender-ref ref="LSConsole" \/>/' \
-                  -e '/<appender-ref ref="LSDailyRolling" \/>/ d' conf/lightstreamer_log_conf.xml \
+        && sed -i -e '164,$s/<appender-ref ref="LSConsole" \/>/<!--<appender-ref ref="LSConsole" \/>-->/' \
+                  -e '116,$s/<appender-ref ref="LSDailyRolling" \/>/<appender-ref ref="LSConsole" \/>/' \
+                  -e '/<!--<appender-ref ref="LSConsole" \/>-->/ d' conf/lightstreamer_log_conf.xml \
 # Finally, remove no longer needed files
         && rm Lightstreamer.tar.gz Lightstreamer.tar.gz.asc
 

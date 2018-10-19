@@ -16,6 +16,8 @@ REST_API_DYN_AUTH_CHECKS=${REST_API_DYN_AUTH_CHECKS:-true}
 HTTP_API=${HTTP_API:-false}
 # Clustering mode 
 CLUSTER_MODE=${CLUSTER_MODE:-false}
+# JDBC driver
+JDBC_DRIVER=${JDBC_DRIVER:-}
 
 # In order to keep consistency between nodes, the Hibernate cache must be disabled
 if [ "${CLUSTER_MODE}" = 'true' ]
@@ -101,6 +103,17 @@ if [ ! -d ${BONITA_PATH}/${BONITA_DBTOOL} ]
 then
 	unzip -q ${BONITA_FILES}/${BONITA_DBTOOL}.zip -d ${BONITA_PATH}
 fi
+
+
+# Custom configuration entry point
+if [ -d /opt/custom-config.d/ ]
+then
+  for f in $(ls -v /opt/custom-config.d/*.sh)
+  do
+    [ -f "$f" ] && . "$f"
+  done
+fi
+
 
 if [ "${ENSURE_DB_CHECK_AND_CREATION}" = 'true' ]
 then

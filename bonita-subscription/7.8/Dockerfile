@@ -37,6 +37,7 @@ ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/re
 
 # create destination folder for downloads
 RUN mkdir /opt/custom-init.d/ \
+  && mkdir /opt/custom-config.d/ \
   && mkdir /opt/files
 
 # retrieve bonita deployer databases tool
@@ -50,6 +51,13 @@ COPY templates /opt/templates
 RUN curl -fsSL ${BONITA_URL} -o /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
   && sha256sum /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
   && echo "$BONITA_SHA256" /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
+
+# install license module
+COPY bonita-license /bonita-license
+
+RUN apt-get update && apt-get -y install build-essential libxslt-dev python python-dev python-setuptools \
+  && easy_install -U pip==9.0.3 \
+  && pip install /bonita-license
 
 
 
@@ -65,15 +73,20 @@ RUN apt-get update && apt-get install -y \
   unzip \
   zip \
   ant \
+  python \
+  cron \
   && rm -rf /var/lib/apt/lists/*
-
 
 COPY --from=builder /opt /opt
 COPY --from=builder /tmp/gosu /usr/local/bin/gosu
 
+COPY --from=builder /usr/local/lib/python2.7/dist-packages /usr/local/lib/python2.7/dist-packages
+
 # create user to launch Bonita as non-root
 RUN groupadd -r bonita -g 1000 \
-  && useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita
+  && useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita \
+  && touch /var/log/cron.log \
+  && chown bonita:bonita /var/log/cron.log
 
 # volumes
 VOLUME ["/opt/bonita", "/opt/bonita_lic"]

@@ -82,14 +82,13 @@ COPY --from=builder /tmp/gosu /usr/local/bin/gosu
 
 COPY --from=builder /usr/local/lib/python2.7/dist-packages /usr/local/lib/python2.7/dist-packages
 
+# volumes
+VOLUME ["/opt/bonita", "/opt/bonita_lic"]
+
 # create user to launch Bonita as non-root
 RUN groupadd -r bonita -g 1000 \
   && useradd -u 1000 -r -g bonita -d /opt/bonita/ -s /sbin/nologin -c "Bonita User" bonita \
-  && touch /var/log/cron.log \
-  && chown bonita:bonita /var/log/cron.log
-
-# volumes
-VOLUME ["/opt/bonita", "/opt/bonita_lic"]
+  && touch /opt/bonita/cron.log
 
 # exposed ports (Tomcat, Hazelcast)
 EXPOSE 8080 5701

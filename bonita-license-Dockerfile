@@ -1,0 +1,5 @@
+FROM scratch
+
+VOLUME /bonita-license
+
+COPY * /bonita-license/

@@ -53,7 +53,7 @@ RUN curl -fsSL ${BONITA_URL} -o /opt/files/BonitaSubscription-${BONITA_VERSION}-
   && echo "$BONITA_SHA256" /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
 
 # install license module
-COPY bonita-license /bonita-license
+COPY --from=bonitasoft/bonita-license:latest /bonita-license /bonita-license
 
 RUN apt-get update && apt-get -y install build-essential libxslt-dev python python-dev python-setuptools \
   && easy_install -U pip==9.0.3 \

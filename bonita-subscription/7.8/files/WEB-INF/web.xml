@@ -216,6 +216,14 @@
         <url-pattern>/apps/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <url-pattern>/portal/*</url-pattern>
+        <url-pattern>/mobile/*</url-pattern>
+        <url-pattern>/portal.js/*</url-pattern>
+        <url-pattern>/apps/*</url-pattern>
+        <url-pattern>/services/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
         <filter-name>RestAPIAuthorizationFilter</filter-name>
         <url-pattern>/API/*</url-pattern>
         <url-pattern>/APIv2/*</url-pattern>
@@ -272,14 +280,6 @@
         <url-pattern>/portal/form/*</url-pattern>
         <url-pattern>/mobile/*</url-pattern>
         <url-pattern>/apps/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>AuthenticationFilter</filter-name>
-        <url-pattern>/portal/*</url-pattern>
-        <url-pattern>/mobile/*</url-pattern>
-        <url-pattern>/portal.js/*</url-pattern>
-        <url-pattern>/apps/*</url-pattern>
-        <url-pattern>/services/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>BPMURLSupportFilter</filter-name>

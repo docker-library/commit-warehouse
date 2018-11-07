@@ -2,11 +2,27 @@
 
 set -e
 
-dpkgArch="$(uname -m)";
- 
+fetcharch()
+{
+    if [ -x /usr/bin/arch -o -x /bin/arch ]; then
+	ARCH=`arch`
+	return
+    fi
+
+    if [ -x /usr/bin/uname -o -x /bin/uname ]; then
+	ARCH=`uname -m`
+	return
+    fi
+
+    if [ "$ARCH" == "" ]; then
+	echo "$0 uses 'arch' or 'uname' which appear to be missing"
+	exit 1
+    fi
+}
+
 buildrootfs()
 {
-	case "${dpkgArch##*-}" in
+	case "${ARCH}" in
 	x86_64)
 		url=${1:-http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-3.4.iso}
 		version=$(basename --suffix=.iso $url | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
@@ -45,6 +61,8 @@ buildrootfs()
 }
 
 main() {
+    fetcharch
+
     # TODO: Add more options (test, commit, push, etc)
     case "$1" in
 	build)

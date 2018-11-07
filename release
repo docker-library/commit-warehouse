@@ -30,41 +30,40 @@ buildrootfs()
 {
     case "${ARCH}" in
 	x86_64)
-	    url="http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-3.4.iso"
-	    version=$(basename --suffix=.iso $url | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
+	    url="http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-${VERSION}.iso"
 
 	    if docker ps -a | grep -q cruxbuild; then
 		docker rm -f cruxbuild > /dev/null
 	    fi
 
-	    docker build -t cruxbuild build/3.4/x86_64
+	    docker build -t cruxbuild build/${VERSION}/x86_64
 
 	    docker run \
 		   -i -t --privileged \
 		   --name cruxbuild \
 		   -e URL=${url} \
-		   -e VERSION=${version} \
+		   -e VERSION=${VERSION} \
 		   cruxbuild
 
 	    docker cp cruxbuild:/buildenv/rootfs.tar.xz build/${VERSION}/x86_64
 	    docker rm -f cruxbuild
 
-	    if $(git show-ref --verify --quiet refs/heads/${version}); then
-		git branch -D ${version}
+	    if $(git show-ref --verify --quiet refs/heads/${VERSION}); then
+		git branch -D ${VERSION}
 	    fi
 
-	    git checkout -b ${version} origin/dist
+	    git checkout -b ${VERSION} origin/dist
 
 	    git add rootfs.tar.xz
-	    git commit -m "${version}"
+	    git commit -m "${VERSION}"
 
-	    docker build -t crux:${version} .
+	    docker build -t crux:${VERSION} .
 	    ;;
 
 	aarch64)
-	    $sh build/3.4/aarch64/crux-fetch.sh
+	    ./build/${VERSION}/aarch64/crux-fetch.sh ${VERSION}
 
-	    docker build -t cruxbuild build/3.4/aarch64
+	    docker build -t cruxbuild build/${VERSION}/aarch64
 	    ;;
     esac;
 }
@@ -73,14 +72,12 @@ testing()
 {
     case "${ARCH}" in
 	x86_64)
-	    version=${1:-3.4}
-
-	    docker build -t cruxbuild build/3.4/x86_64
+	    docker build -t cruxbuild build/${VERSION}/x86_64
 
 	    docker run \
 		   -i -t --privileged \
 		   --name cruxbuild \
-		   -e VERSION=${version} \
+		   -e VERSION=${VERSION} \
 		   -v $(pwd)/media:/mnt/media \
 		   cruxbuild
 
@@ -90,15 +87,27 @@ testing()
 	    ;;
 
 	aarch64)
-	    $sh build/3.4/aarch64/crux-fetch.sh
+	    ./build/${VERSION}/aarch64/crux-fetch.sh ${VERSION}
 
-	    docker build -t cruxbuild build/3.4/aarch64
+	    docker build -t cruxbuild build/${VERSION}/aarch64
 	    ;;
 	esac
 }
 
 main() {
     fetcharch
+
+    if [ $# -ne 2 ]; then
+	echo "$0 requires exactly 2 arguments"
+	usage
+    fi
+
+    VERSION=$2
+
+    if ! echo $VERSION | grep -E '^[0-9]+[.][0-9]+$' > /dev/null; then
+	echo "<VERSION> should be in the format <MAJOR>.<MINOR>"
+	usage
+    fi
 
     # TODO: Add more options (commit, push, etc)
     case "$1" in

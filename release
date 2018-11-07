@@ -36,7 +36,7 @@ buildrootfs()
 		docker rm -f cruxbuild > /dev/null
 	    fi
 
-	    docker build -t cruxbuild build/${VERSION}/x86_64
+	    docker build -t cruxbuild build/${ARCH}
 
 	    docker run \
 		   -i -t --privileged \
@@ -45,43 +45,41 @@ buildrootfs()
 		   -e VERSION=${VERSION} \
 		   cruxbuild
 
-	    docker cp cruxbuild:/buildenv/rootfs.tar.xz build/${VERSION}/x86_64
+	    docker cp cruxbuild:/buildenv/rootfs.tar.xz build/${ARCH}
 	    docker rm -f cruxbuild
 	    ;;
 
 	aarch64)
-	    ./build/${VERSION}/aarch64/crux-fetch.sh ${VERSION}
+	    ./build/${ARCH}/crux-fetch.sh ${VERSION}
 	    ;;
     esac
 }
 
 committobranch()
 {
-    if git show-ref --verify --quiet refs/heads/${VERSION}-${ARCH}; then
-	git branch -D ${VERSION}-${ARCH}
+    if [ ! -e rootfs.tar.xz ]; then
+	echo "Can't find rootfs.tar.xz is it built (see: 'build' arg)?"
+	exit 1
     fi
 
-    case "${ARCH}" in
-	x86_64)
-	    git checkout -b ${VERSION} origin/dist
+    BRANCH=${VERSION}-${ARCH}
 
-	    git add rootfs.tar.xz
-	    git commit -m "${VERSION}"
+    if git show-ref --verify --quiet refs/heads/${BRANCH}; then
+	git branch -D ${BRANCH}
+    fi
 
-	    docker build -t crux:${VERSION} .
-	    ;;
+    git checkout -b ${BRANCH}
 
-	aarch64)
-	    docker build -t cruxbuild build/${VERSION}/aarch64
-	    ;;
-    esac;
+    git add build/${ARCH}/rootfs.tar.xz
+
+    git commit -m "VERSION RELEASE: ${VERSION} for ${ARCH}"
 }
 
 testing()
 {
     case "${ARCH}" in
 	x86_64)
-	    docker build -t cruxbuild build/${VERSION}/x86_64
+	    docker build -t cruxbuild build/${ARCH}
 
 	    docker run \
 		   -i -t --privileged \
@@ -96,9 +94,9 @@ testing()
 	    ;;
 
 	aarch64)
-	    ./build/${VERSION}/aarch64/crux-fetch.sh ${VERSION}
+	    ./build/${ARCH}/crux-fetch.sh ${VERSION}
 
-	    docker build -t cruxbuild build/${VERSION}/aarch64
+	    docker build -t cruxbuild build/${ARCH}
 	    ;;
 	esac
 }

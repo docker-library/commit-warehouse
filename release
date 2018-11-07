@@ -2,6 +2,12 @@
 
 set -e
 
+usage()
+{
+    echo -e "\nUsage: $0 <build|test> <VERSION>"
+    exit 1
+}
+
 fetcharch()
 {
     if [ -x /usr/bin/arch -o -x /bin/arch ]; then

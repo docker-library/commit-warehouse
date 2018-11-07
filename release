@@ -4,7 +4,7 @@ set -e
 
 usage()
 {
-    echo -e "\nUsage: $0 <build|test> <VERSION>"
+    echo -e "\nUsage: $0 <build|commit|test> <VERSION>"
     exit 1
 }
 
@@ -47,11 +47,22 @@ buildrootfs()
 
 	    docker cp cruxbuild:/buildenv/rootfs.tar.xz build/${VERSION}/x86_64
 	    docker rm -f cruxbuild
+	    ;;
 
-	    if $(git show-ref --verify --quiet refs/heads/${VERSION}); then
-		git branch -D ${VERSION}
-	    fi
+	aarch64)
+	    ./build/${VERSION}/aarch64/crux-fetch.sh ${VERSION}
+	    ;;
+    esac
+}
 
+committobranch()
+{
+    if $(git show-ref --verify --quiet refs/heads/${VERSION}-${ARCH}); then
+	git branch -D ${VERSION}-${ARCH}
+    fi
+
+    case "${ARCH}" in
+	x86_64)
 	    git checkout -b ${VERSION} origin/dist
 
 	    git add rootfs.tar.xz
@@ -61,8 +72,6 @@ buildrootfs()
 	    ;;
 
 	aarch64)
-	    ./build/${VERSION}/aarch64/crux-fetch.sh ${VERSION}
-
 	    docker build -t cruxbuild build/${VERSION}/aarch64
 	    ;;
     esac;
@@ -113,6 +122,9 @@ main() {
     case "$1" in
 	build)
 	    buildrootfs "$@"
+	    ;;
+	commit)
+	    committobranch "$@"
 	    ;;
         test)
 	    testing "$@"

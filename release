@@ -27,9 +27,11 @@ buildrootfs()
 	    url=${1:-http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-3.4.iso}
 	    version=$(basename --suffix=.iso $url | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
 
-	    docker build -t cruxbuild build
+	    if docker ps -a | grep -q cruxbuild; then
+		docker rm -f cruxbuild > /dev/null
+	    fi
 
-	    docker rm -f cruxbuild
+	    docker build -t cruxbuild build
 
 	    docker run \
 		   -i -t --privileged \

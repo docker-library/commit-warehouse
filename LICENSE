@@ -1,0 +1,20 @@
+REF: https://crux.nu/Main/Handbook3-4#ntoc5
+
+2.3. License
+
+2.3.1. Packages
+Since CRUX is a Linux distribution, it contains software written by a
+lot of different people. Each software package comes with its own
+license, chosen by its author(s). To find out how a particular package
+is licensed, have a look at its source code.
+
+2.3.2. Build Scripts
+All package build scripts in CRUX (in package categories core, opt,
+xorg, and compat-32) are Copyright © 2000-2018 by Per Lidén and the
+CRUX development team, and licensed through the GNU General Public
+License.
+
+2.3.3. NO WARRANTY
+CRUX is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. Use it at YOUR OWN RISK.

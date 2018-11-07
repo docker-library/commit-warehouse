@@ -24,7 +24,7 @@ buildrootfs()
 {
     case "${ARCH}" in
 	x86_64)
-	    url=${1:-http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-3.4.iso}
+	    url="http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-3.4.iso"
 	    version=$(basename --suffix=.iso $url | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
 
 	    if docker ps -a | grep -q cruxbuild; then
@@ -37,10 +37,10 @@ buildrootfs()
 		   -i -t --privileged \
 		   --name cruxbuild \
 		   -e URL=${url} \
-		   -v $(pwd)/media:/mnt/media \
+		   -e VERSION=${version} \
 		   cruxbuild
 
-	    docker cp cruxbuild:/build/rootfs.tar.xz build/${VERSION}/x86_64
+	    docker cp cruxbuild:/buildenv/rootfs.tar.xz build/${VERSION}/x86_64
 	    docker rm -f cruxbuild
 
 	    if $(git show-ref --verify --quiet refs/heads/${version}); then

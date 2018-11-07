@@ -3,6 +3,9 @@
 set -e
 
 dpkgArch="$(uname -m)";
+ 
+buildrootfs()
+{
 	case "${dpkgArch##*-}" in
 	x86_64)
 		url=${1:-http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-3.4.iso}
@@ -19,14 +22,14 @@ dpkgArch="$(uname -m)";
 			-v $(pwd)/media:/mnt/media \
 			cruxbuild
 
+		docker cp cruxbuild:/build/rootfs.tar.xz .
+		docker rm -f cruxbuild
+
 		if $(git show-ref --verify --quiet refs/heads/${version}); then
 			git branch -D ${version}
 		fi
 
 		git checkout -b ${version} origin/dist
-
-		docker cp cruxbuild:/build/rootfs.tar.xz .
-		docker rm -f cruxbuild
 
 		git add rootfs.tar.xz
 		git commit -m "${version}"
@@ -39,4 +42,18 @@ dpkgArch="$(uname -m)";
 
 		docker build -t cruxbuild aarch64;;
 	esac;
+}
 
+main() {
+    # TODO: Add more options (test, commit, push, etc)
+    case "$1" in
+	build)
+	    buildrootfs "$@"
+	    ;;
+        *)
+	    echo "Unrecognised argument $1"
+	    ;;
+    esac
+}
+
+main "$@"

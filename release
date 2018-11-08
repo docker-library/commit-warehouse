@@ -4,7 +4,7 @@ set -e
 
 usage()
 {
-    echo -e "\nUsage: $0 <build|commit|test> <VERSION>"
+    echo -e "\nUsage: $0 <build|commit|test|push> <VERSION>"
     exit 1
 }
 
@@ -97,6 +97,16 @@ testing()
     docker rmi ${TAG} > /dev/null
 }
 
+push()
+{
+    REMOTE=origin
+    BRANCH=${VERSION}-${ARCH}
+    RELEASE=release-${BRANCH}
+
+    echo -e "Pushing ${RELEASE} to ${REMOTE}\n"
+    git push ${REMOTE} $BRANCH:release-$BRANCH
+}
+
 main() {
     fetcharch
 
@@ -122,6 +132,9 @@ main() {
 	    ;;
         test)
 	    testing "$@"
+	    ;;
+        push)
+	    push "$@"
 	    ;;
         *)
 	    echo "Unrecognised argument $1"

@@ -26,6 +26,21 @@ fetcharch()
     fi
 }
 
+fetchversion()
+{
+    if [ $# -ne 2 ]; then
+	echo "This option requires exactly 2 arguments"
+	usage
+    fi
+
+    VERSION=$2
+
+    if ! echo $VERSION | grep -E '^[0-9]+[.][0-9]+$' > /dev/null; then
+	echo "<VERSION> should be in the format <MAJOR>.<MINOR>"
+	usage
+    fi
+}
+
 buildrootfs()
 {
     case "${ARCH}" in
@@ -110,30 +125,22 @@ push()
 main() {
     fetcharch
 
-    if [ $# -ne 2 ]; then
-	echo "$0 requires exactly 2 arguments"
-	usage
-    fi
-
-    VERSION=$2
-
-    if ! echo $VERSION | grep -E '^[0-9]+[.][0-9]+$' > /dev/null; then
-	echo "<VERSION> should be in the format <MAJOR>.<MINOR>"
-	usage
-    fi
-
     # TODO: Add more options (commit, push, etc)
     case "$1" in
 	build)
+	    fetchversion "$@"
 	    buildrootfs "$@"
 	    ;;
 	commit)
+	    fetchversion "$@"
 	    committobranch "$@"
 	    ;;
         test)
+	    fetchversion "$@"
 	    testing "$@"
 	    ;;
         push)
+	    fetchversion "$@"
 	    push "$@"
 	    ;;
         *)

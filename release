@@ -77,28 +77,25 @@ committobranch()
 
 testing()
 {
-    case "${ARCH}" in
-	x86_64)
-	    docker build -t cruxbuild build/${ARCH}
+    BRANCH=${VERSION}-${ARCH}
+    TAG=${BRANCH}-test
 
-	    docker run \
-		   -i -t --privileged \
-		   --name cruxbuild \
-		   -e VERSION=${VERSION} \
-		   -v $(pwd)/media:/mnt/media \
-		   cruxbuild
+    if ! git show-ref --verify --quiet refs/heads/${BRANCH}; then
+	echo "Can't test release ${BRANCH} is it committed (see: 'commit' arg)?"
+	exit 1
+    fi
 
-	    docker cp cruxbuild:/rootfs.tar.xz .
-	    docker import - test < rootfs.tar.xz
-	    docker rm -f cruxbuild
-	    ;;
+    git checkout ${BRANCH}
 
-	aarch64)
-	    ./build/${ARCH}/crux-fetch.sh ${VERSION}
+    if docker ps -a | grep -q ${BRANCH}; then
+	docker rm -f ${BRANCH} > /dev/null
+    fi
 
-	    docker build -t cruxbuild build/${ARCH}
-	    ;;
-	esac
+    docker build -t ${TAG} .
+
+    docker run -ti --rm ${TAG}
+
+    docker rmi ${TAG} > /dev/null
 }
 
 main() {

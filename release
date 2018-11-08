@@ -57,7 +57,7 @@ buildrootfs()
 
 committobranch()
 {
-    if $(git show-ref --verify --quiet refs/heads/${VERSION}-${ARCH}); then
+    if git show-ref --verify --quiet refs/heads/${VERSION}-${ARCH}; then
 	git branch -D ${VERSION}-${ARCH}
     fi
 

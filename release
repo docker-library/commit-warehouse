@@ -51,7 +51,7 @@ buildrootfs()
 	   cruxbuild
 
     docker cp cruxbuild:/buildenv/rootfs.tar.xz .
-    docker rm -f cruxbuild
+    docker rm -f cruxbuild > /dev/null
 }
 
 committobranch()

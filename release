@@ -30,29 +30,28 @@ buildrootfs()
 {
     case "${ARCH}" in
 	x86_64)
-	    url="http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-${VERSION}.iso"
-
-	    if docker ps -a | grep -q cruxbuild; then
-		docker rm -f cruxbuild > /dev/null
-	    fi
-
-	    docker build -t cruxbuild build/${ARCH}
-
-	    docker run \
-		   -i -t --privileged \
-		   --name cruxbuild \
-		   -e URL=${url} \
-		   -e VERSION=${VERSION} \
-		   cruxbuild
-
-	    docker cp cruxbuild:/buildenv/rootfs.tar.xz build/${ARCH}
-	    docker rm -f cruxbuild
+	    URL="http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-${VERSION}.iso"
 	    ;;
-
 	aarch64)
-	    ./build/${ARCH}/crux-fetch.sh ${VERSION}
+	    URL="http://resources.crux-arm.nu/releases/${VERSION}/crux-arm-rootfs-${VERSION}-aarch64.tar.xz"
 	    ;;
     esac
+
+    if docker ps -a | grep -q cruxbuild; then
+	docker rm -f cruxbuild > /dev/null
+    fi
+
+    docker build -t cruxbuild build/${ARCH}
+
+    docker run \
+	   -i -t --privileged \
+	   --name cruxbuild \
+	   -e URL=${URL} \
+	   -e VERSION=${VERSION} \
+	   cruxbuild
+
+    docker cp cruxbuild:/buildenv/rootfs.tar.xz .
+    docker rm -f cruxbuild
 }
 
 committobranch()
@@ -70,7 +69,7 @@ committobranch()
 
     git checkout -b ${BRANCH}
 
-    git add build/${ARCH}/rootfs.tar.xz
+    git add -f rootfs.tar.xz
 
     git commit -m "VERSION RELEASE: ${VERSION} for ${ARCH}"
 }

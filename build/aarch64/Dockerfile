@@ -1,5 +1,11 @@
-FROM scratch
-ADD rootfs.tar.xz /
+# Creates an image to build the CRUX filesystem
 
-# Add default image command
-CMD ["/bin/bash"]
+# TODO: Once bootstrapped, use 'crux:latest'
+FROM alpine:3.8
+
+RUN apk add --no-cache curl bash
+
+COPY buildenv /buildenv
+WORKDIR /buildenv
+
+CMD ["./build"]

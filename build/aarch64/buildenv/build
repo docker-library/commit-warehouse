@@ -13,9 +13,16 @@ download()
     curl -q ${URL} -o rootfs.tar.xz
 }
 
+repackage()
+{
+    unxz rootfs.tar.xz
+    xz -9 rootfs.tar
+}
+
 main()
 {
     download
+    repackage
 }
 
 main "$@"

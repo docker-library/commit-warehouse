@@ -98,6 +98,7 @@ package()
 {
     echo "Packaging Root FS ..."
 
+    XZ_OPT=-9 \
     tar --numeric-owner \
 	--exclude=/etc/mtab \
 	--exclude=/root/.bash_history \

@@ -10,6 +10,11 @@ usage()
 
 fetcharch()
 {
+    if [ "$ARCH" != "" ]; then
+	echo "ARCH forcibly set to ${ARCH} - using it instead"
+	return
+    fi
+	
     if [ -x /usr/bin/arch -o -x /bin/arch ]; then
 	ARCH=`arch`
 	return

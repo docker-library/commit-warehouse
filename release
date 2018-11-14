@@ -4,7 +4,7 @@ set -e
 
 usage()
 {
-    echo -e "\nUsage: $0 <build|commit|test|push> <VERSION>"
+    echo -e "\nUsage: $0 [<build|commit|test|push> <VERSION>] | library]"
     exit 1
 }
 
@@ -127,6 +127,51 @@ push()
     git push ${REMOTE} $BRANCH:release-$BRANCH
 }
 
+library()
+{
+    REMOTE=origin
+    local arch
+    local sha
+    local version
+    local latest=", latest"
+
+    git fetch ${REMOTE}
+
+    echo "Maintainers: James Mills <prologic@shortcircuit.net.au> (@prologic)"
+    echo "GitRepo: $(git config --get remote.${REMOTE}.url)"
+
+    for v in `git branch -r | grep -E ${REMOTE}/release-[0-9]+[.][0-9]+ | grep -Eo [0-9]+[.][0-9]+`; do
+	VERSIONS="$VERSIONS $v"
+    done
+    VERSIONS=$(echo $VERSIONS | tr " " "\n" | sort -Vr | uniq | tr "\n" " ")
+
+    for v in $VERSIONS; do
+	OUTPUT=""
+	ARCHES=""
+
+	for b in `git branch -r | grep -E ${REMOTE}/release-$v`; do
+	    head=${b##*/}
+	    sha=$(git log --format="%H" -n1 ${b})
+	    arch=$(echo ${b} | cut -d '-' -f 3 | sed 's/x86_64/amd64/')
+
+	    ARCHES="${ARCHES} $arch,"
+
+	    OUTPUT="$OUTPUT$arch-GitFetch: refs/heads/$head\n"
+	    OUTPUT="$OUTPUT$arch-GitCommit: $sha\n"
+	done
+
+	ARCHES=$(echo $ARCHES | tr " " "\n" | sort | uniq | tr "\n" " ")
+
+	echo ""
+	echo  "Tags: ${v}${latest}"
+	echo  "Architectures: ${ARCHES%, }"
+	echo -e ${OUTPUT%'\n'}
+
+	# Only tag the first, most recent version as latest"
+	latest=""
+    done
+}
+
 main() {
     fetcharch
 
@@ -147,6 +192,9 @@ main() {
         push)
 	    fetchversion "$@"
 	    push "$@"
+	    ;;
+        library)
+	    library "$@"
 	    ;;
         *)
 	    echo "Unrecognised argument $1"

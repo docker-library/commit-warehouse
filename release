@@ -50,7 +50,7 @@ buildrootfs()
 {
     case "${ARCH}" in
 	x86_64)
-	    URL="http://ftp.morpheus.net/pub/linux/crux/latest/iso/crux-${VERSION}.iso"
+	    URL="http://ftp.morpheus.net/pub/linux/crux/crux-${VERSION}/iso/crux-${VERSION}.iso"
 	    ;;
 	aarch64)
 	    URL="http://resources.crux-arm.nu/releases/${VERSION}/crux-arm-rootfs-${VERSION}-aarch64.tar.xz"

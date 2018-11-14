@@ -1,0 +1,205 @@
+#!/bin/bash
+
+set -e
+
+usage()
+{
+    echo -e "\nUsage: $0 [<build|commit|test|push> <VERSION>] | library]"
+    exit 1
+}
+
+fetcharch()
+{
+    if [ "$ARCH" != "" ]; then
+	echo "ARCH forcibly set to ${ARCH} - using it instead"
+	return
+    fi
+	
+    if [ -x /usr/bin/arch -o -x /bin/arch ]; then
+	ARCH=`arch`
+	return
+    fi
+
+    if [ -x /usr/bin/uname -o -x /bin/uname ]; then
+	ARCH=`uname -m`
+	return
+    fi
+
+    if [ "$ARCH" == "" ]; then
+	echo "$0 uses 'arch' or 'uname' which appear to be missing"
+	exit 1
+    fi
+}
+
+fetchversion()
+{
+    if [ $# -ne 2 ]; then
+	echo "This option requires exactly 2 arguments"
+	usage
+    fi
+
+    VERSION=$2
+
+    if ! echo $VERSION | grep -E '^[0-9]+[.][0-9]+$' > /dev/null; then
+	echo "<VERSION> should be in the format <MAJOR>.<MINOR>"
+	usage
+    fi
+}
+
+buildrootfs()
+{
+    case "${ARCH}" in
+	x86_64)
+	    URL="http://ftp.morpheus.net/pub/linux/crux/crux-${VERSION}/iso/crux-${VERSION}.iso"
+	    ;;
+	aarch64)
+	    URL="http://resources.crux-arm.nu/releases/${VERSION}/crux-arm-rootfs-${VERSION}-aarch64.tar.xz"
+	    ;;
+    esac
+
+    if docker ps -a | grep -q cruxbuild; then
+	docker rm -f cruxbuild > /dev/null
+    fi
+
+    docker build -t cruxbuild build/${ARCH}
+
+    docker run \
+	   -i -t --privileged \
+	   --name cruxbuild \
+	   -e URL=${URL} \
+	   -e VERSION=${VERSION} \
+	   cruxbuild
+
+    docker cp cruxbuild:/buildenv/rootfs.tar.xz .
+    docker rm -f cruxbuild > /dev/null
+}
+
+committobranch()
+{
+    if [ ! -e rootfs.tar.xz ]; then
+	echo "Can't find rootfs.tar.xz is it built (see: 'build' arg)?"
+	exit 1
+    fi
+
+    BRANCH=${VERSION}-${ARCH}
+
+    if git show-ref --verify --quiet refs/heads/${BRANCH}; then
+	git branch -D ${BRANCH}
+    fi
+
+    git checkout -b ${BRANCH}
+
+    git add -f rootfs.tar.xz
+
+    git commit -m "VERSION RELEASE: ${VERSION} for ${ARCH}"
+}
+
+testing()
+{
+    BRANCH=${VERSION}-${ARCH}
+    TAG=${BRANCH}-test
+
+    if ! git show-ref --verify --quiet refs/heads/${BRANCH}; then
+	echo "Can't test release ${BRANCH} is it committed (see: 'commit' arg)?"
+	exit 1
+    fi
+
+    git checkout ${BRANCH}
+
+    if docker ps -a | grep -q ${BRANCH}; then
+	docker rm -f ${BRANCH} > /dev/null
+    fi
+
+    docker build -t ${TAG} .
+
+    docker run -ti --rm ${TAG}
+
+    docker rmi ${TAG} > /dev/null
+}
+
+push()
+{
+    REMOTE=origin
+    BRANCH=${VERSION}-${ARCH}
+    RELEASE=release-${BRANCH}
+
+    echo -e "Pushing ${RELEASE} to ${REMOTE}\n"
+    git push ${REMOTE} $BRANCH:release-$BRANCH
+}
+
+library()
+{
+    REMOTE=origin
+    local arch
+    local sha
+    local version
+    local latest=", latest"
+
+    git fetch ${REMOTE}
+
+    echo "Maintainers: James Mills <prologic@shortcircuit.net.au> (@prologic)"
+    echo "GitRepo: $(git config --get remote.${REMOTE}.url)"
+
+    for v in `git branch -r | grep -E ${REMOTE}/release-[0-9]+[.][0-9]+ | grep -Eo [0-9]+[.][0-9]+`; do
+	VERSIONS="$VERSIONS $v"
+    done
+    VERSIONS=$(echo $VERSIONS | tr " " "\n" | sort -Vr | uniq | tr "\n" " ")
+
+    for v in $VERSIONS; do
+	OUTPUT=""
+	ARCHES=""
+
+	for b in `git branch -r | grep -E ${REMOTE}/release-$v`; do
+	    head=${b##*/}
+	    sha=$(git log --format="%H" -n1 ${b})
+	    arch=$(echo ${b} | cut -d '-' -f 3 | sed 's/x86_64/amd64/')
+
+	    ARCHES="${ARCHES} $arch,"
+
+	    OUTPUT="$OUTPUT$arch-GitFetch: refs/heads/$head\n"
+	    OUTPUT="$OUTPUT$arch-GitCommit: $sha\n"
+	done
+
+	ARCHES=$(echo $ARCHES | tr " " "\n" | sort | uniq | tr "\n" " ")
+
+	echo ""
+	echo  "Tags: ${v}${latest}"
+	echo  "Architectures: ${ARCHES%, }"
+	echo -e ${OUTPUT%'\n'}
+
+	# Only tag the first, most recent version as latest"
+	latest=""
+    done
+}
+
+main() {
+    fetcharch
+
+    # TODO: Add more options (commit, push, etc)
+    case "$1" in
+	build)
+	    fetchversion "$@"
+	    buildrootfs "$@"
+	    ;;
+	commit)
+	    fetchversion "$@"
+	    committobranch "$@"
+	    ;;
+        test)
+	    fetchversion "$@"
+	    testing "$@"
+	    ;;
+        push)
+	    fetchversion "$@"
+	    push "$@"
+	    ;;
+        library)
+	    library "$@"
+	    ;;
+        *)
+	    echo "Unrecognised argument $1"
+	    ;;
+    esac
+}
+
+main "$@"

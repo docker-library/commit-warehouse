@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -e
+
+die () {
+    echo >&2 "$@"
+    exit 1
+}
+
+download()
+{
+    echo "Downloading ${URL} ..."
+    curl -q ${URL} -o rootfs.tar.xz
+}
+
+repackage()
+{
+    unxz rootfs.tar.xz
+    xz -9 rootfs.tar
+}
+
+main()
+{
+    download
+    repackage
+}
+
+main "$@"

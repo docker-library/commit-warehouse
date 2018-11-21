@@ -23,6 +23,21 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364
   && gpg --batch --verify /tmp/gosu.asc /tmp/gosu \
   && chmod +x /tmp/gosu
 
+# create destination folder for downloads
+RUN mkdir /opt/custom-init.d/ \
+  && mkdir /opt/custom-config.d/ \
+  && mkdir /opt/files
+
+COPY files /opt/files
+COPY templates /opt/templates
+
+# install license module
+COPY --from=bonitasoft/bonita-license:latest /bonita-license /bonita-license
+
+RUN apt-get update && apt-get -y install build-essential libxslt-dev python python-dev python-setuptools \
+  && easy_install -U pip==9.0.3 \
+  && pip install /bonita-license
+
 # use --build-arg key=value in docker build command to override arguments
 ARG BONITA_SHA256
 ARG BASE_URL
@@ -35,29 +50,14 @@ ENV BONITA_SHA256  ${BONITA_SHA256:-9d8ce4360508eaae6329a099e9bfb299f73f7786c17a
 ENV BONITA_DBTOOL_SHA256 ${BONITA_DBTOOL_SHA256:-ab285b1babd64ab5e65e1cff976d009a2ed3b4a686079c65843ef26c382bd23f}
 ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/repository/releases/org/bonitasoft/tools/bonita-deployer/${BONITA_DBTOOL_VERSION}}
 
-# create destination folder for downloads
-RUN mkdir /opt/custom-init.d/ \
-  && mkdir /opt/custom-config.d/ \
-  && mkdir /opt/files
-
 # retrieve bonita deployer databases tool
 RUN curl -fsSL ${BONITA_DBTOOL_URL}/${BONITA_DBTOOL}.zip -o /opt/files/${BONITA_DBTOOL}.zip \
   && echo "$BONITA_DBTOOL_SHA256" /opt/files/${BONITA_DBTOOL}.zip | sha256sum -c -
-
-COPY files /opt/files
-COPY templates /opt/templates
 
 # add Bonita archive to the container
 RUN curl -fsSL ${BONITA_URL} -o /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
   && sha256sum /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
   && echo "$BONITA_SHA256" /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
-
-# install license module
-COPY --from=bonitasoft/bonita-license:latest /bonita-license /bonita-license
-
-RUN apt-get update && apt-get -y install build-essential libxslt-dev python python-dev python-setuptools \
-  && easy_install -U pip==9.0.3 \
-  && pip install /bonita-license
 
 
 

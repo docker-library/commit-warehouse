@@ -216,6 +216,26 @@
         <url-pattern>/apps/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
+        <filter-name>SAMLFilter</filter-name>
+        <url-pattern>/saml</url-pattern>
+        <url-pattern>/samlLogout</url-pattern>
+        <url-pattern>/portal/homepage</url-pattern>
+        <url-pattern>/portal/resource/*</url-pattern>
+        <url-pattern>/portal/form/*</url-pattern>
+        <url-pattern>/mobile/*</url-pattern>
+        <url-pattern>/apps/*</url-pattern>
+        <!-- Intercept logout request to handle SAML global logout -->
+        <url-pattern>/logoutservice</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>KerberosFilter</filter-name>
+        <url-pattern>/portal/homepage</url-pattern>
+        <url-pattern>/portal/resource/*</url-pattern>
+        <url-pattern>/portal/form/*</url-pattern>
+        <url-pattern>/mobile/*</url-pattern>
+        <url-pattern>/apps/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
         <filter-name>AuthenticationFilter</filter-name>
         <url-pattern>/portal/*</url-pattern>
         <url-pattern>/mobile/*</url-pattern>
@@ -260,26 +280,6 @@
         <filter-name>InternalSSOFilter</filter-name>
         <url-pattern>/portal/BonitaConsole.html</url-pattern>
         <url-pattern>/portal/homepage</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>SAMLFilter</filter-name>
-        <url-pattern>/saml</url-pattern>
-        <url-pattern>/samlLogout</url-pattern>
-        <url-pattern>/portal/homepage</url-pattern>
-        <url-pattern>/portal/resource/*</url-pattern>
-        <url-pattern>/portal/form/*</url-pattern>
-        <url-pattern>/mobile/*</url-pattern>
-        <url-pattern>/apps/*</url-pattern>
-        <!-- Intercept logout request to handle SAML global logout -->
-        <url-pattern>/logoutservice</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>KerberosFilter</filter-name>
-        <url-pattern>/portal/homepage</url-pattern>
-        <url-pattern>/portal/resource/*</url-pattern>
-        <url-pattern>/portal/form/*</url-pattern>
-        <url-pattern>/mobile/*</url-pattern>
-        <url-pattern>/apps/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>BPMURLSupportFilter</filter-name>
@@ -601,6 +601,7 @@
     <servlet>
         <servlet-name>EngineAPIv2Servlet</servlet-name>
         <servlet-class>com.bonitasoft.engine.api.internal.servlet.EngineServlet</servlet-class>
+         <multipart-config/>
     </servlet>
     <servlet-mapping>
         <servlet-name>EngineAPIv2Servlet</servlet-name>

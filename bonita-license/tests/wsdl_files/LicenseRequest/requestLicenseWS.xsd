@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.2.10 svn-revision#919b322c92f13ad085a933e8dd6dd35d4947364b.--><xs:schema version="1.0" targetNamespace="http://test-license.bonitasoft.com/" xmlns:tns="http://test-license.bonitasoft.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="LicenseRequest" type="tns:licenseRequest"/>
+  <xs:element name="SOAPException" type="tns:SOAPException"/>
+  <xs:element name="createLicense" type="tns:createLicense"/>
+  <xs:element name="createLicenseResponse" type="tns:createLicenseResponse"/>
+  <xs:element name="deactivateLicense" type="tns:deactivateLicense"/>
+  <xs:element name="deactivateLicenseFile" type="tns:deactivateLicenseFile"/>
+  <xs:element name="deactivateLicenseFileResponse" type="tns:deactivateLicenseFileResponse"/>
+  <xs:element name="deactivateLicenseResponse" type="tns:deactivateLicenseResponse"/>
+  <xs:element name="deactivationResult" type="tns:deactivationResult"/>
+  <xs:element name="getLicense" type="tns:getLicense"/>
+  <xs:element name="getLicenseResponse" type="tns:getLicenseResponse"/>
+  <xs:element name="licenseFile" type="tns:licenseFile"/>
+  <xs:element name="licenseFileRequest" type="tns:licenseFileRequest"/>
+  <xs:element name="licenseId" type="tns:licenseId"/>
+  <xs:complexType name="deactivateLicense">
+    <xs:sequence>
+      <xs:element name="DeactivateRequest" type="tns:licenseFileRequest" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="licenseFileRequest">
+    <xs:sequence>
+      <xs:element name="licenseId" type="xs:string"/>
+      <xs:element name="login" type="xs:string"/>
+      <xs:element name="password" type="xs:string"/>
+      <xs:element name="subscriptionId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deactivateLicenseResponse">
+    <xs:sequence>
+      <xs:element name="DeactivationResult" type="tns:deactivationResult" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deactivationResult">
+    <xs:sequence>
+      <xs:element name="deactivated" type="xs:boolean"/>
+      <xs:element name="licenseId" type="xs:string" minOccurs="0"/>
+      <xs:element name="remainingCores" type="xs:int"/>
+      <xs:element name="remainingLicenses" type="xs:int"/>
+      <xs:element name="result" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SOAPException">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getLicense">
+    <xs:sequence>
+      <xs:element name="LicenseFileRequest" type="tns:licenseFileRequest" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getLicenseResponse">
+    <xs:sequence>
+      <xs:element name="LicenseFile" type="tns:licenseFile" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="licenseFile">
+    <xs:sequence>
+      <xs:element name="licenseFile" type="xs:base64Binary" minOccurs="0"/>
+      <xs:element name="licenseName" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deactivateLicenseFile">
+    <xs:sequence>
+      <xs:element name="DeactivateRequestFile" type="tns:deactivationFile" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deactivationFile">
+    <xs:sequence>
+      <xs:element name="deactivationFile" type="xs:base64Binary"/>
+      <xs:element name="fileName" type="xs:string"/>
+      <xs:element name="login" type="xs:string"/>
+      <xs:element name="password" type="xs:string"/>
+      <xs:element name="subscriptionId" type="xs:string"/>
+      <xs:element name="version" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deactivateLicenseFileResponse">
+    <xs:sequence>
+      <xs:element name="DeactivationResult" type="tns:deactivationResult" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="createLicense">
+    <xs:sequence>
+      <xs:element name="LicenseRequest" type="tns:licenseRequest" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="licenseRequest">
+    <xs:sequence>
+      <xs:element name="contactID" type="xs:string" minOccurs="0"/>
+      <xs:element name="disableChecks" type="xs:string" minOccurs="0"/>
+      <xs:element name="login" type="xs:string" minOccurs="0"/>
+      <xs:element name="notifyEmail" type="xs:string"/>
+      <xs:element name="password" type="xs:string" minOccurs="0"/>
+      <xs:element name="requestEdition" type="xs:string"  minOccurs="0"/>
+      <xs:element name="requestEndDate" type="xs:string" minOccurs="0"/>
+      <xs:element name="requestKey" type="xs:string"/>
+      <xs:element name="requestLicenseType" type="xs:string"/>
+      <xs:element name="requestLicenseeCompany" type="xs:string"/>
+      <xs:element name="requestLicenseeEmail" type="xs:string"/>
+      <xs:element name="requestLicenseeName" type="xs:string"/>
+      <xs:element name="requestProductVersion" type="xs:string"/>
+      <xs:element name="requestStartDate" type="xs:string"/>
+      <xs:element name="subscriptionId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="createLicenseResponse">
+    <xs:sequence>
+      <xs:element name="LicenseId" type="tns:licenseId" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="licenseId">
+    <xs:sequence>
+      <xs:element name="errorString" type="xs:string" minOccurs="0"/>
+      <xs:element name="licenseId" type="xs:string" minOccurs="0"/>
+      <xs:element name="licenseEndDate" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

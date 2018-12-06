@@ -12,7 +12,7 @@ MINOR=$(echo $NEW_RELEASE | cut -d"." -f1-2)
 EDITION=$2
 LAST_RELEASE=`grep "^ENV BONITA_VERSION" bonita/${MINOR}/Dockerfile | awk '{ print $3 }'`
 BASE_URL="http://repositories.rd.lan/nas/releases/bonita_platform/7.x/${MINOR}.x/${NEW_RELEASE}"
-TOMCAT_VERSION="8.5.31"
+TOMCAT_VERSION="8.5.34"
 
 echo "updating $EDITION"
 case $EDITION in
@@ -48,5 +48,5 @@ esac
         unzip -q -c /tmp/${BUNDLE}/server/webapps/bonita.war WEB-INF/web.xml > ${DIR}/${MINOR}/files/WEB-INF/web.xml
 	rm /tmp/${BUNDLE}.zip
 	rm -rf /tmp/${BUNDLE}
-	meld ${DIR}/${MINOR}.bck ${DIR}/${MINOR}
+	git difftool ${DIR}/${MINOR}.bck ${DIR}/${MINOR}
 	echo "if merge is finished, please remove ${DIR}/${MINOR}.bck directory"

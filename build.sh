@@ -101,6 +101,12 @@ BUILD_ARGS="$BUILD_ARGS $*"
 FOLDER_NAME=$(basename $(dirname "${BUILD_PATH}"))
 IMAGE_NAME=bonitasoft/${FOLDER_NAME}
 
+# Build bonita-license data image to share with bonita-subscription
+if [[ "${FOLDER_NAME}" == "bonita-subscription" ]]; then
+  echo ". Building bonita-license image"
+  docker build --no-cache=true -t bonitasoft/bonita-license:latest -f bonita-license-Dockerfile bonita-license
+fi
+
 echo ". Building image <${IMAGE_NAME}>"
 echo "Docker build caching strategy: --no-cache=${no_cache}"
 build_cmd="docker build ${BUILD_ARGS} -t ${IMAGE_NAME}:latest ${BUILD_PATH}"

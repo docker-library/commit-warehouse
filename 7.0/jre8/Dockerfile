@@ -7,7 +7,7 @@ LABEL maintainer="Lightstreamer Server Development Team <support@lightstreamer.c
 RUN gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9B90BFD14309C7DA5EF58D7D4A8C08966F29B4D2
 
 # Set environment variables to identify the right Lightstreamer version and edition
-ENV LIGHTSTREAMER_VERSION 7_0_2_20181003
+ENV LIGHTSTREAMER_VERSION 7_0_3_20190107
 ENV LIGHTSTREAMER_URL_DOWNLOAD http://www.lightstreamer.com/repo/distros/Lightstreamer_${LIGHTSTREAMER_VERSION}.tar.gz
 
 # Set the temporary working dir

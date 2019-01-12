@@ -1,4 +1,4 @@
-FROM php:7.0-apache
+FROM php:7.1-apache
 
 # System Dependencies.
 RUN apt-get update && apt-get install -y \

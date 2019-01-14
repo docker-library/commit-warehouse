@@ -1,21 +1,52 @@
 FROM php:7.2-apache
 
 # System Dependencies.
-RUN apt-get update && apt-get install -y \
+RUN set -ex; \
+	\
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
 		git \
 		imagemagick \
-		libicu-dev \
-		# Required for SyntaxHighlighting
+# Required for SyntaxHighlighting
 		python3 \
-	--no-install-recommends && rm -r /var/lib/apt/lists/*
+	; \
+	rm -rf /var/lib/apt/lists/*
 
 # Install the PHP extensions we need
-RUN docker-php-ext-install mbstring mysqli opcache intl
-
-# Install the default object cache.
-RUN pecl channel-update pecl.php.net \
-	&& pecl install apcu \
-	&& docker-php-ext-enable apcu
+RUN set -ex; \
+	\
+	savedAptMark="$(apt-mark showmanual)"; \
+	\
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+		libicu-dev \
+	; \
+	\
+	docker-php-ext-install \
+		intl \
+		mbstring \
+		mysqli \
+		opcache \
+	; \
+	\
+	pecl install apcu-5.1.16; \
+	docker-php-ext-enable \
+		apcu \
+	; \
+	\
+# reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
+	apt-mark auto '.*' > /dev/null; \
+	apt-mark manual $savedAptMark; \
+	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
+		| awk '/=>/ { print $3 }' \
+		| sort -u \
+		| xargs -r dpkg-query -S \
+		| cut -d: -f1 \
+		| sort -u \
+		| xargs -rt apt-mark manual; \
+	\
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	rm -rf /var/lib/apt/lists/*
 
 # Enable Short URLs
 RUN a2enmod rewrite \

@@ -1,13 +1,13 @@
 FROM php:7.2-apache
 
-# System Dependencies.
+# System dependencies
 RUN set -ex; \
 	\
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		git \
 		imagemagick \
-# Required for SyntaxHighlighting
+		# Required for SyntaxHighlighting
 		python3 \
 	; \
 	rm -rf /var/lib/apt/lists/*
@@ -34,7 +34,7 @@ RUN set -ex; \
 		apcu \
 	; \
 	\
-# reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
+	# reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
 	apt-mark manual $savedAptMark; \
 	ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \

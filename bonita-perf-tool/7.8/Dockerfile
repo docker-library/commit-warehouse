@@ -5,7 +5,7 @@ MAINTAINER Guillaume Rosinosky <guillaume.rosinosky@bonitasoft.com>
 ARG BASE_URL
 ARG BONITA_VERSION
 
-ENV BONITA_VERSION ${BONITA_VERSION:-7.8.1}
+ENV BONITA_VERSION ${BONITA_VERSION:-7.8.2}
 ENV PERF_REFPATH /opt/PerfLauncher
 ENV PERF_MODE unitrunner
 ENV PERF_TESTS standardProcess;messageStartProcess;messageSynchronizationProcess

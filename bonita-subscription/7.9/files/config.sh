@@ -221,5 +221,7 @@ sed -e 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' \
 
 # use the setup tool to initialize and configure Bonita BPM Tomcat bundle
 cd /opt/bonita/BonitaSubscription-${BONITA_VERSION}-tomcat
-echo y | ./setup/setup.sh init
-./setup/setup.sh configure
+# platform setup tool logging configuration file
+BONITA_SETUP_LOGGING_FILE=${BONITA_SETUP_LOGGING_FILE:-/opt/bonita/BonitaSubscription-${BONITA_VERSION}-tomcat/setup/logback.xml}
+echo y | ./setup/setup.sh init -Dlogging.config=${BONITA_SETUP_LOGGING_FILE}
+./setup/setup.sh configure -Dlogging.config=${BONITA_SETUP_LOGGING_FILE}

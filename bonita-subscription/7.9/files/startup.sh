@@ -25,4 +25,5 @@ fi
 # start cron
 cron
 # launch tomcat
+export LOGGING_CONFIG="-Djava.util.logging.config.file=${BONITA_SERVER_LOGGING_FILE:-/opt/files/logging.properties}"
 exec gosu bonita /opt/bonita/BonitaSubscription-${BONITA_VERSION}-tomcat/server/bin/catalina.sh run

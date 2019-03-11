@@ -10,7 +10,7 @@ Bonita is an open-source business process management and workflow suite created 
 
 ## Quick start
 
-First genereate a request key into a container with a specific hostname (-h):
+First generate a request key into a container with a specific hostname (-h):
 
 	docker run --rm --name=bonita -h bonita -ti bonitasoft/bonita-subscription:7.7.0 /bin/bash
 	unzip /opt/files/BonitaSubscription-7.7.0-Tomcat-8.5.31.zip
@@ -27,7 +27,7 @@ Then we can launch the Bonita container with the same hostname (-h) and this hos
 
 	docker run --name bonita -h bonita -v ~/Documents/Docker/Volumes/bonita-subscription/:/opt/bonita_lic/ -d -p 8080:8080 bonita
 	
-This will start a container running the [Tomcat Bundle](http://documentation.bonitasoft.com/tomcat-bundle-1) with Bonita Engine + Portal. As you didn't sepecify any environment variables it's almost like if you have launched the Bundle on your host using startup.{sh|bat} (with security hardening on REST and HTTP APIs, cf Security part). It means that Bonita uses a H2 database here.
+This will start a container running the [Tomcat Bundle](http://documentation.bonitasoft.com/tomcat-bundle-1) with Bonita Engine + Portal. As you did not specify any environment variables it's almost like if you have launched the Bundle on your host using startup.{sh|bat} (with security hardening on REST and HTTP APIs, cf Security part). It means that Bonita uses a H2 database here.
 
 You can access to the portal on http://localhost:8080/bonita and login using the default credentials : install / install
 

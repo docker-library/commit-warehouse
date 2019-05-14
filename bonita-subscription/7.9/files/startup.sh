@@ -25,4 +25,4 @@ fi
 # start cron
 cron
 # launch tomcat
-exec gosu bonita /opt/bonita/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}/server/bin/catalina.sh run
+exec gosu bonita /opt/bonita/BonitaSubscription-${BONITA_VERSION}-tomcat/server/bin/catalina.sh run

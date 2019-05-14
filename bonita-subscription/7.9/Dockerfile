@@ -4,7 +4,7 @@ FROM ubuntu:16.04 as base
 ARG BONITA_VERSION
 ARG TOMCAT_VERSION
 ENV BONITA_VERSION ${BONITA_VERSION:-7.9.0.W20-01}
-ENV TOMCAT_VERSION ${TOMCAT_VERSION:-8.5.34}
+ENV TOMCAT_VERSION ${TOMCAT_VERSION:-8.5.40}
 ENV BONITA_DBTOOL_VERSION 7.0.0-07
 ENV BONITA_DBTOOL bonita-deployer-${BONITA_DBTOOL_VERSION}-databases
 
@@ -45,7 +45,7 @@ ARG BONITA_DBTOOL_SHA256
 ARG BONITA_DBTOOL_URL
 
 ENV BASE_URL ${BASE_URL:-http://repositories.rd.lan/nas/releases/bonita_platform/7.x/7.9.x/${BONITA_VERSION}/BonitaSubscription-${BONITA_VERSION}/}
-ENV BONITA_URL ${BASE_URL}/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip
+ENV BONITA_URL ${BASE_URL}/BonitaSubscription-${BONITA_VERSION}-tomcat.zip
 ENV BONITA_SHA256  ${BONITA_SHA256:-eb6fc9df93ca584ca3cdd32e5911a69f8705912f6ad45a5710ebf944102669e2}
 ENV BONITA_DBTOOL_SHA256 ${BONITA_DBTOOL_SHA256:-ab285b1babd64ab5e65e1cff976d009a2ed3b4a686079c65843ef26c382bd23f}
 ENV BONITA_DBTOOL_URL ${BONITA_DBTOOL_URL:-http://repositories.rd.lan/archiva/repository/releases/org/bonitasoft/tools/bonita-deployer/${BONITA_DBTOOL_VERSION}}
@@ -55,9 +55,9 @@ RUN curl -fsSL ${BONITA_DBTOOL_URL}/${BONITA_DBTOOL}.zip -o /opt/files/${BONITA_
   && echo "$BONITA_DBTOOL_SHA256" /opt/files/${BONITA_DBTOOL}.zip | sha256sum -c -
 
 # add Bonita archive to the container
-RUN curl -fsSL ${BONITA_URL} -o /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
-  && sha256sum /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip \
-  && echo "$BONITA_SHA256" /opt/files/BonitaSubscription-${BONITA_VERSION}-Tomcat-${TOMCAT_VERSION}.zip | sha256sum -c -
+RUN curl -fsSL ${BONITA_URL} -o /opt/files/BonitaSubscription-${BONITA_VERSION}-tomcat.zip \
+  && sha256sum /opt/files/BonitaSubscription-${BONITA_VERSION}-tomcat.zip \
+  && echo "$BONITA_SHA256" /opt/files/BonitaSubscription-${BONITA_VERSION}-tomcat.zip | sha256sum -c -
 
 
 

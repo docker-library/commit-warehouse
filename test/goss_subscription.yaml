@@ -11,6 +11,6 @@ command:
   echo "subscription_env_absent" && env | grep BASE_URL:
     title: Checking subscription environment variables are absent
     exit-status: 1
-  find /opt/bonita/Bonita*-Tomcat*/setup/platform_conf/initial -name *.properties | xargs -n10 grep '^bonita.cluster={{getEnv "CLUSTER_MODE"}}' | [ $(wc -l) -gt 0 ]:
+  find /opt/bonita/Bonita*-?omcat*/setup/platform_conf/initial -name *.properties | xargs -n10 grep '^bonita.cluster={{getEnv "CLUSTER_MODE"}}' | [ $(wc -l) -gt 0 ]:
     title: Checking custom CLUSTER_MODE
     exit-status: 0

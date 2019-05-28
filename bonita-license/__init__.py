@@ -4,7 +4,7 @@ from bonita_ import BonitaLicense
 from platform_ import PlatformLicense
 from logging.config import dictConfig
 
-__version__ = '1.3.0'
+__version__ = '1.3.1'
 
 dictConfig(
     dict(

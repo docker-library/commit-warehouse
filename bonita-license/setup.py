@@ -13,7 +13,7 @@ install_requires = [
     'cached-property == 1.3.1',
     'defusedxml == 0.5.0',
     'isodate == 0.6.0',
-    'lxml == 3.7.2',
+    'lxml == 4.2.5',
     'certifi == 2018.4.16',
     'chardet == 3.0.4',
     'idna == 2.6',

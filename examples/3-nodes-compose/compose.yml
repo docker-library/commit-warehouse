@@ -1,7 +1,7 @@
-version: '3'
+version: '3.3'
 services:
   odb1:
-    image: orientdb:2.2.20
+    image: orientdb:3.0.19
     command: dserver.sh
     volumes:
       - ./var/odb1/config:/orientdb/config
@@ -14,7 +14,7 @@ services:
       - 2424:2424
 
   odb2:
-    image: orientdb:2.2.20
+    image: orientdb:3.0.19
     command: dserver.sh
     volumes:
       - ./var/odb2/config:/orientdb/config
@@ -26,7 +26,7 @@ services:
       - odb1
 
   odb3:
-    image: orientdb:2.2.20
+    image: orientdb:3.0.19
     command: dserver.sh
     volumes:
       - ./var/odb3/config:/orientdb/config
@@ -35,5 +35,5 @@ services:
       ORIENTDB_ROOT_PASSWORD: root
       ORIENTDB_NODE_NAME: odb3
     depends_on:
-      - odb1
+      - odb2
 

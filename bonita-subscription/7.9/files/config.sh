@@ -219,6 +219,9 @@ sed -e 's/{{DB_VENDOR}}/'"${DB_VENDOR}"'/' \
     -e 's/{{BIZ_DB_NAME}}/'"${BIZ_DB_NAME}"'/' \
     -i ${BONITA_PATH}/BonitaSubscription-${BONITA_VERSION}-tomcat/setup/database.properties
 
+# apply logging configuration
+cp ${BONITA_FILES}/logging.properties ${BONITA_PATH}/BonitaSubscription-${BONITA_VERSION}-tomcat/server/conf/logging.properties
+
 # use the setup tool to initialize and configure Bonita BPM Tomcat bundle
 cd /opt/bonita/BonitaSubscription-${BONITA_VERSION}-tomcat
 # platform setup tool logging configuration file

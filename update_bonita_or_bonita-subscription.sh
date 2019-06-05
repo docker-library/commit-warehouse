@@ -59,7 +59,6 @@ sed -i "s/^ENV BONITA_SHA256  \${BONITA_SHA256:-.*/ENV BONITA_SHA256  \${BONITA_
 cp /tmp/${BUNDLE}/setup/database.properties ${DIR}/${MINOR}/templates/database.properties
 cp /tmp/${BUNDLE}/setup/tomcat-templates/setenv.sh ${DIR}/${MINOR}/templates/setenv.sh
 cp /tmp/${BUNDLE}/server/conf/logging.properties ${DIR}/${MINOR}/files/logging.properties
-cp /tmp/${BUNDLE}/setup/logback.xml ${DIR}/${MINOR}/files/logback.xml
 unzip -q -c /tmp/${BUNDLE}/server/webapps/bonita.war WEB-INF/web.xml > ${DIR}/${MINOR}/files/WEB-INF/web.xml
 rm /tmp/${BUNDLE}.zip
 rm -rf /tmp/${BUNDLE}

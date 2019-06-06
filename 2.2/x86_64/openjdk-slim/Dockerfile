@@ -6,19 +6,25 @@ FROM openjdk:8-jdk-slim
 
 MAINTAINER OrientDB LTD (info@orientdb.com)
 
-ENV ORIENTDB_VERSION 2.1.25
-ENV ORIENTDB_DOWNLOAD_MD5 054da3fb7c56e7822b2af116966576ce
-ENV ORIENTDB_DOWNLOAD_SHA1 b7b08242b40117ac8eb9a201f8704bde839dfcb8
+# Override the orientdb download location with e.g.:
+#   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
+ARG ORIENTDB_DOWNLOAD_SERVER
+
+ENV ORIENTDB_VERSION 2.2.37
+ENV ORIENTDB_DOWNLOAD_MD5 cb80556ef3b0260d0ee5de88ea73fb9d
+ENV ORIENTDB_DOWNLOAD_SHA1 469c402dde029f265fe905de2c08b43960e81f07
+
+ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
 RUN apt update \
     && apt install -y curl wget
 
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \
-  wget  "http://central.maven.org/maven2/com/orientechnologies/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz" \
+  wget  $ORIENTDB_DOWNLOAD_URL \
   && echo "$ORIENTDB_DOWNLOAD_MD5 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | md5sum -c - \
   && echo "$ORIENTDB_DOWNLOAD_SHA1 *orientdb-community-$ORIENTDB_VERSION.tar.gz" | sha1sum -c - \
-  && tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1\
+  && tar -xvzf orientdb-community-$ORIENTDB_VERSION.tar.gz -C /orientdb --strip-components=1 \
   && rm orientdb-community-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*
 
@@ -37,3 +43,4 @@ EXPOSE 2480
 
 # Default command start the server
 CMD ["server.sh"]
+

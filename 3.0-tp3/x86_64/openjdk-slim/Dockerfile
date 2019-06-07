@@ -28,6 +28,8 @@ RUN mkdir /orientdb && \
   && rm orientdb-tp3-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*
 
+RUN rm -rf /var/lib/apt/lists/*  
+
 #overrides internal gremlin-server to set binding to 0.0.0.0 instead of localhost
 ADD gremlin-server.yaml /orientdb/config
 

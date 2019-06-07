@@ -23,6 +23,8 @@ RUN mkdir /orientdb && \
   && rm -rf /orientdb/databases/*
 
 
+RUN rm -rf /var/lib/apt/lists/*
+
 ENV PATH /orientdb/bin:$PATH
 
 VOLUME ["/orientdb/backup", "/orientdb/databases", "/orientdb/config"]

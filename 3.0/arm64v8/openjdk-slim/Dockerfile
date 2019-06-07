@@ -28,6 +28,7 @@ RUN mkdir /orientdb && \
   && rm orientdb-community-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*
 
+RUN rm -rf /var/lib/apt/lists/*
 
 ENV PATH /orientdb/bin:$PATH
 

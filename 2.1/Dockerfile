@@ -11,7 +11,8 @@ ENV ORIENTDB_DOWNLOAD_MD5 054da3fb7c56e7822b2af116966576ce
 ENV ORIENTDB_DOWNLOAD_SHA1 b7b08242b40117ac8eb9a201f8704bde839dfcb8
 
 RUN apt update \
-    && apt install -y curl wget
+    && apt install -y curl wget \
+    && rm -rf /var/lib/apt/lists/*
 
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \
@@ -22,8 +23,6 @@ RUN mkdir /orientdb && \
   && rm orientdb-community-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*
 
-
-RUN rm -rf /var/lib/apt/lists/*
 
 ENV PATH /orientdb/bin:$PATH
 

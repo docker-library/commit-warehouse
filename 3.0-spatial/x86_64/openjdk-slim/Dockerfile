@@ -17,7 +17,8 @@ ENV ORIENTDB_DOWNLOAD_SHA1 03063be6f3c87f0efbb88e5f34e9be9f187b3ab8
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
 RUN apt update \
-    && apt install -y curl wget
+    && apt install -y curl wget \
+    && rm -rf /var/lib/apt/lists/*    
 
 #download distribution tar, untar and delete databases
 RUN mkdir /orientdb && \
@@ -28,7 +29,6 @@ RUN mkdir /orientdb && \
   && rm orientdb-community-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*
 
-RUN rm -rf /var/lib/apt/lists/*
 
 ENV PATH /orientdb/bin:$PATH
 

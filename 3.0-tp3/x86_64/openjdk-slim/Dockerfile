@@ -17,7 +17,8 @@ ENV ORIENTDB_DOWNLOAD_SHA1 460840d110bd86f558af20c0bd0288a0037faeda
 ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-tp3/$ORIENTDB_VERSION/orientdb-tp3-$ORIENTDB_VERSION.tar.gz
 
 RUN apt update \
-    && apt install -y curl wget
+    && apt install -y curl wget \
+    && rm -rf /var/lib/apt/lists/* 
 
 #download distribution tar, untar and DON'T delete databases (tp3 endopoint won't works if db isn't present)
 RUN mkdir /orientdb && \
@@ -28,7 +29,6 @@ RUN mkdir /orientdb && \
   && rm orientdb-tp3-$ORIENTDB_VERSION.tar.gz \
   && rm -rf /orientdb/databases/*
 
-RUN rm -rf /var/lib/apt/lists/*  
 
 #overrides internal gremlin-server to set binding to 0.0.0.0 instead of localhost
 ADD gremlin-server.yaml /orientdb/config

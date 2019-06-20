@@ -1,5 +1,5 @@
 # Set the base image
-FROM openjdk:8-jre
+FROM openjdk:8-jdk
 
 MAINTAINER Lightstreamer Server Development Team <support@lightstreamer.com>
 

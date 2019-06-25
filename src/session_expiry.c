@@ -94,7 +94,9 @@ void session_expiry__check(struct mosquitto_db *db, time_t now)
 	last_check = now;
 
 	DL_FOREACH_SAFE(expiry_list, item, tmp){
-		if(item->context->session_expiry_time < now){
+		if(item->context->session_expiry_interval != UINT32_MAX
+				&& item->context->session_expiry_time < now){
+
 			context = item->context;
 			session_expiry__remove(context);
 

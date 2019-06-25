@@ -1,3 +1,10 @@
+1.6.4 - 2019xxxx
+================
+
+Broker:
+- Fix persistent clients being incorrectly expired on Raspberry Pis.
+  Closes #1272.
+
 1.6.3 - 20190618
 ================
 

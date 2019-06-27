@@ -1,7 +1,7 @@
 FROM php:7.1-apache
 
 # System dependencies
-RUN set -ex; \
+RUN set -eux; \
 	\
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
@@ -13,7 +13,7 @@ RUN set -ex; \
 	rm -rf /var/lib/apt/lists/*
 
 # Install the PHP extensions we need
-RUN set -ex; \
+RUN set -eux; \
 	\
 	savedAptMark="$(apt-mark showmanual)"; \
 	\
@@ -22,14 +22,14 @@ RUN set -ex; \
 		libicu-dev \
 	; \
 	\
-	docker-php-ext-install \
+	docker-php-ext-install -j "$(nproc)" \
 		intl \
 		mbstring \
 		mysqli \
 		opcache \
 	; \
 	\
-	pecl install apcu-5.1.16; \
+	pecl install apcu-5.1.17; \
 	docker-php-ext-enable \
 		apcu \
 	; \
@@ -56,12 +56,12 @@ RUN { \
 		echo 'opcache.max_accelerated_files=4000'; \
 		echo 'opcache.revalidate_freq=60'; \
 		echo 'opcache.fast_shutdown=1'; \
-		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 # SQLite Directory Setup
-RUN mkdir -p /var/www/data \
-	&& chown -R www-data:www-data /var/www/data
+RUN set -eux; \
+	mkdir -p /var/www/data; \
+	chown -R www-data:www-data /var/www/data
 
 # Version
 ENV MEDIAWIKI_MAJOR_VERSION 1.27
@@ -70,8 +70,9 @@ ENV MEDIAWIKI_VERSION 1.27.6
 ENV MEDIAWIKI_SHA512 e6b43fe2e90a63d89673bdb6e201fffcec407a388f07c169f84df753c1c50596d54ba1b687157a1ac4b8d8bdaf4a5eadf74dc045a4b955fca4f00c66b6544b33
 
 # MediaWiki setup
-RUN curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz \
-	&& echo "${MEDIAWIKI_SHA512} *mediawiki.tar.gz" | sha512sum -c - \
-	&& tar -xz --strip-components=1 -f mediawiki.tar.gz \
-	&& rm mediawiki.tar.gz \
-	&& chown -R www-data:www-data extensions skins cache images
+RUN set -eux; \
+	curl -fSL "https://releases.wikimedia.org/mediawiki/${MEDIAWIKI_MAJOR_VERSION}/mediawiki-${MEDIAWIKI_VERSION}.tar.gz" -o mediawiki.tar.gz; \
+	echo "${MEDIAWIKI_SHA512} *mediawiki.tar.gz" | sha512sum -c -; \
+	tar -x --strip-components=1 -f mediawiki.tar.gz; \
+	rm mediawiki.tar.gz; \
+	chown -R www-data:www-data extensions skins cache images

@@ -6,6 +6,7 @@ RUN set -ex; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		git \
+		librsvg2-bin \
 		imagemagick \
 		# Required for SyntaxHighlighting
 		python3 \

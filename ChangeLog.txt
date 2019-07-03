@@ -4,6 +4,9 @@
 Broker:
 - Fix persistent clients being incorrectly expired on Raspberry Pis.
   Closes #1272.
+- Windows: Allow other applications access to the log file when running.
+  Closes #515.
+
 
 1.6.3 - 20190618
 ================

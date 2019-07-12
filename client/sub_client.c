@@ -278,8 +278,6 @@ int main(int argc, char *argv[])
 #ifndef WIN32
 		struct sigaction sigact;
 #endif
-	
-	memset(&cfg, 0, sizeof(struct mosq_config));
 
 	mosquitto_lib_init();
 

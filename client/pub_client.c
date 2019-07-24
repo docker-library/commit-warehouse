@@ -103,7 +103,9 @@ void my_disconnect_callback(struct mosquitto *mosq, void *obj, int rc, const mos
 	UNUSED(rc);
 	UNUSED(properties);
 
-	status = STATUS_DISCONNECTED;
+	if(rc == 0){
+		status = STATUS_DISCONNECTED;
+	}
 }
 
 int my_publish(struct mosquitto *mosq, int *mid, const char *topic, int payloadlen, void *payload, int qos, bool retain)

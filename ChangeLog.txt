@@ -11,6 +11,10 @@ Client library:
 - Fix MQTT v5 subscription options being incorrectly set for MQTT v3
   subscriptions. Closes #1353.
 
+Clients:
+- mosquitto_pub: fix error codes not being returned when mosquitto_pub exits.
+  Closes #1354.
+
 
 1.6.3 - 20190618
 ================

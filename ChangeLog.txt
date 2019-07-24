@@ -7,6 +7,10 @@ Broker:
 - Windows: Allow other applications access to the log file when running.
   Closes #515.
 
+Client library:
+- Fix MQTT v5 subscription options being incorrectly set for MQTT v3
+  subscriptions. Closes #1353.
+
 
 1.6.3 - 20190618
 ================

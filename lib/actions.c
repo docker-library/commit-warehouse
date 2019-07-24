@@ -200,6 +200,9 @@ int mosquitto_subscribe_multiple(struct mosquitto *mosq, int *mid, int sub_count
 			return MOSQ_ERR_OVERSIZE_PACKET;
 		}
 	}
+	if(mosq->protocol == mosq_p_mqtt311 || mosq->protocol == mosq_p_mqtt31){
+		options = 0;
+	}
 
 	return send__subscribe(mosq, mid, sub_count, sub, qos|options, outgoing_properties);
 }

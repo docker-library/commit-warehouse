@@ -451,14 +451,19 @@ static void missing_read_helper(mosquitto_property *proplist)
 	CU_ASSERT_EQUAL(int32_value, 1800);
 
 	/* MISSING */
+	value = NULL;
 	prop = mosquitto_property_read_string(proplist, MQTT_PROP_CONTENT_TYPE, &value, false);
 	CU_ASSERT_PTR_NULL(prop);
 
 	/* NOT MISSING */
+	value = NULL;
 	prop = mosquitto_property_read_string(proplist, MQTT_PROP_RESPONSE_TOPIC, &value, false);
 	CU_ASSERT_PTR_NOT_NULL(prop);
-	CU_ASSERT_STRING_EQUAL(value, "response/topic");
-	free(value);
+	CU_ASSERT_PTR_NOT_NULL(value);
+	if(value){
+		CU_ASSERT_STRING_EQUAL(value, "response/topic");
+		free(value);
+	}
 
 	/* MISSING */
 	prop = mosquitto_property_read_binary(proplist, MQTT_PROP_CORRELATION_DATA, (void **)&value, &length, false);
@@ -474,21 +479,29 @@ static void missing_read_helper(mosquitto_property *proplist)
 	CU_ASSERT_PTR_NULL(prop);
 
 	/* NOT MISSING */
+	value = NULL;
 	prop = mosquitto_property_read_string(proplist, MQTT_PROP_SERVER_REFERENCE, &value, false);
 	CU_ASSERT_PTR_NOT_NULL(prop);
-	CU_ASSERT_STRING_EQUAL(value, "localhost");
-	free(value);
+	CU_ASSERT_PTR_NOT_NULL(value);
+	if(value){
+		CU_ASSERT_STRING_EQUAL(value, "localhost");
+		free(value);
+	}
 
 	/* MISSING */
 	prop = mosquitto_property_read_int32(proplist, MQTT_PROP_SESSION_EXPIRY_INTERVAL, &int32_value, false);
 	CU_ASSERT_PTR_NULL(prop);
 
 	/* NOT MISSING */
+	value = NULL;
 	prop = mosquitto_property_read_binary(proplist, MQTT_PROP_AUTHENTICATION_DATA, (void **)&value, &length, false);
 	CU_ASSERT_PTR_NOT_NULL(prop);
-	CU_ASSERT_NSTRING_EQUAL(value, "password", strlen("password"));
-	CU_ASSERT_EQUAL(length, strlen("password"));
-	free(value);
+	CU_ASSERT_PTR_NOT_NULL(value);
+	if(value){
+		CU_ASSERT_NSTRING_EQUAL(value, "password", strlen("password"));
+		CU_ASSERT_EQUAL(length, strlen("password"));
+		free(value);
+	}
 
 	/* MISSING */
 	prop = mosquitto_property_read_int16(proplist, MQTT_PROP_SERVER_KEEP_ALIVE, &int16_value, false);

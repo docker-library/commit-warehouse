@@ -6,6 +6,8 @@ Broker:
   Closes #1272.
 - Windows: Allow other applications access to the log file when running.
   Closes #515.
+- Fix incoming QoS 2 messages being blocked when `max_inflight_messages` was
+  set to 1. Closes #1332.
 
 Client library:
 - Fix MQTT v5 subscription options being incorrectly set for MQTT v3

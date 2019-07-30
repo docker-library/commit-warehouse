@@ -101,6 +101,7 @@ endif
 	./03-publish-qos1-no-subscribers-v5.py
 	./03-publish-qos1-retain-disabled.py
 	./03-publish-qos1.py
+	./03-publish-qos2-max-inflight.py
 	./03-publish-qos2.py
 
 04 :

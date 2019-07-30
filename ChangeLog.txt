@@ -13,6 +13,9 @@ Client library:
 - Make behaviour of `mosquitto_connect_async()` consistent with
   `mosquitto_connect()` when connecting to a non-existent server.
   Closes #1345.
+- `mosquitto_string_option(mosq, MOSQ_OPT_TLS_KEYFORM, ...)` was incorrectly
+  returning `MOSQ_ERR_INVAL` with valid input. This has been fixed.
+  Closes #1360.
 
 Clients:
 - mosquitto_pub: fix error codes not being returned when mosquitto_pub exits.

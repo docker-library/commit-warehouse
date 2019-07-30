@@ -10,6 +10,9 @@ Broker:
 Client library:
 - Fix MQTT v5 subscription options being incorrectly set for MQTT v3
   subscriptions. Closes #1353.
+- Make behaviour of `mosquitto_connect_async()` consistent with
+  `mosquitto_connect()` when connecting to a non-existent server.
+  Closes #1345.
 
 Clients:
 - mosquitto_pub: fix error codes not being returned when mosquitto_pub exits.

@@ -163,7 +163,6 @@ static int mosquitto__reconnect(struct mosquitto *mosq, bool blocking, const mos
 	const mosquitto_property *outgoing_properties = NULL;
 	mosquitto_property local_property;
 	int rc;
-	struct mosquitto__packet *packet;
 	if(!mosq) return MOSQ_ERR_INVAL;
 	if(!mosq->host || mosq->port <= 0) return MOSQ_ERR_INVAL;
 	if(mosq->protocol != mosq_p_mqtt5 && properties) return MOSQ_ERR_NOT_SUPPORTED;
@@ -201,27 +200,7 @@ static int mosquitto__reconnect(struct mosquitto *mosq, bool blocking, const mos
 
 	packet__cleanup(&mosq->in_packet);
 
-	pthread_mutex_lock(&mosq->current_out_packet_mutex);
-	pthread_mutex_lock(&mosq->out_packet_mutex);
-
-	if(mosq->out_packet && !mosq->current_out_packet){
-		mosq->current_out_packet = mosq->out_packet;
-		mosq->out_packet = mosq->out_packet->next;
-	}
-
-	while(mosq->current_out_packet){
-		packet = mosq->current_out_packet;
-		/* Free data and reset values */
-		mosq->current_out_packet = mosq->out_packet;
-		if(mosq->out_packet){
-			mosq->out_packet = mosq->out_packet->next;
-		}
-
-		packet__cleanup(packet);
-		mosquitto__free(packet);
-	}
-	pthread_mutex_unlock(&mosq->out_packet_mutex);
-	pthread_mutex_unlock(&mosq->current_out_packet_mutex);
+	packet__cleanup_all(mosq);
 
 	message__reconnect_reset(mosq);
 
@@ -250,7 +229,15 @@ static int mosquitto__reconnect(struct mosquitto *mosq, bool blocking, const mos
 	}else
 #endif
 	{
-		return send__connect(mosq, mosq->keepalive, mosq->clean_start, outgoing_properties);
+		rc = send__connect(mosq, mosq->keepalive, mosq->clean_start, outgoing_properties);
+		if(rc){
+			packet__cleanup_all(mosq);
+			net__socket_close(mosq);
+			pthread_mutex_lock(&mosq->state_mutex);
+			mosq->state = mosq_cs_new;
+			pthread_mutex_unlock(&mosq->state_mutex);
+		}
+		return rc;
 	}
 }
 

@@ -78,11 +78,11 @@ int handle__pubrel(struct mosquitto_db *db, struct mosquitto *mosq)
 	mosquitto_property_free_all(&properties);
 
 	rc = db__message_release_incoming(db, mosq, mid);
-	if(rc == MOSQ_ERR_PROTOCOL){
-		return rc;
-	}else if(rc != MOSQ_ERR_SUCCESS){
+	if(rc == MOSQ_ERR_NOT_FOUND){
 		/* Message not found. Still send a PUBCOMP anyway because this could be
 		 * due to a repeated PUBREL after a client has reconnected. */
+	}else if(rc != MOSQ_ERR_SUCCESS){
+		return rc;
 	}
 
 	rc = send__pubcomp(mosq, mid);

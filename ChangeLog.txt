@@ -8,6 +8,8 @@ Broker:
   Closes #515.
 - Fix incoming QoS 2 messages being blocked when `max_inflight_messages` was
   set to 1. Closes #1332.
+- Fix incoming messages not being removed for a client if the topic being
+  published to does not have any subscribers. Closes #1322.
 
 Client library:
 - Fix MQTT v5 subscription options being incorrectly set for MQTT v3

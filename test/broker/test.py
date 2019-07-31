@@ -43,6 +43,7 @@ tests = [
     (1, './02-subpub-qos1-nolocal.py'),
     (1, './02-subpub-qos1-v5.py'),
     (1, './02-subpub-qos1.py'),
+    (1, './02-subpub-qos2-1322.py'),
     (1, './02-subpub-qos2-bad-puback-1.py'),
     (1, './02-subpub-qos2-bad-puback-2.py'),
     (1, './02-subpub-qos2-bad-pubcomp.py'),

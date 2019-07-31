@@ -64,6 +64,7 @@ endif
 	./02-subpub-qos1-nolocal.py
 	./02-subpub-qos1-v5.py
 	./02-subpub-qos1.py
+	./02-subpub-qos2-1322.py
 	./02-subpub-qos2-bad-puback-1.py
 	./02-subpub-qos2-bad-puback-2.py
 	./02-subpub-qos2-bad-pubcomp.py

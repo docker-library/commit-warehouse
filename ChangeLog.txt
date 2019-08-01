@@ -23,6 +23,7 @@ Client library:
 - on_connect callback is now called with the correct v5 reason code if a v5
   client connects to a v3.x broker and is sent a CONNACK with the
   "unacceptable protocol version" connack reason code.
+- Fix memory leak when setting v5 properties in mosquitto_connect_v5().
 
 Clients:
 - mosquitto_pub: fix error codes not being returned when mosquitto_pub exits.

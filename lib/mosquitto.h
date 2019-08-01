@@ -48,7 +48,7 @@ extern "C" {
 
 #define LIBMOSQUITTO_MAJOR 1
 #define LIBMOSQUITTO_MINOR 6
-#define LIBMOSQUITTO_REVISION 3
+#define LIBMOSQUITTO_REVISION 4
 /* LIBMOSQUITTO_VERSION_NUMBER looks like 1002001 for e.g. version 1.2.1. */
 #define LIBMOSQUITTO_VERSION_NUMBER (LIBMOSQUITTO_MAJOR*1000000+LIBMOSQUITTO_MINOR*1000+LIBMOSQUITTO_REVISION)
 
@@ -921,8 +921,9 @@ libmosq_EXPORT int mosquitto_subscribe_v5(struct mosquitto *mosq, int *mid, cons
  *	       familiar with this, just think of it as a safer "char **",
  *	       equivalent to "const char *" for a simple string pointer.
  *	qos -  the requested Quality of Service for each subscription.
- *	options - options to apply to this subscription, OR'd together. Set to 0 to
- *	       use the default options, otherwise choose from the list:
+ *	options - options to apply to this subscription, OR'd together. This
+ *	          argument is not used for MQTT v3 susbcriptions. Set to 0 to use
+ *	          the default options, otherwise choose from the list:
  *	       MQTT_SUB_OPT_NO_LOCAL - with this option set, if this client
  *	                     publishes to a topic to which it is subscribed, the
  *	                     broker will not publish the message back to the

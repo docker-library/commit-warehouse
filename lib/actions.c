@@ -40,6 +40,7 @@ int mosquitto_publish_v5(struct mosquitto *mosq, int *mid, const char *topic, in
 	uint16_t local_mid;
 	const mosquitto_property *p;
 	const mosquitto_property *outgoing_properties = NULL;
+	mosquitto_property *properties_copy = NULL;
 	mosquitto_property local_property;
 	bool have_topic_alias;
 	int rc;
@@ -109,8 +110,15 @@ int mosquitto_publish_v5(struct mosquitto *mosq, int *mid, const char *topic, in
 	if(qos == 0){
 		return send__publish(mosq, local_mid, topic, payloadlen, payload, qos, retain, false, outgoing_properties, NULL, 0);
 	}else{
+		if(outgoing_properties){
+			rc = mosquitto_property_copy_all(&properties_copy, outgoing_properties);
+			if(rc) return rc;
+		}
 		message = mosquitto__calloc(1, sizeof(struct mosquitto_message_all));
-		if(!message) return MOSQ_ERR_NOMEM;
+		if(!message){
+			mosquitto_property_free_all(&properties_copy);
+			return MOSQ_ERR_NOMEM;
+		}
 
 		message->next = NULL;
 		message->timestamp = mosquitto_time();
@@ -119,6 +127,7 @@ int mosquitto_publish_v5(struct mosquitto *mosq, int *mid, const char *topic, in
 			message->msg.topic = mosquitto__strdup(topic);
 			if(!message->msg.topic){
 				message__cleanup(&message);
+				mosquitto_property_free_all(&properties_copy);
 				return MOSQ_ERR_NOMEM;
 			}
 		}
@@ -127,6 +136,7 @@ int mosquitto_publish_v5(struct mosquitto *mosq, int *mid, const char *topic, in
 			message->msg.payload = mosquitto__malloc(payloadlen*sizeof(uint8_t));
 			if(!message->msg.payload){
 				message__cleanup(&message);
+				mosquitto_property_free_all(&properties_copy);
 				return MOSQ_ERR_NOMEM;
 			}
 			memcpy(message->msg.payload, payload, payloadlen*sizeof(uint8_t));
@@ -137,6 +147,7 @@ int mosquitto_publish_v5(struct mosquitto *mosq, int *mid, const char *topic, in
 		message->msg.qos = qos;
 		message->msg.retain = retain;
 		message->dup = false;
+		message->properties = properties_copy;
 
 		pthread_mutex_lock(&mosq->msgs_out.mutex);
 		message->state = mosq_ms_invalid;
@@ -199,6 +210,9 @@ int mosquitto_subscribe_multiple(struct mosquitto *mosq, int *mid, int sub_count
 		if(packet__check_oversize(mosq, remaining_length)){
 			return MOSQ_ERR_OVERSIZE_PACKET;
 		}
+	}
+	if(mosq->protocol == mosq_p_mqtt311 || mosq->protocol == mosq_p_mqtt31){
+		options = 0;
 	}
 
 	return send__subscribe(mosq, mid, sub_count, sub, qos|options, outgoing_properties);

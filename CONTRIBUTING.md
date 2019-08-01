@@ -11,7 +11,7 @@ implementation, of an MQTT broker to allow new, existing, and emerging
 applications for Machine-to-Machine (M2M) and Internet of Things (IoT).
 
 - <https://mosquitto.org/>
-- <https://projects.eclipse.org/projects/technology.mosquitto>
+- <https://projects.eclipse.org/projects/iot.mosquitto>
 
 
 Source

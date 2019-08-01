@@ -61,3 +61,11 @@ command line as follows:
 
 C:\Program Files\mosquitto\mosquitto install
 C:\Program Files\mosquitto\mosquitto uninstall
+
+Logging
+-------
+
+If you use `log_dest file ...` in your configuration, the log file will be
+created with security permissions for the current user only. If running as a
+service, this means the SYSTEM user. You will only be able to view the log file
+if you add permissions for yourself or whatever user you wish to view the logs.

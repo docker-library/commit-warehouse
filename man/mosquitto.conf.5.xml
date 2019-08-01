@@ -1741,7 +1741,7 @@ topic clients/total in 0 test/mosquitto/org $SYS/broker/
 					<term><option>bridge_capath</option> <replaceable>file path</replaceable></term>
 					<listitem>
 						<para>One of <option>bridge_capath</option> or
-							<option>bridge_capath</option> must be provided to
+							<option>bridge_cafile</option> must be provided to
 							allow SSL/TLS support.</para>
 						<para>bridge_capath is used to define the path to a
 							directory containing the PEM encoded CA

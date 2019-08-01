@@ -25,6 +25,7 @@ struct mosquitto_db;
 
 int packet__alloc(struct mosquitto__packet *packet);
 void packet__cleanup(struct mosquitto__packet *packet);
+void packet__cleanup_all(struct mosquitto *mosq);
 int packet__queue(struct mosquitto *mosq, struct mosquitto__packet *packet);
 
 int packet__check_oversize(struct mosquitto *mosq, uint32_t remaining_length);

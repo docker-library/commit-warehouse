@@ -103,7 +103,9 @@ void my_disconnect_callback(struct mosquitto *mosq, void *obj, int rc, const mos
 	UNUSED(rc);
 	UNUSED(properties);
 
-	status = STATUS_DISCONNECTED;
+	if(rc == 0){
+		status = STATUS_DISCONNECTED;
+	}
 }
 
 int my_publish(struct mosquitto *mosq, int *mid, const char *topic, int payloadlen, void *payload, int qos, bool retain)
@@ -166,10 +168,15 @@ void my_connect_callback(struct mosquitto *mosq, void *obj, int result, int flag
 	}else{
 		if(result){
 			if(cfg.protocol_version == MQTT_PROTOCOL_V5){
-				err_printf(&cfg, "%s\n", mosquitto_reason_string(result));
+				if(result == MQTT_RC_UNSUPPORTED_PROTOCOL_VERSION){
+					err_printf(&cfg, "Connection error: %s. Try connecting to an MQTT v5 broker, or use MQTT v3.x mode.\n", mosquitto_reason_string(result));
+				}else{
+					err_printf(&cfg, "Connection error: %s\n", mosquitto_reason_string(result));
+				}
 			}else{
-				err_printf(&cfg, "%s\n", mosquitto_connack_string(result));
+				err_printf(&cfg, "Connection error: %s\n", mosquitto_connack_string(result));
 			}
+			mosquitto_disconnect_v5(mosq, 0, cfg.disconnect_props);
 		}
 	}
 }
@@ -443,7 +450,6 @@ int main(int argc, char *argv[])
 
 	if(pub_shared_init()) return 1;
 
-	memset(&cfg, 0, sizeof(struct mosq_config));
 	rc = client_config_load(&cfg, CLIENT_PUB, argc, argv);
 	if(rc){
 		if(rc == 2){

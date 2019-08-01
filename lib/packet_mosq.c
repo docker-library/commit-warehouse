@@ -98,6 +98,38 @@ void packet__cleanup(struct mosquitto__packet *packet)
 	packet->pos = 0;
 }
 
+
+void packet__cleanup_all(struct mosquitto *mosq)
+{
+	struct mosquitto__packet *packet;
+
+	pthread_mutex_lock(&mosq->current_out_packet_mutex);
+	pthread_mutex_lock(&mosq->out_packet_mutex);
+
+	/* Out packet cleanup */
+	if(mosq->out_packet && !mosq->current_out_packet){
+		mosq->current_out_packet = mosq->out_packet;
+		mosq->out_packet = mosq->out_packet->next;
+	}
+	while(mosq->current_out_packet){
+		packet = mosq->current_out_packet;
+		/* Free data and reset values */
+		mosq->current_out_packet = mosq->out_packet;
+		if(mosq->out_packet){
+			mosq->out_packet = mosq->out_packet->next;
+		}
+
+		packet__cleanup(packet);
+		mosquitto__free(packet);
+	}
+
+	packet__cleanup(&mosq->in_packet);
+
+	pthread_mutex_unlock(&mosq->out_packet_mutex);
+	pthread_mutex_unlock(&mosq->current_out_packet_mutex);
+}
+
+
 int packet__queue(struct mosquitto *mosq, struct mosquitto__packet *packet)
 {
 #ifndef WITH_BROKER

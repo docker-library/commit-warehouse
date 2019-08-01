@@ -28,6 +28,29 @@ Contributors:
 #include "property_mosq.h"
 #include "read_handle.h"
 
+static void connack_callback(struct mosquitto *mosq, uint8_t reason_code, uint8_t connect_flags, const mosquitto_property *properties)
+{
+	log__printf(mosq, MOSQ_LOG_DEBUG, "Client %s received CONNACK (%d)", mosq->id, reason_code);
+	pthread_mutex_lock(&mosq->callback_mutex);
+	if(mosq->on_connect){
+		mosq->in_callback = true;
+		mosq->on_connect(mosq, mosq->userdata, reason_code);
+		mosq->in_callback = false;
+	}
+	if(mosq->on_connect_with_flags){
+		mosq->in_callback = true;
+		mosq->on_connect_with_flags(mosq, mosq->userdata, reason_code, connect_flags);
+		mosq->in_callback = false;
+	}
+	if(mosq->on_connect_v5){
+		mosq->in_callback = true;
+		mosq->on_connect_v5(mosq, mosq->userdata, reason_code, connect_flags, properties);
+		mosq->in_callback = false;
+	}
+	pthread_mutex_unlock(&mosq->callback_mutex);
+}
+
+
 int handle__connack(struct mosquitto *mosq)
 {
 	uint8_t connect_flags;
@@ -44,7 +67,17 @@ int handle__connack(struct mosquitto *mosq)
 
 	if(mosq->protocol == mosq_p_mqtt5){
 		rc = property__read_all(CMD_CONNACK, &mosq->in_packet, &properties);
-		if(rc) return rc;
+
+		if(rc == MOSQ_ERR_PROTOCOL && reason_code == CONNACK_REFUSED_PROTOCOL_VERSION){
+			/* This could occur because we are connecting to a v3.x broker and
+			 * it has replied with "unacceptable protocol version", but with a
+			 * v3 CONNACK. */
+
+			connack_callback(mosq, MQTT_RC_UNSUPPORTED_PROTOCOL_VERSION, connect_flags, NULL);
+			return rc;
+		}else if(rc){
+			return rc;
+		}
 	}
 
 	mosquitto_property_read_string(properties, MQTT_PROP_ASSIGNED_CLIENT_IDENTIFIER, &clientid, false);
@@ -68,24 +101,7 @@ int handle__connack(struct mosquitto *mosq)
 
 	mosq->msgs_out.inflight_quota = mosq->msgs_out.inflight_maximum;
 
-	log__printf(mosq, MOSQ_LOG_DEBUG, "Client %s received CONNACK (%d)", mosq->id, reason_code);
-	pthread_mutex_lock(&mosq->callback_mutex);
-	if(mosq->on_connect){
-		mosq->in_callback = true;
-		mosq->on_connect(mosq, mosq->userdata, reason_code);
-		mosq->in_callback = false;
-	}
-	if(mosq->on_connect_with_flags){
-		mosq->in_callback = true;
-		mosq->on_connect_with_flags(mosq, mosq->userdata, reason_code, connect_flags);
-		mosq->in_callback = false;
-	}
-	if(mosq->on_connect_v5){
-		mosq->in_callback = true;
-		mosq->on_connect_v5(mosq, mosq->userdata, reason_code, connect_flags, properties);
-		mosq->in_callback = false;
-	}
-	pthread_mutex_unlock(&mosq->callback_mutex);
+	connack_callback(mosq, reason_code, connect_flags, properties);
 	mosquitto_property_free_all(&properties);
 
 	switch(reason_code){

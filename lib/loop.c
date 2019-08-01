@@ -314,7 +314,6 @@ static int mosquitto__loop_rc_handle(struct mosquitto *mosq, int rc)
 			mosq->in_callback = false;
 		}
 		pthread_mutex_unlock(&mosq->callback_mutex);
-		return rc;
 	}
 	return rc;
 }

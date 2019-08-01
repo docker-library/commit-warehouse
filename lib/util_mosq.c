@@ -248,7 +248,7 @@ FILE *mosquitto__fopen(const char *path, const char *mode, bool restrict_read)
 			sec.bInheritHandle = FALSE;
 			sec.lpSecurityDescriptor = &sd;
 
-			hfile = CreateFile(buf, GENERIC_READ | GENERIC_WRITE, 0,
+			hfile = CreateFile(buf, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
 				&sec,
 				dwCreationDisposition,
 				FILE_ATTRIBUTE_NORMAL,

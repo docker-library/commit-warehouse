@@ -607,12 +607,14 @@ static int net__init_ssl_ctx(struct mosquitto *mosq)
 			if(!engine){
 				log__printf(mosq, MOSQ_LOG_ERR, "Error loading %s engine\n", mosq->tls_engine);
 				COMPAT_CLOSE(mosq->sock);
+				mosq->sock = INVALID_SOCKET;
 				return MOSQ_ERR_TLS;
 			}
 			if(!ENGINE_init(engine)){
 				log__printf(mosq, MOSQ_LOG_ERR, "Failed engine initialisation\n");
 				ENGINE_free(engine);
 				COMPAT_CLOSE(mosq->sock);
+				mosq->sock = INVALID_SOCKET;
 				return MOSQ_ERR_TLS;
 			}
 			ENGINE_set_default(engine, ENGINE_METHOD_ALL);
@@ -698,6 +700,7 @@ static int net__init_ssl_ctx(struct mosquitto *mosq)
 							log__printf(mosq, MOSQ_LOG_ERR, "Error: Unable to set engine secret mode sha1");
 							ENGINE_FINISH(engine);
 							COMPAT_CLOSE(mosq->sock);
+							mosq->sock = INVALID_SOCKET;
 							net__print_ssl_error(mosq);
 							return MOSQ_ERR_TLS;
 						}
@@ -705,6 +708,7 @@ static int net__init_ssl_ctx(struct mosquitto *mosq)
 							log__printf(mosq, MOSQ_LOG_ERR, "Error: Unable to set engine pin");
 							ENGINE_FINISH(engine);
 							COMPAT_CLOSE(mosq->sock);
+							mosq->sock = INVALID_SOCKET;
 							net__print_ssl_error(mosq);
 							return MOSQ_ERR_TLS;
 						}
@@ -715,6 +719,7 @@ static int net__init_ssl_ctx(struct mosquitto *mosq)
 						log__printf(mosq, MOSQ_LOG_ERR, "Error: Unable to load engine private key file \"%s\".", mosq->tls_keyfile);
 						ENGINE_FINISH(engine);
 						COMPAT_CLOSE(mosq->sock);
+						mosq->sock = INVALID_SOCKET;
 						net__print_ssl_error(mosq);
 						return MOSQ_ERR_TLS;
 					}
@@ -722,6 +727,7 @@ static int net__init_ssl_ctx(struct mosquitto *mosq)
 						log__printf(mosq, MOSQ_LOG_ERR, "Error: Unable to use engine private key file \"%s\".", mosq->tls_keyfile);
 						ENGINE_FINISH(engine);
 						COMPAT_CLOSE(mosq->sock);
+						mosq->sock = INVALID_SOCKET;
 						net__print_ssl_error(mosq);
 						return MOSQ_ERR_TLS;
 					}
@@ -948,12 +954,14 @@ int net__socket_nonblock(mosq_sock_t *sock)
 	if(fcntl(*sock, F_SETFL, opt | O_NONBLOCK) == -1){
 		/* If either fcntl fails, don't want to allow this client to connect. */
 		COMPAT_CLOSE(*sock);
+		*sock = INVALID_SOCKET;
 		return MOSQ_ERR_ERRNO;
 	}
 #else
 	unsigned long opt = 1;
 	if(ioctlsocket(*sock, FIONBIO, &opt)){
 		COMPAT_CLOSE(*sock);
+		*sock = INVALID_SOCKET;
 		return MOSQ_ERR_ERRNO;
 	}
 #endif

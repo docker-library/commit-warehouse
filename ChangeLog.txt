@@ -20,10 +20,15 @@ Client library:
 - `mosquitto_string_option(mosq, MOSQ_OPT_TLS_KEYFORM, ...)` was incorrectly
   returning `MOSQ_ERR_INVAL` with valid input. This has been fixed.
   Closes #1360.
+- on_connect callback is now called with the correct v5 reason code if a v5
+  client connects to a v3.x broker and is sent a CONNACK with the
+  "unacceptable protocol version" connack reason code.
 
 Clients:
 - mosquitto_pub: fix error codes not being returned when mosquitto_pub exits.
   Closes #1354.
+- All clients: improve error messages when connecting to a v3.x broker when in
+  v5 mode. Closes #1344.
 
 Other:
 - Various documentation fixes.

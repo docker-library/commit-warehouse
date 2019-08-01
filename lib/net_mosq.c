@@ -961,7 +961,7 @@ int net__socket_nonblock(mosq_sock_t *sock)
 	unsigned long opt = 1;
 	if(ioctlsocket(*sock, FIONBIO, &opt)){
 		COMPAT_CLOSE(*sock);
-		mosq->sock = INVALID_SOCKET;
+		*sock = INVALID_SOCKET;
 		return MOSQ_ERR_ERRNO;
 	}
 #endif

@@ -445,7 +445,6 @@ int main(int argc, char *argv[])
 
 	if(pub_shared_init()) return 1;
 
-	memset(&cfg, 0, sizeof(struct mosq_config));
 	rc = client_config_load(&cfg, CLIENT_PUB, argc, argv);
 	if(rc){
 		if(rc == 2){

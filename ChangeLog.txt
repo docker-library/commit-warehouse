@@ -25,6 +25,9 @@ Clients:
 - mosquitto_pub: fix error codes not being returned when mosquitto_pub exits.
   Closes #1354.
 
+Other:
+- Various documentation fixes.
+
 
 1.6.3 - 20190618
 ================

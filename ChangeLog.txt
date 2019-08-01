@@ -24,6 +24,7 @@ Client library:
   client connects to a v3.x broker and is sent a CONNACK with the
   "unacceptable protocol version" connack reason code.
 - Fix memory leak when setting v5 properties in mosquitto_connect_v5().
+- Fix properties not being sent on QoS>0 PUBLISH messages.
 
 Clients:
 - mosquitto_pub: fix error codes not being returned when mosquitto_pub exits.

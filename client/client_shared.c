@@ -1427,11 +1427,11 @@ static int mosquitto__parse_socks_url(struct mosq_config *cfg, char *url)
 
 	return 0;
 cleanup:
-	if(username_or_host) free(username_or_host);
-	if(username) free(username);
-	if(password) free(password);
-	if(host) free(host);
-	if(port) free(port);
+	free(username_or_host);
+	free(username);
+	free(password);
+	free(host);
+	free(port);
 	return 1;
 }
 #endif

@@ -21,6 +21,7 @@ Contributors:
 #include <string.h>
 #ifndef WIN32
 #include <sys/time.h>
+#include <strings.h>
 #endif
 
 #include "mosquitto.h"

@@ -7,16 +7,32 @@ from mosq_test_helper import *
 def disco_test(test, disconnect_packet):
     global rc
 
-    sock = mosq_test.do_client_connect(connect_packet, connack_packet, port=port)
-    sock.send(disconnect_packet)
-    sock.close()
+    sock1 = mosq_test.do_client_connect(connect1_packet, connack1_packet, port=port)
+    mosq_test.do_send_receive(sock1, subscribe1_packet, suback1_packet, "suback1")
+
+
+    sock2 = mosq_test.do_client_connect(connect2_packet, connack2_packet, port=port)
+    sock2.send(disconnect_packet)
+    sock2.close()
+
+    # If this fails then we probably received the will
+    mosq_test.do_ping(sock1)
+
     rc -= 1
 
 
 rc = 4
 keepalive = 10
-connect_packet = mosq_test.gen_connect("connect-disconnect-test", proto_ver=5, keepalive=keepalive)
-connack_packet = mosq_test.gen_connack(rc=0, proto_ver=5)
+
+connect1_packet = mosq_test.gen_connect("sub", proto_ver=5, keepalive=keepalive)
+connack1_packet = mosq_test.gen_connack(rc=0, proto_ver=5)
+
+mid = 1
+subscribe1_packet = mosq_test.gen_subscribe(mid, "#", 0, proto_ver=5)
+suback1_packet = mosq_test.gen_suback(mid, 0, proto_ver=5)
+
+connect2_packet = mosq_test.gen_connect("connect-disconnect-test", proto_ver=5, keepalive=keepalive, will_topic="failure", will_payload=b"failure")
+connack2_packet = mosq_test.gen_connack(rc=0, proto_ver=5)
 
 port = mosq_test.get_port()
 broker = mosq_test.start_broker(filename=os.path.basename(__file__), port=port)

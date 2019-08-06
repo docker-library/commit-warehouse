@@ -4,6 +4,7 @@ Broker:
 
 Build:
 - Fix missing function warnings on NetBSD.
+- Fix WITH_STATIC_LIBRARIES using CMake on Windows. Closes #1369.
 
 
 1.6.4 - 20190801

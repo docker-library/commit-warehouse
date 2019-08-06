@@ -1,5 +1,3 @@
-option(WITH_STATIC_LIBRARIES "Build static versions of the libmosquitto/pp libraries?" OFF)
-option(WITH_PIC "Build the static library with PIC (Position Independent Code) enabled archives?" OFF)
 add_subdirectory(cpp)
 
 include_directories(${mosquitto_SOURCE_DIR} ${mosquitto_SOURCE_DIR}/lib
@@ -102,7 +100,7 @@ if (WITH_STATIC_LIBRARIES)
 	target_link_libraries(libmosquitto_static ${LIBRARIES})
 
 	set_target_properties(libmosquitto_static PROPERTIES
-		OUTPUT_NAME mosquitto
+		OUTPUT_NAME mosquitto_static
 		VERSION ${VERSION}
 	)
 

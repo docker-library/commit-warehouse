@@ -29,7 +29,7 @@ if (WITH_STATIC_LIBRARIES)
 	target_link_libraries(mosquittopp_static ${LIBRARIES})
 
 	set_target_properties(mosquittopp_static PROPERTIES
-		OUTPUT_NAME mosquittopp
+		OUTPUT_NAME mosquittopp_static
 		VERSION ${VERSION}
 	)
 

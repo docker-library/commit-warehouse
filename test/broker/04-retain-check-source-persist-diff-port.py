@@ -3,6 +3,7 @@
 # Test for CVE-2018-12546, with the broker being stopped to write the persistence file, plus subscriber on different port.
 
 from mosq_test_helper import *
+import os.path
 import signal
 
 def write_config(filename, port1, port2, per_listener):
@@ -79,6 +80,8 @@ def do_test(per_listener, username):
             write_acl_2(acl_file, username)
             broker.terminate()
             broker.wait()
+            if os.path.isfile(persistence_file) == False:
+                raise FileNotFoundError("Persistence file not written")
 
             broker = mosq_test.start_broker(filename=os.path.basename(__file__), use_conf=True, port=port1)
 
@@ -94,7 +97,10 @@ def do_test(per_listener, username):
         broker.wait()
         os.remove(conf_file)
         os.remove(acl_file)
-        os.remove(persistence_file)
+        try:
+            os.remove(persistence_file)
+        except FileNotFoundError:
+            pass
         (stdo, stde) = broker.communicate()
         if rc:
             print(stde.decode('utf-8'))

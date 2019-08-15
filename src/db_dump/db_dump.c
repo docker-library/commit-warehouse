@@ -100,42 +100,28 @@ struct msg_store_chunk *msgs_by_id = NULL;
 static void
 free__db_sub(struct db_sub *sub)
 {
-	if (sub->client_id) {
-		free(sub->client_id);
-	}
-	if (sub->topic) {
-		free(sub->topic);
-	}
+	free(sub->client_id);
+	free(sub->topic);
 }
 
 static void
 free__db_client(struct db_client *client)
 {
-	if (client->client_id) {
-		free(client->client_id);
-	}
+	free(client->client_id);
 }
 
 static void
 free__db_client_msg(struct db_client_msg *msg)
 {
-	if (msg->client_id) {
-		free(msg->client_id);
-	}
+	free(msg->client_id);
 }
 
 static void
 free__db_msg(struct db_msg *msg)
 {
-	if (msg->source_id) {
-		free(msg->source_id);
-	}
-	if (msg->topic) {
-		free(msg->topic);
-	}
-	if (msg->payload) {
-		free(msg->payload);
-	}
+	free(msg->source_id);
+	free(msg->topic);
+	free(msg->payload);
 }
 
 static void

@@ -116,7 +116,7 @@
 		<para>The options below may be given on the command line, but may also
 			be placed in a config file located at
 			<option>$XDG_CONFIG_HOME/mosquitto_pub</option> or
-			<option>$HOME/.config/mosquitto_sub</option> with one pair of
+			<option>$HOME/.config/mosquitto_pub</option> with one pair of
 			<option>-option <replaceable>value</replaceable></option>
 			per line. The values in the config file will be used as defaults
 			and can be overridden by using the command line. The exceptions to

@@ -1,6 +1,7 @@
 Broker:
 - Fix v5 DISCONNECT packets with remaining length == 2 being treated as a
   protocol error. Closes #1367.
+- Fix support for libwebsockets 3.x.
 
 Build:
 - Fix missing function warnings on NetBSD.

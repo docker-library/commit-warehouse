@@ -180,7 +180,7 @@ static int callback_mqtt(struct libwebsocket_context *context,
 	struct mosquitto_db *db;
 	struct mosquitto *mosq = NULL;
 	struct mosquitto__packet *packet;
-	int count, i, j;
+	int count;
 	const struct libwebsocket_protocols *p;
 	struct libws_mqtt_data *u = (struct libws_mqtt_data *)user;
 	size_t pos;
@@ -195,16 +195,7 @@ static int callback_mqtt(struct libwebsocket_context *context,
 			mosq = context__init(db, WEBSOCKET_CLIENT);
 			if(mosq){
 				p = libwebsockets_get_protocol(wsi);
-				for (i=0; i<db->config->listener_count; i++){
-					if (db->config->listeners[i].protocol == mp_websockets) {
-						for (j=0; db->config->listeners[i].ws_protocol[j].name; j++){
-							if (p == &db->config->listeners[i].ws_protocol[j]){
-								mosq->listener = &db->config->listeners[i];
-								mosq->listener->client_count++;
-							}
-						}
-					}
-				}
+				mosq->listener = p->user;
 				if(!mosq->listener){
 					mosquitto__free(mosq);
 					return -1;
@@ -715,6 +706,7 @@ struct libwebsocket_context *mosq_websockets_init(struct mosquitto__listener *li
 		p[i].callback = protocols[i].callback;
 		p[i].per_session_data_size = protocols[i].per_session_data_size;
 		p[i].rx_buffer_size = protocols[i].rx_buffer_size;
+		p[i].user = listener;
 	}
 
 	memset(&info, 0, sizeof(info));

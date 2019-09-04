@@ -239,7 +239,11 @@ int packet__write(struct mosquitto *mosq)
 #ifdef WIN32
 				errno = WSAGetLastError();
 #endif
-				if(errno == EAGAIN || errno == COMPAT_EWOULDBLOCK){
+				if(errno == EAGAIN || errno == COMPAT_EWOULDBLOCK
+#ifdef WIN32
+						|| errno == WSAENOTCONN
+#endif
+						){
 					pthread_mutex_unlock(&mosq->current_out_packet_mutex);
 					return MOSQ_ERR_SUCCESS;
 				}else{

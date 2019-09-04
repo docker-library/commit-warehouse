@@ -3,6 +3,7 @@ Broker:
   protocol error. Closes #1367.
 - Fix support for libwebsockets 3.x.
 - Fix slow websockets performance when sending large messages. Closes #1390.
+- Fix bridges potentially not connecting on Windows. Closes #478.
 
 Documentation:
 - Improve details on global/per listener options in the mosquitto.conf man page.

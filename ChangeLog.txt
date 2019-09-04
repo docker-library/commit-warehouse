@@ -4,6 +4,10 @@ Broker:
 - Fix support for libwebsockets 3.x.
 - Fix slow websockets performance when sending large messages. Closes #1390.
 
+Documentation:
+- Improve details on global/per listener options in the mosquitto.conf man page.
+  Closes #274.
+
 Build:
 - Fix missing function warnings on NetBSD.
 - Fix WITH_STATIC_LIBRARIES using CMake on Windows. Closes #1369.

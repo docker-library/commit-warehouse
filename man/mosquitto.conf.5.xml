@@ -132,7 +132,7 @@
 						for the topic keyword, but using pattern as the
 						keyword.</para>
 					<para><code>pattern [read|write|readwrite] &lt;topic&gt;</code></para>
-					
+
 					<para>The patterns available for substition are:</para>
 					<itemizedlist mark="circle">
 						<listitem><para>%c to match the client id of the client</para></listitem>
@@ -150,6 +150,13 @@
 
 					<para>If the first character of a line of the ACL file is a
 						# it is treated as a comment.</para>
+
+					<para>If <option>per_listener_settings</option> is
+						<replaceable>true</replaceable>, this option applies to
+						the current listener being configured only. If
+						<option>per_listener_settings</option> is
+						<replaceable>false</replaceable>, this option applies
+						to all listeners.</para>
 
 					<para>Reloaded on reload signal. The currently loaded ACLs
 						will be freed and reloaded. Existing subscriptions will
@@ -171,6 +178,14 @@
 						username/password or TLS-PSK checks, then
 						<option>allow_anonymous</option> defaults to
 						<replaceable>false</replaceable>.</para>
+
+					<para>If <option>per_listener_settings</option> is
+						<replaceable>true</replaceable>, this option applies to
+						the current listener being configured only. If
+						<option>per_listener_settings</option> is
+						<replaceable>false</replaceable>, this option applies
+						to all listeners.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -196,17 +211,28 @@
 						correctly deal with duplicate messages even when then
 						have QoS=2.</para>
 					<para>Defaults to <replaceable>true</replaceable>.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
 			<varlistentry>
 				<term><option>allow_zero_length_clientid</option> [ true | false ]</term>
 				<listitem>
-					<para>MQTT 3.1.1 allows clients to connect with a zero
+					<para>MQTT 3.1.1 and MQTT 5 allow clients to connect with a zero
 						length client id and have the broker generate a client
 						id for them. Use this option to allow/disallow this
 						behaviour. Defaults to true.</para>
 					<para>See also the <option>auto_id_prefix</option> option.</para>
+
+					<para>If <option>per_listener_settings</option> is
+						<replaceable>true</replaceable>, this option applies to
+						the current listener being configured only. If
+						<option>per_listener_settings</option> is
+						<replaceable>false</replaceable>, this option applies
+						to all listeners.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -214,7 +240,9 @@
 				<term><option>auth_opt_*</option> <replaceable>value</replaceable></term>
 				<listitem>
 					<para>Options to be passed to the auth plugin. See the
-						specific plugin instructions.  </para>
+						specific plugin instructions.</para>
+
+					<para>Applies to the current authentication plugin being configured.</para>
 				</listitem>
 			</varlistentry>
 			<varlistentry>
@@ -256,6 +284,8 @@
 						checks delivered to your plugin by setting this option
 						to <replaceable>false</replaceable>.</para>
 					<para>Defaults to <replaceable>true</replaceable>.</para>
+
+					<para>Applies to the current authentication plugin being configured.</para>
 					<para>Not currently reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -267,6 +297,14 @@
 						to set a string that will be prefixed to the
 						automatically generated client ids to aid visibility in
 						logs. Defaults to <option>auto-</option>.</para>
+
+					<para>If <option>per_listener_settings</option> is
+						<replaceable>true</replaceable>, this option applies to
+						the current listener being configured only. If
+						<option>per_listener_settings</option> is
+						<replaceable>false</replaceable>, this option applies
+						to all listeners.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -280,6 +318,9 @@
 						SIGUSR1 signal. Note that this setting only has an
 						effect if persistence is enabled.  Defaults to 1800
 						seconds (30 minutes).</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -295,6 +336,9 @@
 						the in-memory database to disk by treating
 						<option>autosave_interval</option> as a time in
 						seconds.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -325,6 +369,9 @@
 						"secure-" here would mean a client "secure-client"
 						could connect but another with clientid "mqtt"
 						couldn't. By default, all client ids are valid.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal. Note that currently
 						connected clients will be unaffected by any
 						changes.</para>
@@ -337,6 +384,9 @@
 						will include entries when clients connect and
 						disconnect. If set to <replaceable>false</replaceable>,
 						these entries will not appear.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -502,9 +552,11 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 				<term><option>max_inflight_bytes</option> <replaceable>count</replaceable></term>
 				<listitem>
 					<para>QoS 1 and 2 messages will be allowed in flight until this byte
-                                            limit is reached.  Defaults to 0. (No limit)
-                                            See also the <option>max_inflight_messages</option> option.
-                                        </para>
+                          limit is reached.  Defaults to 0. (No limit)
+                          See also the <option>max_inflight_messages</option> option.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -518,6 +570,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						Defaults to 20. Set to 0 for no maximum. If set to 1,
 						this will guarantee in-order delivery of
 						messages.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -537,6 +592,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						max_keepalive. This only applies to MQTT v5 clients.
 						The maximum value allowable, and default value, is
 						65535. Do not set below 10 seconds.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -559,6 +617,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 					<para>Setting below 20 bytes is forbidden because it is
 						likely to interfere with normal client operation even
 						with small payloads.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -572,6 +633,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						If both max_queued_messages and max_queued_bytes are specified,
 						packets will  be queued until the first limit is reached.
 					</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -583,8 +647,10 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						in flight. Defaults to 100. Set to 0 for no maximum (not
 						recommended). See also the
 						<option>queue_qos0_messages</option> and
-						<option>max_queued_bytes</option> options.
-                                        </para>
+						<option>max_queued_bytes</option> options.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -615,6 +681,10 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						The default value is 0, which means that all valid MQTT
 						messages are accepted. MQTT imposes a maximum payload
 						size of 268435455 bytes.</para>
+
+					<para>This option applies globally.</para>
+
+					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
 			<varlistentry>
@@ -638,6 +708,14 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						valid and could be used with acl_file to have e.g. read
 						only guest/anonymous accounts and defined users that
 						can publish.</para>
+
+					<para>If <option>per_listener_settings</option> is
+						<replaceable>true</replaceable>, this option applies to
+						the current listener being configured only. If
+						<option>per_listener_settings</option> is
+						<replaceable>false</replaceable>, this option applies
+						to all listeners.</para>
+
 					<para>Reloaded on reload signal. The currently loaded
 						username and password data will be freed and reloaded.
 						Clients that are already connected will not be
@@ -693,6 +771,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						copy of the persistence file before installing a new
 						version so that they can roll back to an earlier version
 						if necessary.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -701,6 +782,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 				<listitem>
 					<para>The filename to use for the persistent database.
 						Defaults to mosquitto.db.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -710,6 +794,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 					<para>The path where the persistence database should be
 						stored. Must end in a trailing slash. If not given,
 						then the current directory is used.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -735,6 +822,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 					</itemizedlist>
 					<para>As this is a non-standard option, the default if not
 						set is to never expire persistent clients.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -765,6 +855,14 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						listener that has PSK support enabled must provide a
 						matching identity and PSK to allow the encrypted
 						connection to proceed.</para>
+
+					<para>If <option>per_listener_settings</option> is
+						<replaceable>true</replaceable>, this option applies to
+						the current listener being configured only. If
+						<option>per_listener_settings</option> is
+						<replaceable>false</replaceable>, this option applies
+						to all listeners.</para>
+
 					<para>Reloaded on reload signal. The currently loaded
 						identity and key data will be freed and reloaded.
 						Clients that are already connected will not be
@@ -781,6 +879,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 					<para>Note that the MQTT v3.1.1 spec states that only QoS 1
 						and 2 messages should be saved in this situation so
 						this is a non-standard option.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -791,6 +892,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						supported. Clients that send a message with the retain
 						bit will be disconnected if this option is set to
 						false. Defaults to true.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -810,6 +914,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 							has the effect of reducing latency of some messages
 							at potentially increasing the number of TCP packets
 							being sent. Defaults to false.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -822,6 +929,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						seconds.</para>
 					<para>Set to 0 to disable publishing the $SYS hierarchy
 						completely.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -838,6 +948,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						subscription. This is a non-standard option not
 						provided for by the spec. Defaults to
 						<replaceable>false</replaceable>.</para>
+
+					<para>This option applies globally.</para>
+
 					<para>Reloaded on reload signal.</para>
 				</listitem>
 			</varlistentry>
@@ -848,7 +961,8 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						group on startup.  If mosquitto is unable to change to
 						this user and group, it will exit with an error. The
 						user specified must have read/write access to the
-						persistence database if it is to be written. If run as
+						persistence database if it is to be written, and read
+						access to certificate, password, and ACL files. If run as
 						a non-root user, this setting has no effect. Defaults
 						to mosquitto.</para>
 					<para>This setting has no effect on Windows and so you
@@ -876,8 +990,14 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 							to restrict access to certain network interfaces.
 							To restrict access to mosquitto to the local host
 							only, use "bind_address localhost". This only
-							applies to the default listener. Use the listener
-							variable to control other listeners.</para>
+							applies to the default listener. Use the
+							<option>listener</option> option to control other
+							listeners.</para>
+
+						<para>It is recommended to use an explicit
+							<option>listener</option> rather than rely on the
+							implicit default listener options like this.</para>
+
 						<para>Not reloaded on reload signal.</para>
 					</listitem>
 				</varlistentry>
@@ -955,7 +1075,7 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 				<varlistentry>
 					<term><option>maximum_qos</option> <replaceable>count</replaceable></term>
 					<listitem>
-						<para>Limit the QoS value allowed when using this
+						<para>Limit the QoS value allowed for clients connecting to this
 							listener. Defaults to 2, which means any QoS can be
 							used. Set to 0 or 1 to limit to those QoS values.
 							This makes use of an MQTT v5 feature to notify
@@ -970,9 +1090,9 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 					<term><option>max_topic_alias</option> <replaceable>number</replaceable></term>
 					<listitem>
 						<para>This option sets the maximum number topic aliases
-							that an MQTT v5 client is allowed to create. It
+							that an MQTT v5 client is allowed to create. This option
 							applies per listener. Defaults to 10. Set to 0 to
-							disallow topic aliases.</para>
+							disallow topic aliases. The maximum value possible is 65535.</para>
 						<para>Not reloaded on reload signal.</para>
 					</listitem>
 				</varlistentry>
@@ -998,12 +1118,16 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						<para>Set the network port for the default listener to
 							listen on. Defaults to 1883.</para>
 						<para>Not reloaded on reload signal.</para>
+
+						<para>It is recommended to use an explicit
+							<option>listener</option> rather than rely on the
+							implicit default listener options like this.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term><option>protocol</option> <replaceable>value</replaceable></term>
 					<listitem>
-						<para>Set the protocol to accept for this listener. Can
+						<para>Set the protocol to accept for the current listener. Can
 							be <option>mqtt</option>, the default, or
 							<option>websockets</option> if available.</para>
 						<para>Websockets support is currently disabled by
@@ -1095,7 +1219,7 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 					<term><option>cafile</option> <replaceable>file path</replaceable></term>
 					<listitem>
 						<para>At least one of <option>cafile</option> or
-							<option>capath</option> must be provided to allow
+							<option>capath</option> must be provided to enable
 							SSL support.</para>
 						<para><option>cafile</option> is used to define the
 							path to a file containing the PEM encoded CA
@@ -1106,7 +1230,7 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 					<term><option>capath</option> <replaceable>directory path</replaceable></term>
 					<listitem>
 						<para>At least one of <option>cafile</option> or
-							<option>capath</option> must be provided to allow
+							<option>capath</option> must be provided to enable
 							SSL support.</para>
 						<para><option>capath</option> is used to define a
 							directory that contains PEM encoded CA certificates
@@ -1170,11 +1294,11 @@ openssl dhparam -out dhparam.pem 2048</programlisting>
 							trusted certificate.  The overall aim is encryption
 							of the network traffic.  By setting
 							<option>require_certificate</option> to
-							<replaceable>true</replaceable>, the client must
-							provide a valid certificate in order for the
-							network connection to proceed. This allows access
-							to the broker to be controlled outside of the
-							mechanisms provided by MQTT.</para>
+							<replaceable>true</replaceable>, a client connecting
+							to this listener must provide a valid certificate in
+							order for the network connection to proceed. This
+							allows access to the broker to be controlled outside
+							of the mechanisms provided by MQTT.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -1462,7 +1586,7 @@ openssl dhparam -out dhparam.pem 2048</programlisting>
 				<term><option>notifications_local_only</option> [ true | false ]</term>
 				<listitem>
 					<para>If set to <replaceable>true</replaceable>, only publish
-						notification messages to the local broker giving 
+						notification messages to the local broker giving
 						information about the state of the bridge connection.
 						Defaults to <replaceable>false</replaceable>.</para>
 				</listitem>

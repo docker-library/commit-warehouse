@@ -7,6 +7,9 @@ Broker:
 Documentation:
 - Improve details on global/per listener options in the mosquitto.conf man page.
   Closes #274.
+- Clarify behaviour when clients exceed the `message_size_limit`. Closes #448.
+- Improve documentation for `max_inflight_bytes`, `max_inflight_messages`,
+  and `max_queued_messages`.
 
 Build:
 - Fix missing function warnings on NetBSD.

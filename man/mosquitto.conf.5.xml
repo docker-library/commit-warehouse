@@ -551,9 +551,12 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 			<varlistentry>
 				<term><option>max_inflight_bytes</option> <replaceable>count</replaceable></term>
 				<listitem>
-					<para>QoS 1 and 2 messages will be allowed in flight until this byte
-                          limit is reached.  Defaults to 0. (No limit)
-                          See also the <option>max_inflight_messages</option> option.</para>
+					<para>Outgoing QoS 1 and 2 messages will be allowed in flight until this byte
+						limit is reached. This allows control of outgoing message rate based on
+						message size rather than message count. If the limit is set to 100,
+						messages of over 100 bytes are still allowed, but only a single message
+						can be in flight at once.  Defaults to 0. (No limit).</para>
+					<para>See also the <option>max_inflight_messages</option> option.</para>
 
 					<para>This option applies globally.</para>
 
@@ -563,7 +566,7 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 			<varlistentry>
 				<term><option>max_inflight_messages</option> <replaceable>count</replaceable></term>
 				<listitem>
-					<para>The maximum number of QoS 1 or 2 messages that can be
+					<para>The maximum number of outgoing QoS 1 or 2 messages that can be
 						in the process of being transmitted simultaneously.
 						This includes messages currently going through
 						handshakes and messages that are being retried.
@@ -631,9 +634,12 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 			<varlistentry>
 				<term><option>max_queued_bytes</option> <replaceable>count</replaceable></term>
 				<listitem>
-					<para>QoS 1 and 2 messages above those currently in-flight will be
-						queued (per client) until this limit is exceeded.
-						Defaults to 0. (No maximum) See also the
+					<para>The number of outgoing QoS 1 and 2 messages above those currently in-flight will be
+						queued (per client) by the broker. Once this limit has been reached, subsequent
+						messages will be silently dropped. This is an important option if you are sending
+						messages at a high rate and/or have clients who are slow to respond or may be offline
+						for extended periods of time.  Defaults to 0. (No maximum).</para>
+					<para>See also the
 						<option>max_queued_messages</option> option.
 						If both max_queued_messages and max_queued_bytes are specified,
 						packets will  be queued until the first limit is reached.
@@ -682,8 +688,13 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 				<listitem>
 					<para>This option sets the maximum publish payload size
 						that the broker will allow. Received messages that
-						exceed this size will not be accepted by the broker.
-						The default value is 0, which means that all valid MQTT
+						exceed this size will not be accepted by the broker. This means that the
+						message will not be forwarded on to subscribing clients, but the QoS flow
+						will be completed for QoS 1 or QoS 2 messages. MQTT v5 clients using QoS 1
+						or QoS 2 will receive a PUBACK or PUBREC with the "implementation specific
+						error" reason code.</para>
+
+					<para>The default value is 0, which means that all valid MQTT
 						messages are accepted. MQTT imposes a maximum payload
 						size of 268435455 bytes.</para>
 

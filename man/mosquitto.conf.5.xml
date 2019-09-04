@@ -614,6 +614,11 @@ log_timestamp_format %Y-%m-%dT%H:%M:%S
 						using, but v3.1.1 and earlier clients will of course
 						not have received the maximum packet size information.
 						Defaults to no limit.</para>
+
+					<para>This option applies to all clients, not just those
+						using MQTT v5, but it is not possible to notify clients
+						using MQTT v3.1.1 or MQTT v3.1 of the limit.</para>
+
 					<para>Setting below 20 bytes is forbidden because it is
 						likely to interfere with normal client operation even
 						with small payloads.</para>

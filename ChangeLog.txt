@@ -5,6 +5,10 @@ Broker:
 - Fix slow websockets performance when sending large messages. Closes #1390.
 - Fix bridges potentially not connecting on Windows. Closes #478.
 
+Client library:
+- Fix reconnect backoff for the situation where connections are dropped rather
+  than refused. Closes #737.
+
 Documentation:
 - Improve details on global/per listener options in the mosquitto.conf man page.
   Closes #274.

@@ -194,13 +194,14 @@ int mosquitto_loop_forever(struct mosquitto *mosq, int timeout, int max_packets)
 {
 	int run = 1;
 	int rc;
-	unsigned int reconnects = 0;
 	unsigned long reconnect_delay;
 #ifndef WIN32
 	struct timespec req, rem;
 #endif
 
 	if(!mosq) return MOSQ_ERR_INVAL;
+
+	mosq->reconnects = 0;
 
 	if(mosq->state == mosq_cs_connect_async){
 		mosquitto_reconnect(mosq);
@@ -209,9 +210,6 @@ int mosquitto_loop_forever(struct mosquitto *mosq, int timeout, int max_packets)
 	while(run){
 		do{
 			rc = mosquitto_loop(mosq, timeout, max_packets);
-			if (reconnects !=0 && rc == MOSQ_ERR_SUCCESS){
-				reconnects = 0;
-			}
 		}while(run && rc == MOSQ_ERR_SUCCESS);
 		/* Quit after fatal errors. */
 		switch(rc){
@@ -245,9 +243,9 @@ int mosquitto_loop_forever(struct mosquitto *mosq, int timeout, int max_packets)
 
 				if(mosq->reconnect_delay_max > mosq->reconnect_delay){
 					if(mosq->reconnect_exponential_backoff){
-						reconnect_delay = mosq->reconnect_delay*(reconnects+1)*(reconnects+1);
+						reconnect_delay = mosq->reconnect_delay*(mosq->reconnects+1)*(mosq->reconnects+1);
 					}else{
-						reconnect_delay = mosq->reconnect_delay*(reconnects+1);
+						reconnect_delay = mosq->reconnect_delay*(mosq->reconnects+1);
 					}
 				}else{
 					reconnect_delay = mosq->reconnect_delay;
@@ -256,7 +254,7 @@ int mosquitto_loop_forever(struct mosquitto *mosq, int timeout, int max_packets)
 				if(reconnect_delay > mosq->reconnect_delay_max){
 					reconnect_delay = mosq->reconnect_delay_max;
 				}else{
-					reconnects++;
+					mosq->reconnects++;
 				}
 
 #ifdef WIN32

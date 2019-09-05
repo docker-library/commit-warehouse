@@ -709,6 +709,7 @@ static void loop_handle_reads_writes(struct mosquitto_db *db, struct pollfd *pol
 #endif
 	int err;
 	socklen_t len;
+	int rc;
 
 #ifdef WITH_EPOLL
 	int i;
@@ -780,8 +781,9 @@ static void loop_handle_reads_writes(struct mosquitto_db *db, struct pollfd *pol
 					continue;
 				}
 			}
-			if(packet__write(context)){
-				do_disconnect(db, context, MOSQ_ERR_CONN_LOST);
+			rc = packet__write(context);
+			if(rc){
+				do_disconnect(db, context, rc);
 				continue;
 			}
 		}
@@ -822,8 +824,9 @@ static void loop_handle_reads_writes(struct mosquitto_db *db, struct pollfd *pol
 #endif
 #endif
 			do{
-				if(packet__read(db, context)){
-					do_disconnect(db, context, MOSQ_ERR_CONN_LOST);
+				rc = packet__read(db, context);
+				if(rc){
+					do_disconnect(db, context, rc);
 					continue;
 				}
 			}while(SSL_DATA_PENDING(context));

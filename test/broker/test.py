@@ -112,6 +112,7 @@ tests = [
 
     (1, './07-will-delay-reconnect.py'),
     (1, './07-will-delay-recover.py'),
+    (1, './07-will-delay-session-expiry.py'),
     (1, './07-will-delay.py'),
     (1, './07-will-disconnect-with-will.py'),
     (1, './07-will-invalid-utf8.py'),

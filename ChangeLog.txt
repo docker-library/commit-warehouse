@@ -8,6 +8,8 @@ Broker:
   `use_subject_as_username` being disconnected on SIGHUP. Closes #1402.
 - Improve error messages in some situations when clients disconnect. Reduces
   the number of "Socket error on client X, disconnecting" messages.
+- Fix Will for v5 clients not being sent if will delay interval was greater
+  than the session expiry interval. Closes #1401.
 
 Client library:
 - Fix reconnect backoff for the situation where connections are dropped rather

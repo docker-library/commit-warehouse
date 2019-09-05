@@ -100,7 +100,10 @@ void session_expiry__check(struct mosquitto_db *db, time_t now)
 			context = item->context;
 			session_expiry__remove(context);
 
+			/* Session has now expired, so clear interval */
 			context->session_expiry_interval = 0;
+			/* Session has expired, so will delay should be cleared. */
+			context->will_delay_interval = 0;
 			context__send_will(db, context);
 			context__add_to_disused(db, context);
 		}else{

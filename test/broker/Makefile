@@ -138,6 +138,7 @@ endif
 07 :
 	./07-will-delay-reconnect.py
 	./07-will-delay-recover.py
+	./07-will-delay-session-expiry.py
 	./07-will-delay.py
 	./07-will-disconnect-with-will.py
 	./07-will-invalid-utf8.py

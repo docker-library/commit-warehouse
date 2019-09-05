@@ -160,6 +160,7 @@ ifeq ($(WITH_TLS),yes)
 	./08-ssl-connect-no-auth-wrong-ca.py
 	./08-ssl-connect-no-auth.py
 	./08-ssl-connect-no-identity.py
+	./08-ssl-hup-disconnect.py
 ifeq ($(WITH_TLS_PSK),yes)
 	./08-tls-psk-pub.py
 	./08-tls-psk-bridge.py

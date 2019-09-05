@@ -4,6 +4,8 @@ Broker:
 - Fix support for libwebsockets 3.x.
 - Fix slow websockets performance when sending large messages. Closes #1390.
 - Fix bridges potentially not connecting on Windows. Closes #478.
+- Fix clients authorised using `use_identity_as_username` or
+  `use_subject_as_username` being disconnected on SIGHUP. Closes #1402.
 
 Client library:
 - Fix reconnect backoff for the situation where connections are dropped rather

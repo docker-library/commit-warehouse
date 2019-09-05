@@ -1017,6 +1017,12 @@ int mosquitto_security_apply_default(struct mosquitto_db *db)
 			}else
 #endif /* FINAL_WITH_TLS_PSK */
 			{
+				/* Free existing credentials and then recover them. */
+				mosquitto__free(context->username);
+				context->username = NULL;
+				mosquitto__free(context->password);
+				context->password = NULL;
+
 				client_cert = SSL_get_peer_certificate(context->ssl);
 				if(!client_cert){
 					security__disconnect_auth(db, context);

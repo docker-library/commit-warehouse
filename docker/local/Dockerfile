@@ -40,7 +40,6 @@ RUN set -x && \
         LDFLAGS="-L/build/lws/lib" \
         WITH_ADNS=no \
         WITH_DOCS=no \
-        WITH_MEMORY_TRACKING=yes \
         WITH_SHARED_LIBRARIES=yes \
         WITH_SRV=no \
         WITH_STRIP=yes \

@@ -59,7 +59,6 @@ RUN set -x && \
         LDFLAGS="-L/build/lws/lib -flto" \
         WITH_ADNS=no \
         WITH_DOCS=no \
-        WITH_MEMORY_TRACKING=no \
         WITH_SHARED_LIBRARIES=no \
         WITH_SRV=no \
         WITH_STRIP=yes \

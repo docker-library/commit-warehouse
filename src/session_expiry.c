@@ -79,6 +79,7 @@ void session_expiry__remove_all(struct mosquitto_db *db)
 		session_expiry__remove(context);
 		context->session_expiry_interval = 0;
 		context->will_delay_interval = 0;
+		will_delay__remove(context);
 		context__disconnect(db, context);
 	}
 	
@@ -104,6 +105,7 @@ void session_expiry__check(struct mosquitto_db *db, time_t now)
 			context->session_expiry_interval = 0;
 			/* Session has expired, so will delay should be cleared. */
 			context->will_delay_interval = 0;
+			will_delay__remove(context);
 			context__send_will(db, context);
 			context__add_to_disused(db, context);
 		}else{

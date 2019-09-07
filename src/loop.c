@@ -590,7 +590,7 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 			 * will soon, so for now websockets clients are second class
 			 * citizens. */
 			if(db->config->listeners[i].ws_context){
-				libwebsocket_service(db->config->listeners[i].ws_context, 0);
+				libwebsocket_service(db->config->listeners[i].ws_context, -1);
 			}
 		}
 		if(db->config->have_websockets_listener){

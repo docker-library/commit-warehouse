@@ -202,6 +202,7 @@ int packet__write(struct mosquitto *mosq)
 {
 	ssize_t write_length;
 	struct mosquitto__packet *packet;
+	int state;
 
 	if(!mosq) return MOSQ_ERR_INVAL;
 	if(mosq->sock == INVALID_SOCKET) return MOSQ_ERR_NO_CONN;
@@ -217,10 +218,14 @@ int packet__write(struct mosquitto *mosq)
 	}
 	pthread_mutex_unlock(&mosq->out_packet_mutex);
 
+	pthread_mutex_lock(&mosq->state_mutex);
+	state = mosq->state;
+	pthread_mutex_unlock(&mosq->state_mutex);
+
 #if defined(WITH_TLS) && !defined(WITH_BROKER)
-	if((mosq->state == mosq_cs_connect_pending) || mosq->want_connect){
+	if((state == mosq_cs_connect_pending) || mosq->want_connect){
 #else
-	if(mosq->state == mosq_cs_connect_pending){
+	if(state == mosq_cs_connect_pending){
 #endif
 		pthread_mutex_unlock(&mosq->current_out_packet_mutex);
 		return MOSQ_ERR_SUCCESS;
@@ -316,6 +321,7 @@ int packet__read(struct mosquitto *mosq)
 	uint8_t byte;
 	ssize_t read_length;
 	int rc = 0;
+	int state;
 
 	if(!mosq){
 		return MOSQ_ERR_INVAL;
@@ -323,7 +329,11 @@ int packet__read(struct mosquitto *mosq)
 	if(mosq->sock == INVALID_SOCKET){
 		return MOSQ_ERR_NO_CONN;
 	}
-	if(mosq->state == mosq_cs_connect_pending){
+	pthread_mutex_lock(&mosq->state_mutex);
+	state = mosq->state;
+	pthread_mutex_unlock(&mosq->state_mutex);
+
+	if(state == mosq_cs_connect_pending){
 		return MOSQ_ERR_SUCCESS;
 	}
 

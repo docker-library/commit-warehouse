@@ -14,6 +14,7 @@ Broker:
 Client library:
 - Fix reconnect backoff for the situation where connections are dropped rather
   than refused. Closes #737.
+- Fix missing locks on `mosq->state`. Closes #1374.
 
 Documentation:
 - Improve details on global/per listener options in the mosquitto.conf man page.

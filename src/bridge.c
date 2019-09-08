@@ -88,6 +88,8 @@ int bridge__new(struct mosquitto_db *db, struct mosquitto__bridge *bridge)
 	new_context->tls_version = new_context->bridge->tls_version;
 	new_context->tls_insecure = new_context->bridge->tls_insecure;
 	new_context->tls_alpn = new_context->bridge->tls_alpn;
+	new_context->tls_engine = db->config->default_listener.tls_engine;
+	new_context->tls_keyform = db->config->default_listener.tls_keyform;
 #ifdef FINAL_WITH_TLS_PSK
 	new_context->tls_psk_identity = new_context->bridge->tls_psk_identity;
 	new_context->tls_psk = new_context->bridge->tls_psk;

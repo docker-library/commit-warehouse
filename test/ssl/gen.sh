@@ -32,44 +32,57 @@ openssl req -new -x509 -days 3650 -key test-fake-root-ca.key -out test-fake-root
 openssl genrsa -out test-signing-ca.key 1024
 openssl req -out test-signing-ca.csr -key test-signing-ca.key -new -config openssl.cnf -subj "${BASESUBJ}/CN=Signing CA/"
 openssl ca -batch -config openssl.cnf -name CA_root -extensions v3_ca -out test-signing-ca.crt -infiles test-signing-ca.csr
+rm -f test-signing-ca.csr
 
 # An alternative intermediate CA, signed by the root CA, not used to sign anything.
 openssl genrsa -out test-alt-ca.key 1024
 openssl req -out test-alt-ca.csr -key test-alt-ca.key -new -config openssl.cnf -subj "${BASESUBJ}/CN=Alternative Signing CA/"
 openssl ca -batch -config openssl.cnf -name CA_root -extensions v3_ca -out test-alt-ca.crt -infiles test-alt-ca.csr
+rm -f test-alt-ca.csr
 
 # Valid server key and certificate.
 openssl genrsa -out server.key 1024
 openssl req -new -key server.key -out server.csr -config openssl.cnf -subj "${SBASESUBJ}/CN=localhost/"
 openssl ca -batch -config openssl.cnf -name CA_signing -out server.crt -infiles server.csr 
+rm -f server.csr
 
-# Expired server certificate, based on the above server key.
-openssl req -new -days 1 -key server.key -out server-expired.csr -config openssl.cnf -subj "${SBASESUBJ}/CN=localhost/"
+# Expired server certificate
+openssl genrsa -out server-expired.key 1024
+openssl req -new -key server-expired.key -out server-expired.csr -config openssl.cnf -subj "${SBASESUBJ}-expired/CN=localhost/"
 openssl ca -batch -config openssl.cnf -name CA_signing -days 1 -startdate 120820000000Z -enddate 120821000000Z -out server-expired.crt -infiles server-expired.csr 
+rm -f server-expired.csr
 
 # Valid client key and certificate.
 openssl genrsa -out client.key 1024
 openssl req -new -key client.key -out client.csr -config openssl.cnf -subj "${SBASESUBJ}/CN=test client/"
 openssl ca -batch -config openssl.cnf -name CA_signing -out client.crt -infiles client.csr 
+rm -f client.csr
 
-# Expired client certificate, based on the above client key.
-openssl req -new -days 1 -key client.key -out client-expired.csr -config openssl.cnf -subj "${SBASESUBJ}/CN=test client expired/"
+# Expired client certificate
+openssl genrsa -out client-expired.key 1024
+openssl req -new -key client-expired.key -out client-expired.csr -config openssl.cnf -subj "${SBASESUBJ}/CN=test client expired/"
 openssl ca -batch -config openssl.cnf -name CA_signing -days 1 -startdate 120820000000Z -enddate 120821000000Z -out client-expired.crt -infiles client-expired.csr 
+rm -f client-expired.csr
 
-# Revoked client certificate, based on a new client key.
+# Empty CRL file
+openssl ca -batch -config openssl.cnf -name CA_signing -gencrl -out crl-empty.pem
+
+# Revoked client certificate
 openssl genrsa -out client-revoked.key 1024
-openssl req -new -days 1 -key client-revoked.key -out client-revoked.csr -config openssl.cnf -subj "${SBASESUBJ}/CN=test client revoked/"
+openssl req -new -key client-revoked.key -out client-revoked.csr -config openssl.cnf -subj "${SBASESUBJ}/CN=test client revoked/"
 openssl ca -batch -config openssl.cnf -name CA_signing -out client-revoked.crt -infiles client-revoked.csr 
 openssl ca -batch -config openssl.cnf -name CA_signing -revoke client-revoked.crt
 openssl ca -batch -config openssl.cnf -name CA_signing -gencrl -out crl.pem
+rm -f client-revoked.csr
 
 # Valid client key and certificate, encrypted (use "password" as password)
 openssl genrsa -des3 -out client-encrypted.key -passout pass:password 1024
 openssl req -new -key client-encrypted.key -out client-encrypted.csr -config openssl.cnf -subj "${SBASESUBJ}/CN=test client encrypted/" -passin pass:password
 openssl ca -batch -config openssl.cnf -name CA_signing -out client-encrypted.crt -infiles client-encrypted.csr
+rm -f client-encrypted.csr
 
 cat test-signing-ca.crt test-root-ca.crt > all-ca.crt
 #mkdir certs
 #cp test-signing-ca.crt certs/test-signing-ca.pem
 #cp test-root-ca.crt certs/test-root.ca.pem
-openssl rehash certs
+#openssl rehash certs

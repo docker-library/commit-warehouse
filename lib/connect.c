@@ -214,9 +214,6 @@ static int mosquitto__reconnect(struct mosquitto *mosq, bool blocking, const mos
 	}else
 #endif
 	{
-		pthread_mutex_lock(&mosq->state_mutex);
-		mosq->state = mosq_cs_connecting;
-		pthread_mutex_unlock(&mosq->state_mutex);
 		rc = net__socket_connect(mosq, mosq->host, mosq->port, mosq->bind_address, blocking);
 	}
 	if(rc>0){
@@ -233,9 +230,6 @@ static int mosquitto__reconnect(struct mosquitto *mosq, bool blocking, const mos
 		if(rc){
 			packet__cleanup_all(mosq);
 			net__socket_close(mosq);
-			pthread_mutex_lock(&mosq->state_mutex);
-			mosq->state = mosq_cs_new;
-			pthread_mutex_unlock(&mosq->state_mutex);
 		}
 		return rc;
 	}

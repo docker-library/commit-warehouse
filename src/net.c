@@ -442,7 +442,6 @@ int net__tls_load_verify(struct mosquitto__listener *listener)
 {
 #ifdef WITH_TLS
 	ENGINE *engine = NULL;
-#endif
 	int rc;
 
 	rc = SSL_CTX_load_verify_locations(listener->ssl_ctx, listener->cafile, listener->capath);
@@ -546,6 +545,7 @@ int net__tls_load_verify(struct mosquitto__listener *listener)
 			return rc;
 		}
 	}
+#endif
 
 	return MOSQ_ERR_SUCCESS;
 }

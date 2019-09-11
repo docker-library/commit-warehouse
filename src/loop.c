@@ -532,7 +532,18 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 		}
 #else
 		if(fdcount == -1){
-			log__printf(NULL, MOSQ_LOG_ERR, "Error in poll: %s.", strerror(errno));
+#  ifdef WIN32
+			if(pollfd_index == 0 && WSAGetLastError() == WSAEINVAL){
+				/* WSAPoll() immediately returns an error if it is not given
+				 * any sockets to wait on. This can happen if we only have
+				 * websockets listeners. Sleep a little to prevent a busy loop.
+				 */
+				Sleep(10);
+			}else
+#  endif
+			{
+				log__printf(NULL, MOSQ_LOG_ERR, "Error in poll: %s.", strerror(errno));
+			}
 		}else{
 			loop_handle_reads_writes(db, pollfds);
 

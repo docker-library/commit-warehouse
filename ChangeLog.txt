@@ -11,6 +11,8 @@ Broker:
 - Fix Will for v5 clients not being sent if will delay interval was greater
   than the session expiry interval. Closes #1401.
 - Fix CRL file not being reloaded on HUP. Closes #35.
+- Fix repeated "Error in poll" messages on Windows when only websockets
+  listeners are defined. Closes #1391.
 
 Client library:
 - Fix reconnect backoff for the situation where connections are dropped rather

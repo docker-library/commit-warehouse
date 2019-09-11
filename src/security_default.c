@@ -971,11 +971,26 @@ int mosquitto_security_apply_default(struct mosquitto_db *db)
 	X509_NAME *name;
 	X509_NAME_ENTRY *name_entry;
 	ASN1_STRING *name_asn1 = NULL;
+	struct mosquitto__listener *listener;
 #endif
 
 	if(!db) return MOSQ_ERR_INVAL;
 
-	
+#ifdef WITH_TLS
+	for(i=0; i<db->config->listener_count; i++){
+		listener = &db->config->listeners[i];
+		if(listener && listener->ssl_ctx && (listener->cafile || listener->capath) && listener->crlfile && listener->require_certificate){
+			if(net__tls_server_ctx(listener)){
+				return 1;
+			}
+
+			if(net__tls_load_verify(listener)){
+				return 1;
+			}
+		}
+	}
+#endif
+
 	HASH_ITER(hh_id, db->contexts_by_id, context, ctxt_tmp){
 		/* Check for anonymous clients when allow_anonymous is false */
 		if(db->config->per_listener_settings){

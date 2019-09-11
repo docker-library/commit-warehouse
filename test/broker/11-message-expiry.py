@@ -39,7 +39,7 @@ helper_connect = mosq_test.gen_connect("helper", proto_ver=5)
 helper_connack = mosq_test.gen_connack(rc=0, proto_ver=5)
 
 mid=1
-props = mqtt5_props.gen_uint32_prop(mqtt5_props.PROP_MESSAGE_EXPIRY_INTERVAL, 1)
+props = mqtt5_props.gen_uint32_prop(mqtt5_props.PROP_MESSAGE_EXPIRY_INTERVAL, 5)
 publish1s_packet = mosq_test.gen_publish("subpub/qos1", mid=mid, qos=1, payload="message1", proto_ver=5, properties=props)
 puback1s_packet = mosq_test.gen_puback(mid)
 
@@ -75,10 +75,7 @@ try:
     sock.close()
     broker = mosq_test.start_broker(filename=os.path.basename(__file__), use_conf=True, port=port)
 
-    if os.environ.get('TRAVIS') is not None:
-        time.sleep(5)
-    else:
-        time.sleep(2)
+    time.sleep(5)
     
     sock = mosq_test.do_client_connect(connect_packet, connack2_packet, timeout=20, port=port)
     packet = sock.recv(len(publish2s_packet))

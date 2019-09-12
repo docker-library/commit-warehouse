@@ -37,6 +37,9 @@ Contributors:
 #    define libwebsocket_protocols lws_protocols
 #    define libwebsocket_callback_reasons lws_callback_reasons
 #    define libwebsocket lws
+#    if LWS_LIBRARY_VERSION_NUMBER == 3002000
+#      error "libwebsockets 3.2.0 is not compatible with Mosquitto. <3.1.0, or >=3.2.1 will work fine"
+#    endif
 #  else
 #    define lws_pollfd pollfd
 #    define lws_service_fd(A, B) libwebsocket_service_fd((A), (B))

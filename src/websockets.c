@@ -769,7 +769,9 @@ struct libwebsocket_context *mosq_websockets_init(struct mosquitto__listener *li
 	}
 
 	info.user = user;
+#if defined(LWS_LIBRARY_VERSION_NUMBER) && LWS_LIBRARY_VERSION_NUMBER>=2004000
 	info.pt_serv_buf_size = WS_SERV_BUF_SIZE;
+#endif
 	listener->ws_protocol = p;
 
 	lws_set_log_level(conf->websockets_log_level, log_wrap);

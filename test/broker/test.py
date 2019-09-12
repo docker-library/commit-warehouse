@@ -112,6 +112,7 @@ tests = [
 
     (1, './07-will-delay-reconnect.py'),
     (1, './07-will-delay-recover.py'),
+    (1, './07-will-delay-session-expiry.py'),
     (1, './07-will-delay.py'),
     (1, './07-will-disconnect-with-will.py'),
     (1, './07-will-invalid-utf8.py'),
@@ -132,6 +133,7 @@ tests = [
     (2, './08-ssl-connect-no-auth-wrong-ca.py'),
     (2, './08-ssl-connect-no-auth.py'),
     (2, './08-ssl-connect-no-identity.py'),
+    (1, './08-ssl-hup-disconnect.py'),
     (2, './08-tls-psk-pub.py'),
     (3, './08-tls-psk-bridge.py'),
 

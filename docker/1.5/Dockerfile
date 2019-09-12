@@ -59,7 +59,6 @@ RUN set -x && \
         LDFLAGS="-L/build/lws/lib -flto" \
         WITH_ADNS=no \
         WITH_DOCS=no \
-        WITH_MEMORY_TRACKING=no \
         WITH_SHARED_LIBRARIES=no \
         WITH_SRV=no \
         WITH_STRIP=yes \
@@ -84,5 +83,6 @@ VOLUME ["/mosquitto/data", "/mosquitto/log"]
 
 # Set up the entry point script and default command
 COPY docker-entrypoint.sh /
+EXPOSE 1883
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/usr/sbin/mosquitto", "-c", "/mosquitto/config/mosquitto.conf"]

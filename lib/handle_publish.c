@@ -40,10 +40,15 @@ int handle__publish(struct mosquitto *mosq)
 	uint16_t mid;
 	int slen;
 	mosquitto_property *properties = NULL;
+	int state;
 
 	assert(mosq);
 
-	if(mosq->state != mosq_cs_connected){
+	pthread_mutex_lock(&mosq->state_mutex);
+	state = mosq->state;
+	pthread_mutex_unlock(&mosq->state_mutex);
+
+	if(state != mosq_cs_connected){
 		return MOSQ_ERR_PROTOCOL;
 	}
 

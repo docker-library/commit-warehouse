@@ -532,7 +532,18 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 		}
 #else
 		if(fdcount == -1){
-			log__printf(NULL, MOSQ_LOG_ERR, "Error in poll: %s.", strerror(errno));
+#  ifdef WIN32
+			if(pollfd_index == 0 && WSAGetLastError() == WSAEINVAL){
+				/* WSAPoll() immediately returns an error if it is not given
+				 * any sockets to wait on. This can happen if we only have
+				 * websockets listeners. Sleep a little to prevent a busy loop.
+				 */
+				Sleep(10);
+			}else
+#  endif
+			{
+				log__printf(NULL, MOSQ_LOG_ERR, "Error in poll: %s.", strerror(errno));
+			}
 		}else{
 			loop_handle_reads_writes(db, pollfds);
 
@@ -590,7 +601,12 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 			 * will soon, so for now websockets clients are second class
 			 * citizens. */
 			if(db->config->listeners[i].ws_context){
+#if LWS_LIBRARY_VERSION_NUMBER > 3002000
+				libwebsocket_service(db->config->listeners[i].ws_context, -1);
+#else
 				libwebsocket_service(db->config->listeners[i].ws_context, 0);
+#endif
+
 			}
 		}
 		if(db->config->have_websockets_listener){
@@ -709,6 +725,7 @@ static void loop_handle_reads_writes(struct mosquitto_db *db, struct pollfd *pol
 #endif
 	int err;
 	socklen_t len;
+	int rc;
 
 #ifdef WITH_EPOLL
 	int i;
@@ -780,8 +797,9 @@ static void loop_handle_reads_writes(struct mosquitto_db *db, struct pollfd *pol
 					continue;
 				}
 			}
-			if(packet__write(context)){
-				do_disconnect(db, context, MOSQ_ERR_CONN_LOST);
+			rc = packet__write(context);
+			if(rc){
+				do_disconnect(db, context, rc);
 				continue;
 			}
 		}
@@ -822,8 +840,9 @@ static void loop_handle_reads_writes(struct mosquitto_db *db, struct pollfd *pol
 #endif
 #endif
 			do{
-				if(packet__read(db, context)){
-					do_disconnect(db, context, MOSQ_ERR_CONN_LOST);
+				rc = packet__read(db, context);
+				if(rc){
+					do_disconnect(db, context, rc);
 					continue;
 				}
 			}while(SSL_DATA_PENDING(context));

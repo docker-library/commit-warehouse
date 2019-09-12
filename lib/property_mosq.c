@@ -20,6 +20,10 @@ Contributors:
 #include <errno.h>
 #include <string.h>
 
+#ifndef WIN32
+#  include <strings.h>
+#endif
+
 #include "logging_mosq.h"
 #include "memory_mosq.h"
 #include "mqtt_protocol.h"

@@ -1,3 +1,40 @@
+1.6.5 - 20190912
+================
+
+Broker:
+- Fix v5 DISCONNECT packets with remaining length == 2 being treated as a
+  protocol error. Closes #1367.
+- Fix support for libwebsockets 3.x.
+- Fix slow websockets performance when sending large messages. Closes #1390.
+- Fix bridges potentially not connecting on Windows. Closes #478.
+- Fix clients authorised using `use_identity_as_username` or
+  `use_subject_as_username` being disconnected on SIGHUP. Closes #1402.
+- Improve error messages in some situations when clients disconnect. Reduces
+  the number of "Socket error on client X, disconnecting" messages.
+- Fix Will for v5 clients not being sent if will delay interval was greater
+  than the session expiry interval. Closes #1401.
+- Fix CRL file not being reloaded on HUP. Closes #35.
+- Fix repeated "Error in poll" messages on Windows when only websockets
+  listeners are defined. Closes #1391.
+
+Client library:
+- Fix reconnect backoff for the situation where connections are dropped rather
+  than refused. Closes #737.
+- Fix missing locks on `mosq->state`. Closes #1374.
+
+Documentation:
+- Improve details on global/per listener options in the mosquitto.conf man page.
+  Closes #274.
+- Clarify behaviour when clients exceed the `message_size_limit`. Closes #448.
+- Improve documentation for `max_inflight_bytes`, `max_inflight_messages`,
+  and `max_queued_messages`.
+
+Build:
+- Fix missing function warnings on NetBSD.
+- Fix WITH_STATIC_LIBRARIES using CMake on Windows. Closes #1369.
+- Guard ssize_t definition on Windows. Closes #522.
+
+
 1.6.4 - 20190801
 ================
 

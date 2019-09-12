@@ -17,10 +17,13 @@ Contributors:
 #define NET_MOSQ_H
 
 #ifndef WIN32
-#include <unistd.h>
+#  include <unistd.h>
 #else
-#include <winsock2.h>
+#  include <winsock2.h>
+#  ifndef _SSIZE_T_DEFINED
 typedef SSIZE_T ssize_t;
+#    define _SSIZE_T_DEFINED
+#  endif
 #endif
 
 #include "mosquitto_internal.h"

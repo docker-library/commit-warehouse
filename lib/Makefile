@@ -70,6 +70,7 @@ ifeq ($(WITH_STATIC_LIBRARIES),yes)
 endif
 	$(INSTALL) -d "${DESTDIR}${incdir}/"
 	$(INSTALL) mosquitto.h "${DESTDIR}${incdir}/mosquitto.h"
+	$(INSTALL) mqtt_protocol.h "${DESTDIR}${incdir}/mqtt_protocol.h"
 	$(INSTALL) -d "${DESTDIR}${libdir}/pkgconfig"
 	$(INSTALL) -m644 ../libmosquitto.pc.in "${DESTDIR}${libdir}/pkgconfig/libmosquitto.pc"
 	sed -i -e "s#@CMAKE_INSTALL_PREFIX@#${prefix}#" -e "s#@VERSION@#${VERSION}#" "${DESTDIR}${libdir}/pkgconfig/libmosquitto.pc"

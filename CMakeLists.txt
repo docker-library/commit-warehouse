@@ -11,7 +11,7 @@ project(mosquitto)
 cmake_minimum_required(VERSION 2.8)
 # Only for version 3 and up. cmake_policy(SET CMP0042 NEW)
 
-set (VERSION 1.6.4)
+set (VERSION 1.6.5)
 
 add_definitions (-DCMAKE -DVERSION=\"${VERSION}\")
 
@@ -49,6 +49,9 @@ if (WITH_SOCKS)
 endif (WITH_SOCKS)
 
 option(WITH_SRV "Include SRV lookup support?" OFF)
+
+option(WITH_STATIC_LIBRARIES "Build static versions of the libmosquitto/pp libraries?" OFF)
+option(WITH_PIC "Build the static library with PIC (Position Independent Code) enabled archives?" OFF)
 
 option(WITH_THREADING "Include client library threading support?" ON)
 if (WITH_THREADING)

@@ -138,6 +138,7 @@ endif
 07 :
 	./07-will-delay-reconnect.py
 	./07-will-delay-recover.py
+	./07-will-delay-session-expiry.py
 	./07-will-delay.py
 	./07-will-disconnect-with-will.py
 	./07-will-invalid-utf8.py
@@ -160,6 +161,7 @@ ifeq ($(WITH_TLS),yes)
 	./08-ssl-connect-no-auth-wrong-ca.py
 	./08-ssl-connect-no-auth.py
 	./08-ssl-connect-no-identity.py
+	./08-ssl-hup-disconnect.py
 ifeq ($(WITH_TLS_PSK),yes)
 	./08-tls-psk-pub.py
 	./08-tls-psk-bridge.py

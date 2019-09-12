@@ -96,6 +96,7 @@ void will_delay__remove(struct mosquitto *mosq)
 {
 	if(mosq->will_delay_entry != NULL){
 		DL_DELETE(delay_list, mosq->will_delay_entry);
+		mosquitto__free(mosq->will_delay_entry);
 		mosq->will_delay_entry = NULL;
 	}
 }

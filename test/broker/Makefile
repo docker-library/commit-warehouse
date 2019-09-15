@@ -75,6 +75,7 @@ endif
 	./02-subpub-qos2.py
 	./02-subscribe-dollar-v5.py
 	./02-subscribe-invalid-utf8.py
+	./02-subscribe-long-topic.py
 	./02-subscribe-persistence-flipflop.py
 	./02-subscribe-qos0.py
 	./02-subscribe-qos1.py
@@ -99,6 +100,7 @@ endif
 	./03-publish-dollar-v5.py
 	./03-publish-dollar.py
 	./03-publish-invalid-utf8.py
+	./03-publish-long-topic.py
 	./03-publish-qos1-no-subscribers-v5.py
 	./03-publish-qos1-retain-disabled.py
 	./03-publish-qos1.py

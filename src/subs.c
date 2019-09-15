@@ -220,6 +220,7 @@ static int sub__topic_tokenise(const char *subtopic, struct sub__token **topics)
 	int start, stop, tlen;
 	int i;
 	char *topic;
+	int count = 0;
 
 	assert(subtopic);
 	assert(topics);
@@ -242,6 +243,7 @@ static int sub__topic_tokenise(const char *subtopic, struct sub__token **topics)
 
 	stop = 0;
 	for(i=start; i<len+1; i++){
+		count++;
 		if(subtopic[i] == '/' || subtopic[i] == '\0'){
 			stop = i;
 
@@ -260,6 +262,11 @@ static int sub__topic_tokenise(const char *subtopic, struct sub__token **topics)
 			if(!new_topic) goto cleanup;
 			start = i+1;
 		}
+	}
+
+	if(count > TOPIC_HIERARCHY_LIMIT){
+		/* Set limit on hierarchy levels, to restrict stack usage. */
+		goto cleanup;
 	}
 
 	return MOSQ_ERR_SUCCESS;

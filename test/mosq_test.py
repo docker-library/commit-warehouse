@@ -478,19 +478,25 @@ def gen_pubrel(mid, dup=False, proto_ver=4, reason_code=-1, properties=None):
 def gen_pubcomp(mid, proto_ver=4, reason_code=-1, properties=None):
     return _gen_command_with_mid(112, mid, proto_ver, reason_code, properties)
 
+
 def gen_subscribe(mid, topic, qos, proto_ver=4, properties=b""):
     topic = topic.encode("utf-8")
+    packet = struct.pack("!B", 130)
     if proto_ver == 5:
         if properties == b"":
-            pack_format = "!BBHBH"+str(len(topic))+"sB"
-            return struct.pack(pack_format, 130, 2+1+2+len(topic)+1, mid, 0, len(topic), topic, qos)
+            packet += pack_remaining_length(2+1+2+len(topic)+1)
+            pack_format = "!HBH"+str(len(topic))+"sB"
+            return packet + struct.pack(pack_format, mid, 0, len(topic), topic, qos)
         else:
             properties = mqtt5_props.prop_finalise(properties)
-            pack_format = "!BBH"+str(len(properties))+"s"+"H"+str(len(topic))+"sB"
-            return struct.pack(pack_format, 130, 2+1+2+len(topic)+len(properties), mid, properties, len(topic), topic, qos)
+            packet += pack_remaining_length(2+1+2+len(topic)+len(properties))
+            pack_format = "!H"+str(len(properties))+"s"+"H"+str(len(topic))+"sB"
+            return packet + struct.pack(pack_format, mid, properties, len(topic), topic, qos)
     else:
-        pack_format = "!BBHH"+str(len(topic))+"sB"
-        return struct.pack(pack_format, 130, 2+2+len(topic)+1, mid, len(topic), topic, qos)
+        packet += pack_remaining_length(2+2+len(topic)+1)
+        pack_format = "!HH"+str(len(topic))+"sB"
+        return packet + struct.pack(pack_format, mid, len(topic), topic, qos)
+
 
 def gen_suback(mid, qos, proto_ver=4):
     if proto_ver == 5:

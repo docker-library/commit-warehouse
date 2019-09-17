@@ -223,6 +223,7 @@ int delete_pwuser(FILE *fptr, FILE *ftmp, const char *username)
 	}
 	if(!found){
 		fprintf(stderr, "Warning: User %s not found in password file.\n", username);
+		return 1;
 	}
 	return 0;
 }

@@ -1,5 +1,9 @@
-1.6.6 - 20190915
+1.6.6 - 20190917
 ================
+
+Security:
+- Restrict topic hierarchy to 200 levels to prevent possible stack overflow.
+  Closes #1412.
 
 Broker:
 - Restrict topic hierarchy to 200 levels to prevent possible stack overflow.

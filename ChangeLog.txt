@@ -1,3 +1,17 @@
+1.6.6 - 20190917
+================
+
+Security:
+- Restrict topic hierarchy to 200 levels to prevent possible stack overflow.
+  Closes #1412.
+
+Broker:
+- Restrict topic hierarchy to 200 levels to prevent possible stack overflow.
+  Closes #1412.
+- mosquitto_passwd now returns 1 when attempting to update a user that does
+  not exist. Closes #1414.
+
+
 1.6.5 - 20190912
 ================
 

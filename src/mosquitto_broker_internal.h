@@ -73,6 +73,9 @@ Contributors:
 
 #define WEBSOCKET_CLIENT -2
 
+
+#define TOPIC_HIERARCHY_LIMIT 200
+
 /* ========================================
  * UHPA data types
  * ======================================== */

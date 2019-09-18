@@ -28,9 +28,10 @@ The fix addresses the problem by restricting the allowed number of topic
 hierarchy levels to 200. An alternative fix is to increase the size of the
 stack by a small amount.
 
-# CVE-yyyy-yyyyy
+# CVE-2019-11778
 
-A vulnerability exists in Mosquitto version 1.6 to 1.6.4 inclusive.
+A vulnerability exists in Mosquitto version 1.6 to 1.6.4 inclusive, known as
+[CVE-2019-11778]
 
 If an MQTT v5 client connects to Mosquitto, sets a last will and testament,
 sets a will delay interval, sets a session expiry interval, and the will delay
@@ -55,5 +56,6 @@ The complete list of fixes addressed in version 1.6.6 is:
 * `mosquitto_passwd` now returns 1 when attempting to update a user that does
   not exist. Closes [#1414].
 
+[CVE-2019-11778]: http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-11778
 [#1412]: https://github.com/eclipse/mosquitto/issues/1412
 [#1414]: https://github.com/eclipse/mosquitto/issues/1414

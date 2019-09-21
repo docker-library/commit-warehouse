@@ -1,3 +1,7 @@
+Clients:
+- mosquitto_sub: Fix `-E` incorrectly not working unless `-d` was also
+  specified. Closes #1418.
+
 1.6.6 - 20190917
 ================
 

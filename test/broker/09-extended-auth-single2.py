@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Multi tests for extended auth with a single step - multiple plugins at once.
 # * Error in plugin

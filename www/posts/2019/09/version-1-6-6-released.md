@@ -1,6 +1,6 @@
 <!--
-.. title: Security advisory: CVE-2018-12543
-.. slug: security-advisory-cve-2018-12543
+.. title: Version 1.6.6 released
+.. slug: version-1-6-6-released
 .. date: 2018-09-27 10:36:19 UTC+01:00
 .. tags: Security,Releases
 .. category:

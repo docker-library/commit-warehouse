@@ -948,7 +948,7 @@ static void security__disconnect_auth(struct mosquitto_db *db, struct mosquitto 
 	if(context->protocol == mosq_p_mqtt5){
 		send__disconnect(context, MQTT_RC_ADMINISTRATIVE_ACTION, NULL);
 	}
-	context__set_state(context, mosq_cs_disconnecting);
+	mosquitto__set_state(context, mosq_cs_disconnecting);
 	do_disconnect(db, context, MOSQ_ERR_AUTH);
 }
 #endif
@@ -1005,7 +1005,7 @@ int mosquitto_security_apply_default(struct mosquitto_db *db)
 		}
 
 		if(!allow_anonymous && !context->username){
-			context__set_state(context, mosq_cs_disconnecting);
+			mosquitto__set_state(context, mosq_cs_disconnecting);
 			do_disconnect(db, context, MOSQ_ERR_AUTH);
 			continue;
 		}
@@ -1018,7 +1018,7 @@ int mosquitto_security_apply_default(struct mosquitto_db *db)
 				if(context->protocol == mosq_p_mqtt5){
 					send__disconnect(context, MQTT_RC_ADMINISTRATIVE_ACTION, NULL);
 				}
-				context__set_state(context, mosq_cs_disconnecting);
+				mosquitto__set_state(context, mosq_cs_disconnecting);
 				do_disconnect(db, context, MOSQ_ERR_AUTH);
 				continue;
 			}
@@ -1118,7 +1118,7 @@ int mosquitto_security_apply_default(struct mosquitto_db *db)
 		{
 			/* Username/password check only if the identity/subject check not used */
 			if(mosquitto_unpwd_check(db, context, context->username, context->password) != MOSQ_ERR_SUCCESS){
-				context__set_state(context, mosq_cs_disconnecting);
+				mosquitto__set_state(context, mosq_cs_disconnecting);
 				do_disconnect(db, context, MOSQ_ERR_AUTH);
 				continue;
 			}
@@ -1130,8 +1130,8 @@ int mosquitto_security_apply_default(struct mosquitto_db *db)
 			if(context->listener){
 				security_opts = &context->listener->security_options;
 			}else{
-				if(context->state != mosq_cs_connected){
-					context__set_state(context, mosq_cs_disconnecting);
+				if(context->state != mosq_cs_active){
+					mosquitto__set_state(context, mosq_cs_disconnecting);
 					do_disconnect(db, context, MOSQ_ERR_AUTH);
 					continue;
 				}

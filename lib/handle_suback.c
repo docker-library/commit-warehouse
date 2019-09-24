@@ -29,6 +29,7 @@ Contributors:
 #include "mqtt_protocol.h"
 #include "packet_mosq.h"
 #include "property_mosq.h"
+#include "util_mosq.h"
 
 
 int handle__suback(struct mosquitto *mosq)
@@ -44,11 +45,8 @@ int handle__suback(struct mosquitto *mosq)
 
 	assert(mosq);
 
-	pthread_mutex_lock(&mosq->state_mutex);
-	state = mosq->state;
-	pthread_mutex_unlock(&mosq->state_mutex);
-
-	if(state != mosq_cs_connected){
+	state = mosquitto__get_state(mosq);
+	if(state != mosq_cs_active){
 		return MOSQ_ERR_PROTOCOL;
 	}
 

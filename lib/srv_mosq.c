@@ -91,9 +91,7 @@ int mosquitto_connect_srv(struct mosquitto *mosq, const char *host, int keepaliv
 		mosquitto__free(h);
 	}
 
-	pthread_mutex_lock(&mosq->state_mutex);
-	mosq->state = mosq_cs_connect_srv;
-	pthread_mutex_unlock(&mosq->state_mutex);
+	mosquitto__set_state(mosq_cs_connect_srv);
 
 	mosq->keepalive = keepalive;
 

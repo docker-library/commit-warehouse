@@ -38,7 +38,7 @@ struct mosquitto *context__init(struct mosquitto_db *db, mosq_sock_t sock)
 	if(!context) return NULL;
 	
 	context->pollfd_index = -1;
-	context__set_state(context, mosq_cs_new);
+	mosquitto__set_state(context, mosq_cs_new);
 	context->sock = sock;
 	context->last_msg_in = mosquitto_time();
 	context->next_msg_out = mosquitto_time() + 60;
@@ -243,14 +243,14 @@ void context__disconnect(struct mosquitto_db *db, struct mosquitto *context)
 	}else{
 		session_expiry__add(db, context);
 	}
-	context__set_state(context, mosq_cs_disconnected);
+	mosquitto__set_state(context, mosq_cs_disconnected);
 }
 
 void context__add_to_disused(struct mosquitto_db *db, struct mosquitto *context)
 {
 	if(context->state == mosq_cs_disused) return;
 
-	context__set_state(context, mosq_cs_disused);
+	mosquitto__set_state(context, mosq_cs_disused);
 
 	if(context->id){
 		context__remove_from_by_id(db, context);
@@ -308,10 +308,3 @@ void context__remove_from_by_id(struct mosquitto_db *db, struct mosquitto *conte
 	}
 }
 
-
-void context__set_state(struct mosquitto *context, enum mosquitto_client_state state)
-{
-	if(context->state != mosq_cs_disused){
-		context->state = state;
-	}
-}

@@ -46,7 +46,7 @@ int handle__subscribe(struct mosquitto_db *db, struct mosquitto *context)
 
 	if(!context) return MOSQ_ERR_INVAL;
 
-	if(context->state != mosq_cs_connected){
+	if(context->state != mosq_cs_active){
 		return MOSQ_ERR_PROTOCOL;
 	}
 

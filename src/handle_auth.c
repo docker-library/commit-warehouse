@@ -54,7 +54,7 @@ int handle__auth(struct mosquitto_db *db, struct mosquitto *context)
 			return MOSQ_ERR_PROTOCOL;
 		}
 
-		if((reason_code == MQTT_RC_REAUTHENTICATE && context->state != mosq_cs_connected)
+		if((reason_code == MQTT_RC_REAUTHENTICATE && context->state != mosq_cs_active)
 				|| (reason_code == MQTT_RC_CONTINUE_AUTHENTICATION
 					&& context->state != mosq_cs_authenticating && context->state != mosq_cs_reauthenticating)){
 
@@ -94,11 +94,11 @@ int handle__auth(struct mosquitto_db *db, struct mosquitto *context)
 
 	if(reason_code == MQTT_RC_REAUTHENTICATE){
 		/* This is a re-authentication attempt */
-		context__set_state(context, mosq_cs_reauthenticating);
+		mosquitto__set_state(context, mosq_cs_reauthenticating);
 		rc = mosquitto_security_auth_start(db, context, true, auth_data, auth_data_len, &auth_data_out, &auth_data_out_len);
 	}else{
 		if(context->state != mosq_cs_reauthenticating){
-			context__set_state(context, mosq_cs_authenticating);
+			mosquitto__set_state(context, mosq_cs_authenticating);
 		}
 		rc = mosquitto_security_auth_continue(db, context, auth_data, auth_data_len, &auth_data_out, &auth_data_out_len);
 	}
@@ -107,7 +107,7 @@ int handle__auth(struct mosquitto_db *db, struct mosquitto *context)
 		if(context->state == mosq_cs_authenticating){
 			return connect__on_authorised(db, context, auth_data_out, auth_data_out_len);
 		}else{
-			context__set_state(context, mosq_cs_connected);
+			mosquitto__set_state(context, mosq_cs_active);
 			rc = send__auth(db, context, MQTT_RC_SUCCESS, auth_data_out, auth_data_out_len);
 			free(auth_data_out);
 			return rc;

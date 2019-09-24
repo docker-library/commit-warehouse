@@ -32,6 +32,8 @@ c : test-compile
 	./01-will-unpwd-set.py $@/01-will-unpwd-set.test
 	./02-subscribe-qos0.py $@/02-subscribe-qos0.test
 	./02-subscribe-qos1.py $@/02-subscribe-qos1.test
+	./02-subscribe-qos1.py $@/02-subscribe-qos1-async1.test
+	./02-subscribe-qos1.py $@/02-subscribe-qos1-async2.test
 	./02-subscribe-qos2.py $@/02-subscribe-qos2.test
 	./02-unsubscribe-multiple-v5.py $@/02-unsubscribe-multiple-v5.test
 	./02-unsubscribe-v5.py $@/02-unsubscribe-v5.test

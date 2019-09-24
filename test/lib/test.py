@@ -14,6 +14,8 @@ tests = [
 
     (1, ['./02-subscribe-qos0.py', 'c/02-subscribe-qos0.test']),
     (1, ['./02-subscribe-qos1.py', 'c/02-subscribe-qos1.test']),
+    (1, ['./02-subscribe-qos1.py', 'c/02-subscribe-qos1-async1.test']),
+    (1, ['./02-subscribe-qos1.py', 'c/02-subscribe-qos1-async2.test']),
     (1, ['./02-subscribe-qos2.py', 'c/02-subscribe-qos2.test']),
     (1, ['./02-unsubscribe-multiple-v5.py', 'c/02-unsubscribe-multiple-v5.test']),
     (1, ['./02-unsubscribe-v5.py', 'c/02-unsubscribe-v5.test']),

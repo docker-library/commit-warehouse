@@ -61,7 +61,7 @@ int handle__publish(struct mosquitto_db *db, struct mosquitto *context)
 	bool match;
 #endif
 
-	if(context->state != mosq_cs_connected){
+	if(context->state != mosq_cs_active){
 		return MOSQ_ERR_PROTOCOL;
 	}
 

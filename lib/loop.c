@@ -83,17 +83,15 @@ int mosquitto_loop(struct mosquitto *mosq, int timeout, int max_packets)
 	}else{
 #ifdef WITH_SRV
 		if(mosq->achan){
-			pthread_mutex_lock(&mosq->state_mutex);
-			if(mosq->state == mosq_cs_connect_srv){
+			state = mosquitto__get_state(mosq);
+			if(state == mosq_cs_connect_srv){
 				rc = ares_fds(mosq->achan, &readfds, &writefds);
 				if(rc > maxfd){
 					maxfd = rc;
 				}
 			}else{
-				pthread_mutex_unlock(&mosq->state_mutex);
 				return MOSQ_ERR_NO_CONN;
 			}
-			pthread_mutex_unlock(&mosq->state_mutex);
 		}
 #else
 		return MOSQ_ERR_NO_CONN;
@@ -198,14 +196,11 @@ int mosquitto_loop_forever(struct mosquitto *mosq, int timeout, int max_packets)
 #ifndef WIN32
 	struct timespec req, rem;
 #endif
+	int state;
 
 	if(!mosq) return MOSQ_ERR_INVAL;
 
 	mosq->reconnects = 0;
-
-	if(mosq->state == mosq_cs_connect_async){
-		mosquitto_reconnect(mosq);
-	}
 
 	while(run){
 		do{
@@ -234,13 +229,10 @@ int mosquitto_loop_forever(struct mosquitto *mosq, int timeout, int max_packets)
 		}
 		do{
 			rc = MOSQ_ERR_SUCCESS;
-			pthread_mutex_lock(&mosq->state_mutex);
-			if(mosq->state == mosq_cs_disconnecting){
+			state = mosquitto__get_state(mosq);
+			if(state == mosq_cs_disconnecting || state == mosq_cs_disconnected){
 				run = 0;
-				pthread_mutex_unlock(&mosq->state_mutex);
 			}else{
-				pthread_mutex_unlock(&mosq->state_mutex);
-
 				if(mosq->reconnect_delay_max > mosq->reconnect_delay){
 					if(mosq->reconnect_exponential_backoff){
 						reconnect_delay = mosq->reconnect_delay*(mosq->reconnects+1)*(mosq->reconnects+1);
@@ -267,12 +259,10 @@ int mosquitto_loop_forever(struct mosquitto *mosq, int timeout, int max_packets)
 				}
 #endif
 
-				pthread_mutex_lock(&mosq->state_mutex);
-				if(mosq->state == mosq_cs_disconnecting){
+				state = mosquitto__get_state(mosq);
+				if(state == mosq_cs_disconnecting || state == mosq_cs_disconnected){
 					run = 0;
-					pthread_mutex_unlock(&mosq->state_mutex);
 				}else{
-					pthread_mutex_unlock(&mosq->state_mutex);
 					rc = mosquitto_reconnect(mosq);
 				}
 			}
@@ -293,13 +283,14 @@ int mosquitto_loop_misc(struct mosquitto *mosq)
 
 static int mosquitto__loop_rc_handle(struct mosquitto *mosq, int rc)
 {
+	int state;
+
 	if(rc){
 		net__socket_close(mosq);
-		pthread_mutex_lock(&mosq->state_mutex);
-		if(mosq->state == mosq_cs_disconnecting){
+		state = mosquitto__get_state(mosq);
+		if(state == mosq_cs_disconnecting || state == mosq_cs_disconnected){
 			rc = MOSQ_ERR_SUCCESS;
 		}
-		pthread_mutex_unlock(&mosq->state_mutex);
 		pthread_mutex_lock(&mosq->callback_mutex);
 		if(mosq->on_disconnect){
 			mosq->in_callback = true;

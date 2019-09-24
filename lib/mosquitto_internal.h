@@ -335,8 +335,6 @@ struct mosquitto {
 #  ifdef WITH_SRV
 	ares_channel achan;
 #  endif
-	uint16_t send_maximum;
-	uint16_t receive_maximum;
 #endif
 	uint8_t maximum_qos;
 

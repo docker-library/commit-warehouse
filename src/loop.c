@@ -101,6 +101,14 @@ static void temp__expire_websockets_clients(struct mosquitto_db *db)
 }
 #endif
 
+#if defined(WITH_WEBSOCKETS) && LWS_LIBRARY_VERSION_NUMBER == 3002000
+void lws__sul_callback(struct lws_sorted_usec_list *l)
+{
+}
+
+static struct lws_sorted_usec_list sul;
+#endif
+
 int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int listensock_count)
 {
 #ifdef WITH_SYS_TREE
@@ -132,6 +140,11 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 #endif
 	time_t expiration_check_time = 0;
 	char *id;
+
+
+#if defined(WITH_WEBSOCKETS) && LWS_LIBRARY_VERSION_NUMBER == 3002000
+	memset(&sul, 0, sizeof(struct lws_sorted_usec_list));
+#endif
 
 #ifndef WIN32
 	sigemptyset(&sigblock);
@@ -603,6 +616,9 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 			if(db->config->listeners[i].ws_context){
 #if LWS_LIBRARY_VERSION_NUMBER > 3002000
 				libwebsocket_service(db->config->listeners[i].ws_context, -1);
+#elif LWS_LIBRARY_VERSION_NUMBER == 3002000
+				lws_sul_schedule(db->config->listeners[i].ws_context, 0, &sul, lws__sul_callback, 10);
+				libwebsocket_service(db->config->listeners[i].ws_context, 0);
 #else
 				libwebsocket_service(db->config->listeners[i].ws_context, 0);
 #endif

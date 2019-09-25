@@ -3,8 +3,8 @@ FROM alpine:3.8
 LABEL maintainer="Roger Light <roger@atchoo.org>" \
     description="Eclipse Mosquitto MQTT Broker"
 
-ENV VERSION=1.6.6 \
-    DOWNLOAD_SHA256=82676bf4201ff102be1511b56b041a9450fbbfeda40b21aa28be0fee56e8de17 \
+ENV VERSION=1.6.7 \
+    DOWNLOAD_SHA256=bcd31a8fbbd053fee328986fadd8666d3058357ded56b9782f7d4f19931d178e \
     GPG_KEYS=A0D6EEA1DCAE49A635A3B2F0779B22DFB3E717B7 \
     LWS_VERSION=2.4.2
 

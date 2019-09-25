@@ -25,6 +25,7 @@ Contributors:
 #include "packet_mosq.h"
 #include "property_mosq.h"
 #include "time_mosq.h"
+#include "util_mosq.h"
 #include "will_mosq.h"
 
 #include "uthash.h"

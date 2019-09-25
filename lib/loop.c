@@ -47,6 +47,9 @@ int mosquitto_loop(struct mosquitto *mosq, int timeout, int max_packets)
 	char pairbuf;
 	int maxfd = 0;
 	time_t now;
+#ifdef WITH_SRV
+	int state;
+#endif
 
 	if(!mosq || max_packets < 1) return MOSQ_ERR_INVAL;
 #ifndef WIN32

@@ -37,6 +37,7 @@ Contributors:
 #include "net_mosq.h"
 #include "packet_mosq.h"
 #include "send_mosq.h"
+#include "util_mosq.h"
 
 #define SOCKS_AUTH_NONE 0x00
 #define SOCKS_AUTH_GSS 0x01

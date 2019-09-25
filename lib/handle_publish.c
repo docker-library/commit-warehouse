@@ -44,11 +44,8 @@ int handle__publish(struct mosquitto *mosq)
 
 	assert(mosq);
 
-	pthread_mutex_lock(&mosq->state_mutex);
-	state = mosq->state;
-	pthread_mutex_unlock(&mosq->state_mutex);
-
-	if(state != mosq_cs_connected){
+	state = mosquitto__get_state(mosq);
+	if(state != mosq_cs_active){
 		return MOSQ_ERR_PROTOCOL;
 	}
 

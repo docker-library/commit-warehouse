@@ -340,10 +340,6 @@ int message__out_update(struct mosquitto *mosq, uint16_t mid, enum mosquitto_msg
 
 int mosquitto_max_inflight_messages_set(struct mosquitto *mosq, unsigned int max_inflight_messages)
 {
-	if(!mosq) return MOSQ_ERR_INVAL;
-
-	mosq->send_maximum = max_inflight_messages;
-
-	return MOSQ_ERR_SUCCESS;
+	return mosquitto_int_option(mosq, MOSQ_OPT_SEND_MAXIMUM, max_inflight_messages);
 }
 

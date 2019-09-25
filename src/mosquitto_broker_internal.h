@@ -37,9 +37,6 @@ Contributors:
 #    define libwebsocket_protocols lws_protocols
 #    define libwebsocket_callback_reasons lws_callback_reasons
 #    define libwebsocket lws
-#    if LWS_LIBRARY_VERSION_NUMBER == 3002000
-#      error "libwebsockets 3.2.0 is not compatible with Mosquitto. <3.1.0, or >=3.2.1 will work fine"
-#    endif
 #  else
 #    define lws_pollfd pollfd
 #    define lws_service_fd(A, B) libwebsocket_service_fd((A), (B))
@@ -656,7 +653,6 @@ void context__add_to_disused(struct mosquitto_db *db, struct mosquitto *context)
 void context__free_disused(struct mosquitto_db *db);
 void context__send_will(struct mosquitto_db *db, struct mosquitto *context);
 void context__remove_from_by_id(struct mosquitto_db *db, struct mosquitto *context);
-void context__set_state(struct mosquitto *context, enum mosquitto_client_state state);
 
 int connect__on_authorised(struct mosquitto_db *db, struct mosquitto *context, void *auth_data_out, uint16_t auth_data_out_len);
 

@@ -210,7 +210,7 @@ int net__socket_close(struct mosquitto *mosq)
 	if(mosq->wsi)
 	{
 		if(mosq->state != mosq_cs_disconnecting){
-			context__set_state(mosq, mosq_cs_disconnect_ws);
+			mosquitto__set_state(mosq, mosq_cs_disconnect_ws);
 		}
 		libwebsocket_callback_on_writable(mosq->ws_context, mosq->wsi);
 	}else

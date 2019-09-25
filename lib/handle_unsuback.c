@@ -42,10 +42,12 @@ int handle__unsuback(struct mosquitto *mosq)
 	uint16_t mid;
 	int rc;
 	mosquitto_property *properties = NULL;
+	int state;
 
 	assert(mosq);
 
-	if(mosq->state != mosq_cs_connected){
+	state = mosquitto__get_state(mosq);
+	if(state != mosq_cs_active){
 		return MOSQ_ERR_PROTOCOL;
 	}
 

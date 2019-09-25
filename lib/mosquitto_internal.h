@@ -94,7 +94,7 @@ enum mosquitto_client_state {
 	mosq_cs_new = 0,
 	mosq_cs_connected = 1,
 	mosq_cs_disconnecting = 2,
-	mosq_cs_connect_async = 3,
+	mosq_cs_active = 3,
 	mosq_cs_connect_pending = 4,
 	mosq_cs_connect_srv = 5,
 	mosq_cs_disconnect_ws = 6,
@@ -107,7 +107,6 @@ enum mosquitto_client_state {
 	mosq_cs_socks5_userpass_reply = 13,
 	mosq_cs_socks5_send_userpass = 14,
 	mosq_cs_expiring = 15,
-	mosq_cs_connecting = 16,
 	mosq_cs_duplicate = 17, /* client that has been taken over by another with the same id */
 	mosq_cs_disconnect_with_will = 18,
 	mosq_cs_disused = 19, /* client that has been added to the disused list to be freed */
@@ -335,8 +334,6 @@ struct mosquitto {
 #  ifdef WITH_SRV
 	ares_channel achan;
 #  endif
-	uint16_t send_maximum;
-	uint16_t receive_maximum;
 #endif
 	uint8_t maximum_qos;
 

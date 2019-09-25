@@ -38,6 +38,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "memory_mosq.h"
 #include "packet_mosq.h"
 #include "sys_tree.h"
+#include "util_mosq.h"
 
 #include <stdlib.h>
 #include <errno.h>
@@ -424,7 +425,7 @@ static int callback_mqtt(struct libwebsocket_context *context,
 
 				if(rc && (mosq->out_packet || mosq->current_out_packet)) {
 					if(mosq->state != mosq_cs_disconnecting){
-						context__set_state(mosq, mosq_cs_disconnect_ws);
+						mosquitto__set_state(mosq, mosq_cs_disconnect_ws);
 					}
 					libwebsocket_callback_on_writable(mosq->ws_context, mosq->wsi);
 				} else if (rc) {

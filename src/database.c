@@ -964,11 +964,11 @@ int db__message_write(struct mosquitto_db *db, struct mosquitto *context)
 	uint32_t expiry_interval;
 
 	if(!context || context->sock == INVALID_SOCKET
-			|| (context->state == mosq_cs_connected && !context->id)){
+			|| (context->state == mosq_cs_active && !context->id)){
 		return MOSQ_ERR_INVAL;
 	}
 
-	if(context->state != mosq_cs_connected){
+	if(context->state != mosq_cs_active){
 		return MOSQ_ERR_SUCCESS;
 	}
 

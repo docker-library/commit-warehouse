@@ -13,6 +13,8 @@ SRC = \
 	01-server-keepalive-pingreq.c \
 	02-subscribe-qos0.c \
 	02-subscribe-qos1.c \
+	02-subscribe-qos1-async1.c \
+	02-subscribe-qos1-async2.c \
 	02-subscribe-qos2.c \
 	02-unsubscribe.c \
 	02-unsubscribe-v5.c \

@@ -295,9 +295,15 @@
 				<term><option>-i</option></term>
 				<term><option>--id</option></term>
 				<listitem>
-					<para>The id to use for this client. If not given, defaults
-					to mosquitto_sub_ appended with the process id of the
-					client. Cannot be used at the same time as the
+					<para>The id to use for this client. If not given, a client id will
+					be generated depending on the MQTT version being used. For v3.1.1/v3.1,
+					the client generates a client id in the format
+					<option>mosq-XXXXXXXXXXXXXXXXXX</option>, where the
+					<option>X</option> are replaced with random alphanumeric
+					characters. For v5.0, the client sends a zero length client id, and the
+					server will generate a client id for the client.</para>
+
+					<para>This option cannot be used at the same time as the
 					<option>--id-prefix</option> argument.</para>
 				</listitem>
 			</varlistentry>

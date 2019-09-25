@@ -34,6 +34,7 @@ Contributors:
 #include "net_mosq.h"
 #include "packet_mosq.h"
 #include "read_handle.h"
+#include "util_mosq.h"
 #ifdef WITH_BROKER
 #  include "sys_tree.h"
 #  include "send_mosq.h"
@@ -218,10 +219,7 @@ int packet__write(struct mosquitto *mosq)
 	}
 	pthread_mutex_unlock(&mosq->out_packet_mutex);
 
-	pthread_mutex_lock(&mosq->state_mutex);
-	state = mosq->state;
-	pthread_mutex_unlock(&mosq->state_mutex);
-
+	state = mosquitto__get_state(mosq);
 #if defined(WITH_TLS) && !defined(WITH_BROKER)
 	if((state == mosq_cs_connect_pending) || mosq->want_connect){
 #else
@@ -329,10 +327,8 @@ int packet__read(struct mosquitto *mosq)
 	if(mosq->sock == INVALID_SOCKET){
 		return MOSQ_ERR_NO_CONN;
 	}
-	pthread_mutex_lock(&mosq->state_mutex);
-	state = mosq->state;
-	pthread_mutex_unlock(&mosq->state_mutex);
 
+	state = mosquitto__get_state(mosq);
 	if(state == mosq_cs_connect_pending){
 		return MOSQ_ERR_SUCCESS;
 	}
@@ -358,7 +354,7 @@ int packet__read(struct mosquitto *mosq)
 #ifdef WITH_BROKER
 			G_BYTES_RECEIVED_INC(1);
 			/* Clients must send CONNECT as their first command. */
-			if(!(mosq->bridge) && mosq->state == mosq_cs_new && (byte&0xF0) != CMD_CONNECT){
+			if(!(mosq->bridge) && mosq->state == mosq_cs_connected && (byte&0xF0) != CMD_CONNECT){
 				return MOSQ_ERR_PROTOCOL;
 			}
 #endif

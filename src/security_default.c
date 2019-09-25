@@ -1012,7 +1012,7 @@ int mosquitto_security_apply_default(struct mosquitto_db *db)
 
 		/* Check for connected clients that are no longer authorised */
 #ifdef WITH_TLS
-		if(context->listener->ssl_ctx && (context->listener->use_identity_as_username || context->listener->use_subject_as_username)){
+		if(context->listener && context->listener->ssl_ctx && (context->listener->use_identity_as_username || context->listener->use_subject_as_username)){
 			/* Client must have either a valid certificate, or valid PSK used as a username. */
 			if(!context->ssl){
 				if(context->protocol == mosq_p_mqtt5){

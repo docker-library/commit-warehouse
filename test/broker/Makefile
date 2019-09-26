@@ -44,6 +44,7 @@ ifeq ($(WITH_TLS),yes)
 else
 	./01-connect-uname-password-success-no-tls.py
 endif
+	./01-connect-zero-length-id.py
 
 
 02 :

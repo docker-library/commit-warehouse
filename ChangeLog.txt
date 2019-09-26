@@ -1,3 +1,7 @@
+Broker:
+- allow_zero_length_clientid wasn't being used by the default listener, making
+  it impossible to turn this option off.
+
 1.6.7 - 20190925
 ================
 

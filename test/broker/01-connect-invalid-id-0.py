@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Test whether a CONNECT with a zero length client id results in the correct CONNACK packet.
-
+# MQTT V3.1 only - zero length is invalid.
 from mosq_test_helper import *
 
 rc = 1

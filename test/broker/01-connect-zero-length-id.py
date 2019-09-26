@@ -11,9 +11,11 @@ def write_config(filename, port1, port2, per_listener, allow_zero):
     with open(filename, 'w') as f:
         f.write("per_listener_settings %s\n" % (per_listener))
         f.write("port %d\n" % (port2))
-        f.write("allow_zero_length_clientid %s\n" % (allow_zero))
+        if allow_zero != "":
+            f.write("allow_zero_length_clientid %s\n" % (allow_zero))
         f.write("listener %d\n" % (port1))
-        f.write("allow_zero_length_clientid %s\n" % (allow_zero))
+        if allow_zero != "":
+            f.write("allow_zero_length_clientid %s\n" % (allow_zero))
 
 
 def do_test(per_listener, proto_ver, clean_start, allow_zero, client_port, expect_fail):
@@ -53,6 +55,7 @@ def do_test(per_listener, proto_ver, clean_start, allow_zero, client_port, expec
         if rc:
             print(stde.decode('utf-8'))
             print("per_listener:%s proto_ver:%d client_port:%d clean_start:%d allow_zero:%s" % (per_listener, proto_ver, client_port, clean_start, allow_zero))
+            print("port1:%d port2:%d" % (port1, port2))
             exit(rc)
 
 
@@ -80,6 +83,16 @@ if test_v4 == True:
     do_test(per_listener="true", proto_ver=4, client_port=port2, clean_start=False, allow_zero="true", expect_fail=True)
     do_test(per_listener="true", proto_ver=4, client_port=port2, clean_start=False, allow_zero="false", expect_fail=True)
 
+    do_test(per_listener="false", proto_ver=4, client_port=port1, clean_start=True, allow_zero="", expect_fail=False)
+    do_test(per_listener="false", proto_ver=4, client_port=port1, clean_start=False, allow_zero="", expect_fail=True)
+    do_test(per_listener="true", proto_ver=4, client_port=port1, clean_start=True, allow_zero="", expect_fail=False)
+    do_test(per_listener="true", proto_ver=4, client_port=port1, clean_start=False, allow_zero="", expect_fail=True)
+
+    do_test(per_listener="false", proto_ver=4, client_port=port2, clean_start=True, allow_zero="", expect_fail=False)
+    do_test(per_listener="false", proto_ver=4, client_port=port2, clean_start=False, allow_zero="", expect_fail=True)
+    do_test(per_listener="true", proto_ver=4, client_port=port2, clean_start=True, allow_zero="", expect_fail=False)
+    do_test(per_listener="true", proto_ver=4, client_port=port2, clean_start=False, allow_zero="", expect_fail=True)
+
 if test_v5 == True:
     do_test(per_listener="false", proto_ver=5, client_port=port1, clean_start=True, allow_zero="true", expect_fail=False)
     do_test(per_listener="false", proto_ver=5, client_port=port1, clean_start=True, allow_zero="false", expect_fail=True)
@@ -98,5 +111,15 @@ if test_v5 == True:
     do_test(per_listener="true", proto_ver=5, client_port=port2, clean_start=True, allow_zero="false", expect_fail=True)
     do_test(per_listener="true", proto_ver=5, client_port=port2, clean_start=False, allow_zero="true", expect_fail=False)
     do_test(per_listener="true", proto_ver=5, client_port=port2, clean_start=False, allow_zero="false", expect_fail=True)
+
+    do_test(per_listener="false", proto_ver=5, client_port=port1, clean_start=True, allow_zero="", expect_fail=False)
+    do_test(per_listener="false", proto_ver=5, client_port=port1, clean_start=False, allow_zero="", expect_fail=False)
+    do_test(per_listener="true", proto_ver=5, client_port=port1, clean_start=True, allow_zero="", expect_fail=False)
+    do_test(per_listener="true", proto_ver=5, client_port=port1, clean_start=False, allow_zero="", expect_fail=False)
+
+    do_test(per_listener="false", proto_ver=5, client_port=port2, clean_start=True, allow_zero="", expect_fail=False)
+    do_test(per_listener="false", proto_ver=5, client_port=port2, clean_start=False, allow_zero="", expect_fail=False)
+    do_test(per_listener="true", proto_ver=5, client_port=port2, clean_start=True, allow_zero="", expect_fail=False)
+    do_test(per_listener="true", proto_ver=5, client_port=port2, clean_start=False, allow_zero="", expect_fail=False)
 
 exit(0)

@@ -2,6 +2,10 @@ Broker:
 - Various fixes for `allow_zero_length_clientid` config, where this option was
   not being set correctly. Closes #1429.
 
+Client library:
+- Fix publish properties not being passed to on_message_v5 callback for QoS 2
+  messages. Closes #1432.
+
 
 1.6.7 - 20190925
 ================

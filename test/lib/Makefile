@@ -68,6 +68,9 @@ endif
 	./11-prop-oversize-packet.py $@/11-prop-oversize-packet.test
 	./11-prop-send-content-type.py $@/11-prop-send-content-type.test
 	./11-prop-send-payload-format.py $@/11-prop-send-payload-format.test
+	./11-prop-recv-qos0.py $@/11-prop-recv-qos0.test
+	./11-prop-recv-qos1.py $@/11-prop-recv-qos1.test
+	./11-prop-recv-qos2.py $@/11-prop-recv-qos2.test
 
 clean : 
 	$(MAKE) -C c clean

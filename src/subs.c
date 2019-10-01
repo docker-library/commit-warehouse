@@ -684,7 +684,7 @@ struct mosquitto__subhier *sub__add_hier_entry(struct mosquitto__subhier *parent
 	}
 	child->parent = parent;
 	child->topic_len = len;
-	child->topic = malloc(len+1);
+	child->topic = mosquitto__malloc(len+1);
 	if(!child->topic){
 		child->topic_len = 0;
 		mosquitto__free(child);

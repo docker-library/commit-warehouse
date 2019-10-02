@@ -5,6 +5,8 @@ Broker:
   Closes #1437.
 - Fix subscription topics being limited to 200 characters instead of 200
   hierarchy levels. Closes #1441.
+- Only a single CRL could be loaded at once. This has been fixed.
+  Closes #1442.
 
 Client library:
 - Fix publish properties not being passed to on_message_v5 callback for QoS 2

@@ -50,6 +50,7 @@ endif
 02 :
 	./02-shared-qos0-v5.py
 	./02-subhier-crash.py
+	./02-subpub-qos0-long-topic.py
 	./02-subpub-qos0-retain-as-publish.py
 	./02-subpub-qos0-send-retain.py
 	./02-subpub-qos0-subscription-id.py

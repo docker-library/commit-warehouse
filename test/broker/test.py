@@ -29,6 +29,7 @@ tests = [
 
     (1, './02-shared-qos0-v5.py'),
     (1, './02-subhier-crash.py'),
+    (1, './02-subpub-qos0-long-topic.py'),
     (1, './02-subpub-qos0-retain-as-publish.py'),
     (1, './02-subpub-qos0-send-retain.py'),
     (1, './02-subpub-qos0-subscription-id.py'),

@@ -7,6 +7,8 @@ Broker:
   hierarchy levels. Closes #1441.
 - Only a single CRL could be loaded at once. This has been fixed.
   Closes #1442.
+- Fix problems with reloading config when `per_listener_settings` was true.
+  Closes #1459.
 
 Client library:
 - Fix publish properties not being passed to on_message_v5 callback for QoS 2

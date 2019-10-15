@@ -641,6 +641,7 @@ int config__read(struct mosquitto_db *db, struct mosquitto__config *config, bool
 		config__init_reload(db, &config_reload);
 		config_reload.listeners = config->listeners;
 		config_reload.listener_count = config->listener_count;
+		cur_security_options = NULL;
 		rc = config__read_file(&config_reload, reload, db->config_file, &cr, 0, &lineno);
 	}else{
 		rc = config__read_file(config, reload, db->config_file, &cr, 0, &lineno);

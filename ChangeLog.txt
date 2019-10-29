@@ -17,6 +17,8 @@ Client library:
 Clients:
 - Fix duplicate cfg definition in rr_client. Closes #1453.
 
+Installer:
+- Fix mosquitto_rr.exe not being included in Windows installers. Closes #1463.
 
 1.6.7 - 20190925
 ================

@@ -13,7 +13,8 @@ RUN set -x && \
         cmake \
         gnupg \
         libressl-dev \
-        util-linux-dev && \
+        util-linux-dev \
+        ca-certificates && \
     wget https://github.com/warmcat/libwebsockets/archive/v${LWS_VERSION}.tar.gz -O /tmp/lws.tar.gz && \
     mkdir -p /build/lws && \
     tar --strip=1 -xf /tmp/lws.tar.gz -C /build/lws && \

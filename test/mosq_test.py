@@ -106,7 +106,13 @@ def packet_matches(name, recvd, expected):
 
 
 def do_send_receive(sock, send_packet, receive_packet, error_string="send receive error"):
-    sock.send(send_packet)
+    size = len(send_packet)
+    total_sent = 0
+    while total_sent < size:
+        sent = sock.send(send_packet[total_sent:])
+        if sent == 0:
+            raise RuntimeError("socket connection broken")
+        total_sent += sent
 
     if expect_packet(sock, error_string, receive_packet):
         return sock

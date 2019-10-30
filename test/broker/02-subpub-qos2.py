@@ -38,6 +38,7 @@ try:
 
     if mosq_test.expect_packet(sock, "publish2", publish_packet2):
         mosq_test.do_send_receive(sock, pubrec_packet2, pubrel_packet2, "pubrel2")
+        sock.send(pubcomp_packet2)
         # Broker side of flow complete so can quit here.
         rc = 0
 

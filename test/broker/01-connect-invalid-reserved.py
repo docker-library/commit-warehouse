@@ -3,6 +3,8 @@
 # Test whether a CONNECT with reserved set to 1 results in a disconnect. MQTT-3.1.2-3
 
 from mosq_test_helper import *
+from socket import error as SocketError
+import errno
 
 rc = 1
 keepalive = 10
@@ -15,7 +17,11 @@ try:
     sock = mosq_test.do_client_connect(connect_packet, b"", port=port)
     sock.close()
     rc = 0
-
+except SocketError as e:
+    if e.errno == errno.ECONNRESET:
+        # Connection has been closed by peer (very quickly).
+        # Fine, this is the expected behavior.
+        rc = 0
 finally:
     broker.terminate()
     broker.wait()

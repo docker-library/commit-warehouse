@@ -9,6 +9,8 @@ Broker:
   Closes #1442.
 - Fix problems with reloading config when `per_listener_settings` was true.
   Closes #1459.
+- Fix retained messages with an expiry interval not being expired after being
+  restored from persistence. Closes #1464.
 
 Client library:
 - Fix publish properties not being passed to on_message_v5 callback for QoS 2

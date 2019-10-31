@@ -2458,6 +2458,24 @@ libmosq_EXPORT int mosquitto_sub_topic_check(const char *topic);
 libmosq_EXPORT int mosquitto_sub_topic_check2(const char *topic, size_t topiclen);
 
 
+/*
+ * Function: mosquitto_validate_utf8
+ *
+ * Helper function to validate whether a UTF-8 string is valid, according to
+ * the UTF-8 spec and the MQTT additions.
+ *
+ * Parameters:
+ *   str - a string to check
+ *   len - the length of the string in bytes
+ *
+ * Returns:
+ *   MOSQ_ERR_SUCCESS -        on success
+ *   MOSQ_ERR_INVAL -          if str is NULL or len<0 or len>65536
+ *   MOSQ_ERR_MALFORMED_UTF8 - if str is not valid UTF-8
+ */
+libmosq_EXPORT int mosquitto_validate_utf8(const char *str, int len);
+
+
 /* =============================================================================
  *
  * Section: One line client helper functions
@@ -2593,24 +2611,6 @@ libmosq_EXPORT int mosquitto_subscribe_callback(
 		const char *password,
 		const struct libmosquitto_will *will,
 		const struct libmosquitto_tls *tls);
-
-
-/*
- * Function: mosquitto_validate_utf8
- *
- * Helper function to validate whether a UTF-8 string is valid, according to
- * the UTF-8 spec and the MQTT additions.
- *
- * Parameters:
- *   str - a string to check
- *   len - the length of the string in bytes
- *
- * Returns:
- *   MOSQ_ERR_SUCCESS -        on success
- *   MOSQ_ERR_INVAL -          if str is NULL or len<0 or len>65536
- *   MOSQ_ERR_MALFORMED_UTF8 - if str is not valid UTF-8
- */
-libmosq_EXPORT int mosquitto_validate_utf8(const char *str, int len);
 
 
 /* =============================================================================

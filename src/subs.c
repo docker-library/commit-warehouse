@@ -987,7 +987,7 @@ static int retain__process(struct mosquitto_db *db, struct mosquitto__subhier *b
 	mosquitto_property *properties = NULL;
 	struct mosquitto_msg_store *retained;
 
-	if(branch->retained->message_expiry_time > 0 && now > branch->retained->message_expiry_time){
+	if(branch->retained->message_expiry_time > 0 && now >= branch->retained->message_expiry_time){
 		db__msg_store_ref_dec(db, &branch->retained);
 		branch->retained = NULL;
 #ifdef WITH_SYS_TREE

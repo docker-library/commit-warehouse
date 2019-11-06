@@ -223,7 +223,7 @@ int pub_shared_loop(struct mosquitto *mosq)
 {
 	int read_len;
 	int pos;
-	int rc, rc2;
+	int rc;
 	char *buf2;
 	int buf_len_actual;
 	int mode;
@@ -239,10 +239,7 @@ int pub_shared_loop(struct mosquitto *mosq)
 	if(mode == MSGMODE_STDIN_LINE){
 		mosquitto_loop_start(mosq);
 		stdin_finished = false;
-	}
-
-	do{
-		if(mode == MSGMODE_STDIN_LINE){
+		do{
 			if(status == STATUS_CONNACK_RECVD){
 				pos = 0;
 				read_len = line_buf_len;
@@ -250,9 +247,9 @@ int pub_shared_loop(struct mosquitto *mosq)
 					buf_len_actual = strlen(line_buf);
 					if(line_buf[buf_len_actual-1] == '\n'){
 						line_buf[buf_len_actual-1] = '\0';
-						rc2 = my_publish(mosq, &mid_sent, cfg.topic, buf_len_actual-1, line_buf, cfg.qos, cfg.retain);
-						if(rc2){
-							err_printf(&cfg, "Error: Publish returned %d, disconnecting.\n", rc2);
+						rc = my_publish(mosq, &mid_sent, cfg.topic, buf_len_actual-1, line_buf, cfg.qos, cfg.retain);
+						if(rc){
+							err_printf(&cfg, "Error: Publish returned %d, disconnecting.\n", rc);
 							mosquitto_disconnect_v5(mosq, MQTT_RC_DISCONNECT_WITH_WILL_MSG, cfg.disconnect_props);
 						}
 						break;
@@ -297,11 +294,13 @@ int pub_shared_loop(struct mosquitto *mosq)
 				nanosleep(&ts, NULL);
 #endif
 			}
-			rc = MOSQ_ERR_SUCCESS;
-		}else{
+		}while(stdin_finished == false);
+		mosquitto_loop_stop(mosq, false);
+	}else{
+		do{
 			rc = mosquitto_loop(mosq, loop_delay, 1);
 			if(ready_for_repeat && check_repeat_time()){
-				rc = 0;
+				rc = MOSQ_ERR_SUCCESS;
 				switch(cfg.pub_mode){
 					case MSGMODE_CMD:
 					case MSGMODE_FILE:
@@ -311,19 +310,14 @@ int pub_shared_loop(struct mosquitto *mosq)
 					case MSGMODE_NULL:
 						rc = my_publish(mosq, &mid_sent, cfg.topic, 0, NULL, cfg.qos, cfg.retain);
 						break;
-					case MSGMODE_STDIN_LINE:
-						break;
 				}
 				if(rc){
 					err_printf(&cfg, "Error sending repeat publish: %s", mosquitto_strerror(rc));
 				}
 			}
-		}
-	}while(rc == MOSQ_ERR_SUCCESS && stdin_finished == false);
-
-	if(mode == MSGMODE_STDIN_LINE){
-		mosquitto_loop_stop(mosq, false);
+		}while(rc == MOSQ_ERR_SUCCESS);
 	}
+
 	if(status == STATUS_DISCONNECTED){
 		return MOSQ_ERR_SUCCESS;
 	}else{

@@ -13,6 +13,8 @@ Broker:
   restored from persistence. Closes #1464.
 - Fix messages with an expiry interval being sent without an expiry interval
   property just before they were expired. Closes #1464.
+- Fix TLS Websockets clients not receiving messages after taking over a
+  previous connection. Closes #1489.
 
 Client library:
 - Fix publish properties not being passed to on_message_v5 callback for QoS 2

@@ -160,6 +160,9 @@ int connect__on_authorised(struct mosquitto_db *db, struct mosquitto *context, v
 			}
 		}
 
+		if(context->clean_start == true){
+			sub__clean_session(db, found_context);
+		}
 		session_expiry__remove(found_context);
 		will_delay__remove(found_context);
 		will__clear(found_context);

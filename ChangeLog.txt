@@ -21,6 +21,7 @@ Client library:
 
 Clients:
 - Fix duplicate cfg definition in rr_client. Closes #1453.
+- Fix `mosquitto_pub -l` hang when stdin stream ends. Closes #1448.
 
 Installer:
 - Fix mosquitto_rr.exe not being included in Windows installers. Closes #1463.

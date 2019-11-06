@@ -272,7 +272,9 @@ int pub_stdin_line_loop(struct mosquitto *mosq)
 				/* Not end of stdin, so we've lost our connection and must
 				 * reconnect */
 			}
-		}else if(status == STATUS_WAITING){
+		}
+
+		if(status == STATUS_WAITING){
 			if(last_mid_sent == last_mid && disconnect_sent == false){
 				mosquitto_disconnect_v5(mosq, 0, cfg.disconnect_props);
 				disconnect_sent = true;

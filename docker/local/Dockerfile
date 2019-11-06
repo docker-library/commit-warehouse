@@ -59,6 +59,8 @@ RUN set -x && \
     install -s -m755 /build/mosq/src/mosquitto_passwd /usr/bin/mosquitto_passwd && \
     install -m644 /build/mosq/mosquitto.conf /mosquitto/config/mosquitto.conf && \
     chown -R mosquitto:mosquitto /mosquitto && \
+    apk --no-cache add \
+        ca-certificates && \
     apk del build-deps && \
     rm -rf /build
 

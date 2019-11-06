@@ -82,6 +82,11 @@ WITH_STRIP:=no
 # Build static libraries
 WITH_STATIC_LIBRARIES:=no
 
+# Use this variable to add extra library dependencies when building the clients
+# with the static libmosquitto library. This may be required on some systems
+# where e.g. -lz or -latomic are needed for openssl.
+CLIENT_STATIC_LDADD:=
+
 # Build shared libraries
 WITH_SHARED_LIBRARIES:=yes
 

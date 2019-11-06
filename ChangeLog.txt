@@ -23,6 +23,11 @@ Clients:
 - Fix duplicate cfg definition in rr_client. Closes #1453.
 - Fix `mosquitto_pub -l` hang when stdin stream ends. Closes #1448.
 
+Build:
+- Added `CLIENT_STATIC_LDADD` to makefile builds to allow more libraries to be
+  linked when compiling the clients with a static libmosquitto, as required
+  for e.g. openssl on some systems.
+
 Installer:
 - Fix mosquitto_rr.exe not being included in Windows installers. Closes #1463.
 

@@ -3,8 +3,6 @@
 import struct
 
 from mosq_test_helper import *
-from socket import error as SocketError
-import errno
 
 rc = 1
 keepalive = 60
@@ -18,10 +16,9 @@ try:
     sock = mosq_test.do_client_connect(connect_packet, b"", timeout=30, port=port)
     rc = 0
     sock.close()
-except SocketError as e:
+except socket.error as e:
     if e.errno == errno.ECONNRESET:
-        # Connection has been closed by peer (very quickly).
-        # Fine, this is the expected behavior.
+        # Connection has been closed by peer, this is the expected behaviour
         rc = 0
 finally:
     broker.terminate()

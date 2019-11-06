@@ -45,6 +45,7 @@ static int line_buf_len = 1024;
 static bool disconnect_sent = false;
 static int publish_count = 0;
 static bool ready_for_repeat = false;
+static volatile int status = STATUS_CONNECTING;
 
 #ifdef WIN32
 static uint64_t next_publish_tv;
@@ -223,7 +224,7 @@ int pub_shared_loop(struct mosquitto *mosq)
 {
 	int read_len;
 	int pos;
-	int rc;
+	int rc = MOSQ_ERR_SUCCESS;
 	char *buf2;
 	int buf_len_actual;
 	int mode;

@@ -23,7 +23,6 @@ Contributors:
 #define STATUS_DISCONNECTED 4
 
 extern int mid_sent;
-extern int status;
 extern struct mosq_config cfg;
 
 

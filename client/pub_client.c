@@ -223,7 +223,7 @@ int pub_shared_init(void)
 int pub_stdin_line_loop(struct mosquitto *mosq)
 {
 	char *buf2;
-	int buf_len_actual;
+	int buf_len_actual = 0;
 	int pos;
 	int rc = MOSQ_ERR_SUCCESS;
 	int read_len;
@@ -240,6 +240,7 @@ int pub_stdin_line_loop(struct mosquitto *mosq)
 				if(line_buf[buf_len_actual-1] == '\n'){
 					line_buf[buf_len_actual-1] = '\0';
 					rc = my_publish(mosq, &mid_sent, cfg.topic, buf_len_actual-1, line_buf, cfg.qos, cfg.retain);
+					pos = 0;
 					if(rc){
 						err_printf(&cfg, "Error: Publish returned %d, disconnecting.\n", rc);
 						mosquitto_disconnect_v5(mosq, MQTT_RC_DISCONNECT_WITH_WILL_MSG, cfg.disconnect_props);
@@ -255,6 +256,13 @@ int pub_stdin_line_loop(struct mosquitto *mosq)
 						return MOSQ_ERR_NOMEM;
 					}
 					line_buf = buf2;
+				}
+			}
+			if(pos != 0){
+				rc = my_publish(mosq, &mid_sent, cfg.topic, buf_len_actual, line_buf, cfg.qos, cfg.retain);
+				if(rc){
+					err_printf(&cfg, "Error: Publish returned %d, disconnecting.\n", rc);
+					mosquitto_disconnect_v5(mosq, MQTT_RC_DISCONNECT_WITH_WILL_MSG, cfg.disconnect_props);
 				}
 			}
 			if(feof(stdin)){

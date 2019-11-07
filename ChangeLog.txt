@@ -24,6 +24,8 @@ Client library:
 Clients:
 - Fix duplicate cfg definition in rr_client. Closes #1453.
 - Fix `mosquitto_pub -l` hang when stdin stream ends. Closes #1448.
+- Fix `mosquitto_pub -l` not sending the final line of stdin if it does not
+  end with a new line. Closes #1473.
 
 Build:
 - Added `CLIENT_STATIC_LDADD` to makefile builds to allow more libraries to be

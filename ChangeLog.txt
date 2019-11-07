@@ -26,6 +26,8 @@ Clients:
 - Fix `mosquitto_pub -l` hang when stdin stream ends. Closes #1448.
 - Fix `mosquitto_pub -l` not sending the final line of stdin if it does not
   end with a new line. Closes #1473.
+- Make documentation for `mosquitto_pub -l` match reality - blank lines are
+  sent as empty messages. Closes #1474.
 
 Build:
 - Added `CLIENT_STATIC_LDADD` to makefile builds to allow more libraries to be

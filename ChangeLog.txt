@@ -20,6 +20,7 @@ Client library:
 - Fix publish properties not being passed to on_message_v5 callback for QoS 2
   messages. Closes #1432.
 - Fix documentation issues in mosquitto.h. Closes #1478.
+- Document `mosquitto_connect_srv()`. Closes #1499.
 
 Clients:
 - Fix duplicate cfg definition in rr_client. Closes #1453.

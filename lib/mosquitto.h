@@ -583,20 +583,18 @@ libmosq_EXPORT int mosquitto_connect_bind_async(struct mosquitto *mosq, const ch
 /*
  * Function: mosquitto_connect_srv
  *
- * Connect to an MQTT broker. This is a non-blocking call. If you use
- * <mosquitto_connect_async> your client must use the threaded interface
- * <mosquitto_loop_start>. If you need to use <mosquitto_loop>, you must use
- * <mosquitto_connect> to connect the client.
+ * Connect to an MQTT broker.
  *
- * This extends the functionality of <mosquitto_connect_async> by adding the
- * bind_address parameter. Use this function if you need to restrict network
- * communication over a particular interface.
+ * If you set `host` to `example.com`, then this call will attempt to retrieve
+ * the DNS SRV record for `_secure-mqtt._tcp.example.com` or
+ * `_mqtt._tcp.example.com` to discover which actual host to connect to.
  *
- * May be called before or after <mosquitto_loop_start>.
+ * DNS SRV support is not usually compiled in to libmosquitto, use of this call
+ * is not recommended.
  *
  * Parameters:
  * 	mosq -         a valid mosquitto instance.
- * 	host -         the hostname or ip address of the broker to connect to.
+ * 	host -         the hostname to search for an SRV record.
  * 	keepalive -    the number of seconds after which the broker should send a PING
  *                 message to the client if no other messages have been exchanged
  *                 in that time.

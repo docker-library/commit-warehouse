@@ -22,6 +22,7 @@ Contributors:
 
 #include "mosquitto_broker_internal.h"
 #include "memory_mosq.h"
+#include "sys_tree.h"
 #include "time_mosq.h"
 
 static struct session_expiry_list *expiry_list = NULL;
@@ -114,6 +115,11 @@ void session_expiry__check(struct mosquitto_db *db, time_t now)
 
 			context = item->context;
 			session_expiry__remove(context);
+
+			if(context->id){
+				log__printf(NULL, MOSQ_LOG_NOTICE, "Expiring client %s due to timeout.", context->id);
+			}
+			G_CLIENTS_EXPIRED_INC();
 
 			/* Session has now expired, so clear interval */
 			context->session_expiry_interval = 0;

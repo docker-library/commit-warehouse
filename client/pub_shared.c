@@ -37,7 +37,6 @@ Contributors:
 /* Global variables for use in callbacks. See sub_client.c for an example of
  * using a struct to hold variables for use in callbacks. */
 int mid_sent = -1;
-int status = STATUS_CONNECTING;
 struct mosq_config cfg;
 
 void my_log_callback(struct mosquitto *mosq, void *obj, int level, const char *str)

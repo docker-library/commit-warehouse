@@ -22,6 +22,7 @@ Contributors:
 
 #include "mosquitto_broker_internal.h"
 #include "memory_mosq.h"
+#include "sys_tree.h"
 #include "time_mosq.h"
 
 static struct session_expiry_list *expiry_list = NULL;
@@ -38,17 +39,32 @@ int session_expiry__add(struct mosquitto_db *db, struct mosquitto *context)
 {
 	struct session_expiry_list *item;
 
+	if(db->config->persistent_client_expiration == 0){
+		if(context->session_expiry_interval == UINT32_MAX){
+			/* There isn't a global expiry set, and the client has asked to
+			 * never expire, so we don't add it to the list. */
+			return MOSQ_ERR_SUCCESS;
+		}
+	}
+
 	item = mosquitto__calloc(1, sizeof(struct session_expiry_list));
 	if(!item) return MOSQ_ERR_NOMEM;
 
 	item->context = context;
 	item->context->session_expiry_time = time(NULL);
-	if(db->config->persistent_client_expiration == 0 || 
-			db->config->persistent_client_expiration < item->context->session_expiry_interval){
 
+	if(db->config->persistent_client_expiration == 0){
+		/* No global expiry, so use the client expiration interval */
 		item->context->session_expiry_time += item->context->session_expiry_interval;
 	}else{
-		item->context->session_expiry_time += db->config->persistent_client_expiration;
+		/* We have a global expiry interval */
+		if(db->config->persistent_client_expiration < item->context->session_expiry_interval){
+			/* The client expiry is longer than the global expiry, so use the global */
+			item->context->session_expiry_time += db->config->persistent_client_expiration;
+		}else{
+			/* The global expiry is longer than the client expiry, so use the client */
+			item->context->session_expiry_time += item->context->session_expiry_interval;
+		}
 	}
 	context->expiry_list_item = item;
 
@@ -95,11 +111,15 @@ void session_expiry__check(struct mosquitto_db *db, time_t now)
 	last_check = now;
 
 	DL_FOREACH_SAFE(expiry_list, item, tmp){
-		if(item->context->session_expiry_interval != UINT32_MAX
-				&& item->context->session_expiry_time < now){
+		if(item->context->session_expiry_time < now){
 
 			context = item->context;
 			session_expiry__remove(context);
+
+			if(context->id){
+				log__printf(NULL, MOSQ_LOG_NOTICE, "Expiring client %s due to timeout.", context->id);
+			}
+			G_CLIENTS_EXPIRED_INC();
 
 			/* Session has now expired, so clear interval */
 			context->session_expiry_interval = 0;

@@ -114,6 +114,12 @@ static int persist__client_msg_restore(struct mosquitto_db *db, struct P_client_
 	struct mosquitto *context;
 	struct mosquitto_msg_data *msg_data;
 
+	HASH_FIND(hh, db->msg_store_load, &chunk->F.store_id, sizeof(dbid_t), load);
+	if(!load){
+		/* Can't find message - probably expired */
+		return MOSQ_ERR_SUCCESS;
+	}
+
 	cmsg = mosquitto__calloc(1, sizeof(struct mosquitto_client_msg));
 	if(!cmsg){
 		log__printf(NULL, MOSQ_LOG_ERR, "Error: Out of memory.");
@@ -131,12 +137,6 @@ static int persist__client_msg_restore(struct mosquitto_db *db, struct P_client_
 	cmsg->dup = chunk->F.retain_dup&0x0F;
 	cmsg->properties = chunk->properties;
 
-	HASH_FIND(hh, db->msg_store_load, &chunk->F.store_id, sizeof(dbid_t), load);
-	if(!load){
-		mosquitto__free(cmsg);
-		log__printf(NULL, MOSQ_LOG_ERR, "Error restoring persistent database, message store corrupt.");
-		return 1;
-	}
 	cmsg->store = load->store;
 	db__msg_store_ref_inc(cmsg->store);
 
@@ -273,7 +273,13 @@ static int persist__msg_store_chunk_restore(struct mosquitto_db *db, FILE *db_fp
 	if(chunk.F.expiry_time > 0){
 		message_expiry_interval64 = chunk.F.expiry_time - time(NULL);
 		if(message_expiry_interval64 < 0 || message_expiry_interval64 > UINT32_MAX){
-			message_expiry_interval = 0;
+			/* Expired message */
+			mosquitto__free(chunk.source.id);
+			mosquitto__free(chunk.source.username);
+			mosquitto__free(chunk.topic);
+			UHPA_FREE(chunk.payload, chunk.F.payloadlen);
+			mosquitto__free(load);
+			return MOSQ_ERR_SUCCESS;
 		}else{
 			message_expiry_interval = (uint32_t)message_expiry_interval64;
 		}
@@ -327,8 +333,7 @@ static int persist__retain_chunk_restore(struct mosquitto_db *db, FILE *db_fptr)
 	if(load){
 		sub__messages_queue(db, NULL, load->store->topic, load->store->qos, load->store->retain, &load->store);
 	}else{
-		log__printf(NULL, MOSQ_LOG_ERR, "Error: Corrupt database whilst restoring a retained message.");
-		return MOSQ_ERR_INVAL;
+		/* Can't find the message - probably expired */
 	}
 	return MOSQ_ERR_SUCCESS;
 }

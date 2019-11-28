@@ -82,6 +82,11 @@ WITH_STRIP:=no
 # Build static libraries
 WITH_STATIC_LIBRARIES:=no
 
+# Use this variable to add extra library dependencies when building the clients
+# with the static libmosquitto library. This may be required on some systems
+# where e.g. -lz or -latomic are needed for openssl.
+CLIENT_STATIC_LDADD:=
+
 # Build shared libraries
 WITH_SHARED_LIBRARIES:=yes
 
@@ -104,7 +109,7 @@ WITH_COVERAGE:=no
 
 # Also bump lib/mosquitto.h, CMakeLists.txt,
 # installer/mosquitto.nsi, installer/mosquitto64.nsi
-VERSION=1.6.7
+VERSION=1.6.8
 
 # Client library SO version. Bump if incompatible API/ABI changes are made.
 SOVERSION=1
@@ -312,3 +317,7 @@ ifeq ($(WITH_COVERAGE),yes)
 	CLIENT_CFLAGS:=$(CLIENT_CFLAGS) -coverage
 	CLIENT_LDFLAGS:=$(CLIENT_LDFLAGS) -coverage
 endif
+
+BROKER_LDADD:=${BROKER_LDADD} ${LDADD}
+CLIENT_LDADD:=${CLIENT_LDADD} ${LDADD}
+PASSWD_LDADD:=${PASSWD_LDADD} ${LDADD}

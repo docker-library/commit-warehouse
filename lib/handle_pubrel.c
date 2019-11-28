@@ -114,7 +114,7 @@ int handle__pubrel(struct mosquitto_db *db, struct mosquitto *mosq)
 		}
 		if(mosq->on_message_v5){
 			mosq->in_callback = true;
-			mosq->on_message_v5(mosq, mosq->userdata, &message->msg, properties);
+			mosq->on_message_v5(mosq, mosq->userdata, &message->msg, message->properties);
 			mosq->in_callback = false;
 		}
 		pthread_mutex_unlock(&mosq->callback_mutex);

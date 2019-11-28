@@ -44,11 +44,13 @@ ifeq ($(WITH_TLS),yes)
 else
 	./01-connect-uname-password-success-no-tls.py
 endif
+	./01-connect-zero-length-id.py
 
 
 02 :
 	./02-shared-qos0-v5.py
 	./02-subhier-crash.py
+	./02-subpub-qos0-long-topic.py
 	./02-subpub-qos0-retain-as-publish.py
 	./02-subpub-qos0-send-retain.py
 	./02-subpub-qos0-subscription-id.py

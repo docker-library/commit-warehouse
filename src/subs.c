@@ -243,9 +243,9 @@ static int sub__topic_tokenise(const char *subtopic, struct sub__token **topics)
 
 	stop = 0;
 	for(i=start; i<len+1; i++){
-		count++;
 		if(subtopic[i] == '/' || subtopic[i] == '\0'){
 			stop = i;
+			count++;
 
 			if(start != stop){
 				tlen = stop-start;
@@ -684,7 +684,7 @@ struct mosquitto__subhier *sub__add_hier_entry(struct mosquitto__subhier *parent
 	}
 	child->parent = parent;
 	child->topic_len = len;
-	child->topic = malloc(len+1);
+	child->topic = mosquitto__malloc(len+1);
 	if(!child->topic){
 		child->topic_len = 0;
 		mosquitto__free(child);
@@ -987,7 +987,7 @@ static int retain__process(struct mosquitto_db *db, struct mosquitto__subhier *b
 	mosquitto_property *properties = NULL;
 	struct mosquitto_msg_store *retained;
 
-	if(branch->retained->message_expiry_time > 0 && now > branch->retained->message_expiry_time){
+	if(branch->retained->message_expiry_time > 0 && now >= branch->retained->message_expiry_time){
 		db__msg_store_ref_dec(db, &branch->retained);
 		branch->retained = NULL;
 #ifdef WITH_SYS_TREE

@@ -15,7 +15,10 @@ try:
     sock = mosq_test.do_client_connect(connect_packet, b"", port=port)
     sock.close()
     rc = 0
-
+except socket.error as e:
+    if e.errno == errno.ECONNRESET:
+        # Connection has been closed by peer, this is the expected behaviour
+        rc = 0
 finally:
     broker.terminate()
     broker.wait()

@@ -42,29 +42,22 @@ int main(int argc, char *argv[])
 	mosquitto_connect_callback_set(mosq, on_connect);
 	mosquitto_disconnect_callback_set(mosq, on_disconnect);
 	mosquitto_subscribe_callback_set(mosq, on_subscribe);
-	printf("ok, about to call connect_async\n");
 
 	rc = mosquitto_connect_async(mosq, "localhost", port, 60);
-	printf("connect async returned rc: %d\n", rc);
-	if (rc) {
-		printf("which is: %s\n", mosquitto_strerror(rc));
+	if(rc){
+		printf("connect_async failed: %s\n", mosquitto_strerror(rc));
 	}
 
 	rc = mosquitto_loop_start(mosq);
-	printf("loop_start returned rc: %d\n", rc);
-	if (rc) {
-		printf("which is: %s\n", mosquitto_strerror(rc));
+	if(rc){
+		printf("loop_start failed: %s\n", mosquitto_strerror(rc));
 	}
 	
-	printf("ok, so we can start just waiting now, loop_start will run in it's thread\n");
-	/* 10 millis to be system polite */
-	//struct timespec tv = { 0, 10e6 };
-	struct timespec tv = { 1, 0 };
+	/* 50 millis to be system polite */
+	struct timespec tv = { 0, 50e6 };
 	while(should_run){
 		nanosleep(&tv, NULL);
-		printf("...waiting...\n");
 	}
-	printf("Already exited should_run....\n");
 
 	mosquitto_disconnect(mosq);
 	mosquitto_loop_stop(mosq, false);

@@ -46,6 +46,9 @@ SRC = \
 	08-ssl-fake-cacert.c \
 	09-util-topic-tokenise.c \
 	11-prop-oversize-packet.c \
+	11-prop-recv-qos0.c \
+	11-prop-recv-qos1.c \
+	11-prop-recv-qos2.c \
 	11-prop-send-payload-format.c \
 	11-prop-send-content-type.c
 

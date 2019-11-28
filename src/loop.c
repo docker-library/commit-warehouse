@@ -138,8 +138,6 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 	int err;
 	socklen_t len;
 #endif
-	time_t expiration_check_time = 0;
-	char *id;
 
 
 #if defined(WITH_WEBSOCKETS) && LWS_LIBRARY_VERSION_NUMBER == 3002000
@@ -168,10 +166,6 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 		return MOSQ_ERR_NOMEM;
 	}
 #endif
-
-	if(db->config->persistent_client_expiration > 0){
-		expiration_check_time = time(NULL) + 3600;
-	}
 
 #ifdef WITH_EPOLL
 	db->epollfd = 0;
@@ -471,31 +465,6 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 			}
 		}
 #endif
-		now = time(NULL);
-		if(db->config->persistent_client_expiration > 0 && now > expiration_check_time){
-			HASH_ITER(hh_id, db->contexts_by_id, context, ctxt_tmp){
-				if(context->sock == INVALID_SOCKET && context->session_expiry_interval > 0 && context->session_expiry_interval != UINT32_MAX){
-					/* This is a persistent client, check to see if the
-					 * last time it connected was longer than
-					 * persistent_client_expiration seconds ago. If so,
-					 * expire it and clean up.
-					 */
-					if(now > context->session_expiry_time){
-						if(context->id){
-							id = context->id;
-						}else{
-							id = "<unknown>";
-						}
-						log__printf(NULL, MOSQ_LOG_NOTICE, "Expiring persistent client %s due to timeout.", id);
-						G_CLIENTS_EXPIRED_INC();
-						context->session_expiry_interval = 0;
-						mosquitto__set_state(context, mosq_cs_expiring);
-						do_disconnect(db, context, MOSQ_ERR_SUCCESS);
-					}
-				}
-			}
-			expiration_check_time = time(NULL) + 3600;
-		}
 
 #ifndef WIN32
 		sigprocmask(SIG_SETMASK, &sigblock, &origsig);

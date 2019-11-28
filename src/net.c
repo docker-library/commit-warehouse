@@ -426,7 +426,7 @@ int net__load_crl_file(struct mosquitto__listener *listener)
 	}
 	lookup = X509_STORE_add_lookup(store, X509_LOOKUP_file());
 	rc = X509_load_crl_file(lookup, listener->crlfile, X509_FILETYPE_PEM);
-	if(rc != 1){
+	if(rc < 1){
 		log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to load certificate revocation file \"%s\". Check crlfile.", listener->crlfile);
 		net__print_error(MOSQ_LOG_ERR, "Error: %s");
 		return 1;

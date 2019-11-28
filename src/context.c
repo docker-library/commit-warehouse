@@ -230,7 +230,7 @@ void context__disconnect(struct mosquitto_db *db, struct mosquitto *context)
 
 	context__send_will(db, context);
 	if(context->session_expiry_interval == 0){
-
+		/* Client session is due to be expired now */
 #ifdef WITH_BRIDGE
 		if(!context->bridge)
 #endif

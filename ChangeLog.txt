@@ -15,6 +15,9 @@ Broker:
   property just before they were expired. Closes #1464.
 - Fix TLS Websockets clients not receiving messages after taking over a
   previous connection. Closes #1489.
+- Fix MQTT 3.1.1 clients using clean session false, or MQTT 5.0 clients using
+  session-expiry-interval set to infinity never expiring, even when the global
+  `persistent_client_expiration` option was set. Closes #1494.
 
 Client library:
 - Fix publish properties not being passed to on_message_v5 callback for QoS 2

@@ -69,6 +69,7 @@ parts:
     prime:
       - usr/sbin/mosquitto
       - usr/bin/mosquitto_pub
+      - usr/bin/mosquitto_rr
       - usr/bin/mosquitto_sub
       - usr/bin/mosquitto_passwd
       - usr/lib/libmosquitto.so*

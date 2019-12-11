@@ -5,7 +5,7 @@
 
 		{{- $commit := $e.ArchGitCommit $arch -}}
 
-		git push --verbose --force git@github.com:docker-library/commit-warehouse.git
+		git push --quiet --force git@github.com:docker-library/commit-warehouse.git
 		{{- range $tag := $e.Tags -}}
 			{{- if eq $arch "amd64" -}}
 				{{- " " -}}{{- $commit -}}:refs/tags/{{- $.RepoName -}}/{{- $tag -}}

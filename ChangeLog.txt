@@ -1,3 +1,6 @@
+Broker:
+- Fix session expiry with very large expiry intervals. Closes #1525.
+
 1.6.8 - 20191128
 ================
 

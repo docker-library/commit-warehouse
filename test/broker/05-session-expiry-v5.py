@@ -7,6 +7,14 @@ from mosq_test_helper import *
 rc = 1
 keepalive = 60
 
+
+# This client exists to test possible fixed size int overflow and sorting of the session intervals
+# https://github.com/eclipse/mosquitto/issues/1525
+props = mqtt5_props.gen_uint32_prop(mqtt5_props.PROP_SESSION_EXPIRY_INTERVAL, 4294967294)
+connect0_packet = mosq_test.gen_connect("overflow", keepalive=keepalive, clean_session=False, proto_ver=5, properties=props)
+connack0_packet = mosq_test.gen_connack(flags=0, rc=0, proto_ver=5)
+
+
 props = mqtt5_props.gen_uint32_prop(mqtt5_props.PROP_SESSION_EXPIRY_INTERVAL, 1)
 connect_packet = mosq_test.gen_connect("clean-qos2-test", keepalive=keepalive, clean_session=False, proto_ver=5, properties=props)
 connack1_packet = mosq_test.gen_connack(flags=0, rc=0, proto_ver=5)
@@ -23,6 +31,12 @@ port = mosq_test.get_port()
 broker = mosq_test.start_broker(filename=os.path.basename(__file__), port=port)
 
 try:
+    # Connect client with wildly different session expiry, this should impact
+    # on the test if all is well
+    sock0 = mosq_test.do_client_connect(connect0_packet, connack0_packet, port=port, connack_error="connack 0")
+    # Immediately disconnect, this should now be queued to expire
+    sock0.close()
+
     # First connect, clean start is false, we expect a normal connack
     sock = mosq_test.do_client_connect(connect_packet, connack1_packet, port=port, connack_error="connack 1")
     # Forceful disconnect

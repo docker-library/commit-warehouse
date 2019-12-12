@@ -31,7 +31,13 @@ static time_t last_check = 0;
 
 static int session_expiry__cmp(struct session_expiry_list *i1, struct session_expiry_list *i2)
 {
-	return i1->context->session_expiry_interval - i2->context->session_expiry_interval;
+	if(i1->context->session_expiry_time == i2->context->session_expiry_time){
+		return 0;
+	}else if(i1->context->session_expiry_time > i2->context->session_expiry_time){
+		return 1;
+	}else{
+		return -1;
+	}
 }
 
 

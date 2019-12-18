@@ -510,6 +510,14 @@ static int aclfile__parse(struct mosquitto_db *db, struct mosquitto__security_op
 				}else{
 					access = MOSQ_ACL_READ | MOSQ_ACL_WRITE;
 				}
+				rc = mosquitto_sub_topic_check(topic);
+				if(rc != MOSQ_ERR_SUCCESS){
+					log__printf(NULL, MOSQ_LOG_ERR, "Error: Invalid ACL topic \"%s\" in acl_file \"%s\".", topic, security_opts->acl_file);
+					mosquitto__free(user);
+					fclose(aclfptr);
+					return rc;
+				}
+
 				if(topic_pattern == 0){
 					rc = add__acl(security_opts, user, topic, access);
 				}else{

@@ -1,4 +1,4 @@
-FROM php:7.2-apache
+FROM php:7.3-apache
 
 # System dependencies
 RUN set -eux; \
@@ -30,7 +30,7 @@ RUN set -eux; \
 		opcache \
 	; \
 	\
-	pecl install apcu-5.1.17; \
+	pecl install apcu-5.1.18; \
 	docker-php-ext-enable \
 		apcu \
 	; \
@@ -78,10 +78,10 @@ RUN set -eux; \
 	chown -R www-data:www-data /var/www/data
 
 # Version
-ENV MEDIAWIKI_MAJOR_VERSION 1.32
-ENV MEDIAWIKI_BRANCH REL1_32
-ENV MEDIAWIKI_VERSION 1.32.5
-ENV MEDIAWIKI_SHA512 bc0c74392cb724278e9f981bf2adac5a77a8568aa20a2b29b9e44dc21d06cd709b7e2af793a10958bad37de6ed2c6b12e94729e89e62944bab927a2c2a143d25
+ENV MEDIAWIKI_MAJOR_VERSION 1.34
+ENV MEDIAWIKI_BRANCH REL1_34
+ENV MEDIAWIKI_VERSION 1.34.0
+ENV MEDIAWIKI_SHA512 b6b1aeec26a1c114eeec0bdf18d4b3160fe02dac2920a39a045acb74e62aa8f8a28e6a81c01fedba7976e4dd0c96463e0f1badfddd3015eef9197b01586a236d
 
 # MediaWiki setup
 RUN set -eux; \

@@ -881,10 +881,10 @@ int mosquitto_unpwd_check_default(struct mosquitto_db *db, struct mosquitto *con
 	if(db->config->per_listener_settings){
 		if(context->bridge) return MOSQ_ERR_SUCCESS;
 		if(!context->listener) return MOSQ_ERR_INVAL;
-		if(!context->listener->unpwd) return MOSQ_ERR_PLUGIN_DEFER;
+		if(context->listener->security_options.password_file == NULL) return MOSQ_ERR_PLUGIN_DEFER;
 		unpwd_ref = context->listener->unpwd;
 	}else{
-		if(!db->unpwd) return MOSQ_ERR_PLUGIN_DEFER;
+		if(db->config->security_options.password_file == NULL) return MOSQ_ERR_PLUGIN_DEFER;
 		unpwd_ref = db->unpwd;
 	}
 	if(!username){

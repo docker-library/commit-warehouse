@@ -1,6 +1,9 @@
 Broker:
 - Fix session expiry with very large expiry intervals. Closes #1525.
 - Check ACL patterns for validity when loading. Closes #1539.
+- Use presence of password file as indicator for whether username checks
+  should take place, not whether usernames are defined in the password file.
+  Closes #1545.
 
 1.6.8 - 20191128
 ================

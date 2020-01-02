@@ -59,6 +59,15 @@ client_shared.o : client_shared.c client_shared.h
 client_props.o : client_props.c client_shared.h
 	${CROSS_COMPILE}${CC} $(CLIENT_CPPFLAGS) $(CLIENT_CFLAGS) -c $< -o $@
 
+# The "testing" target is intended to make it easy to compile a quick client
+# for testing purposes. testing.c should not be committed as a file.
+testing : testing.o
+	${CROSS_COMPILE}${CC} $(CLIENT_LDFLAGS) $^ -o $@ $(CLIENT_LDADD) $(CLIENT_LDFLAGS)
+
+testing.o : testing.c
+	${CROSS_COMPILE}${CC} $(CLIENT_CPPFLAGS) $(CLIENT_CFLAGS) -c $< -o $@
+
+
 ../lib/libmosquitto.so.${SOVERSION} :
 	$(MAKE) -C ../lib
 

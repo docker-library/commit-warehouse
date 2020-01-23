@@ -332,6 +332,10 @@ int main(int argc, char *argv[])
 #endif
 		}
 	}
+	if(listensock == NULL){
+		log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to start any listening sockets, exiting.");
+		return 1;
+	}
 
 	rc = drop_privileges(&config, false);
 	if(rc != MOSQ_ERR_SUCCESS) return rc;
@@ -416,18 +420,16 @@ int main(int argc, char *argv[])
 
 	db__close(&int_db);
 
-	if(listensock){
-		for(i=0; i<listensock_count; i++){
-			if(listensock[i] != INVALID_SOCKET){
+	for(i=0; i<listensock_count; i++){
+		if(listensock[i] != INVALID_SOCKET){
 #ifndef WIN32
-				close(listensock[i]);
+			close(listensock[i]);
 #else
-				closesocket(listensock[i]);
+			closesocket(listensock[i]);
 #endif
-			}
 		}
-		mosquitto__free(listensock);
 	}
+	mosquitto__free(listensock);
 
 	mosquitto_security_module_cleanup(&int_db);
 

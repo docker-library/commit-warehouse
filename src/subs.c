@@ -241,7 +241,6 @@ static int sub__topic_tokenise(const char *subtopic, struct sub__token **topics)
 		start = 0;
 	}
 
-	stop = 0;
 	for(i=start; i<len+1; i++){
 		if(subtopic[i] == '/' || subtopic[i] == '\0'){
 			stop = i;

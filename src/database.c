@@ -974,7 +974,6 @@ int db__message_write(struct mosquitto_db *db, struct mosquitto *context)
 
 	DL_FOREACH_SAFE(context->msgs_in.inflight, tail, tmp){
 		msg_count++;
-		expiry_interval = 0;
 		if(tail->store->message_expiry_time){
 			if(now == 0){
 				now = time(NULL);
@@ -986,6 +985,8 @@ int db__message_write(struct mosquitto_db *db, struct mosquitto *context)
 			}else{
 				expiry_interval = tail->store->message_expiry_time - now;
 			}
+		}else{
+			expiry_interval = 0;
 		}
 		mid = tail->mid;
 		retries = tail->dup;

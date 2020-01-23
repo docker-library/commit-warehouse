@@ -216,8 +216,8 @@ static struct sub__token *sub__topic_append(struct sub__token **tail, struct sub
 static int sub__topic_tokenise(const char *subtopic, struct sub__token **topics)
 {
 	struct sub__token *new_topic, *tail = NULL;
-	int len;
-	int start, stop, tlen;
+	size_t len;
+	size_t start, stop, tlen;
 	int i;
 	char *topic;
 	int count = 0;
@@ -225,12 +225,15 @@ static int sub__topic_tokenise(const char *subtopic, struct sub__token **topics)
 	assert(subtopic);
 	assert(topics);
 
+	len = strlen(subtopic);
+	if(len == 0){
+		return 1;
+	}
+
 	if(subtopic[0] != '$'){
 		new_topic = sub__topic_append(&tail, topics, "");
 		if(!new_topic) goto cleanup;
 	}
-
-	len = strlen(subtopic);
 
 	if(subtopic[0] == '/'){
 		new_topic = sub__topic_append(&tail, topics, "");
@@ -268,7 +271,11 @@ static int sub__topic_tokenise(const char *subtopic, struct sub__token **topics)
 		goto cleanup;
 	}
 
-	return MOSQ_ERR_SUCCESS;
+	if(*topics != NULL){
+		return MOSQ_ERR_SUCCESS;
+	}else{
+		return 1;
+	}
 
 cleanup:
 	tail = *topics;

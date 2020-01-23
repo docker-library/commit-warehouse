@@ -498,10 +498,11 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 								}
 								context = NULL;
 								HASH_FIND(hh_sock, db->contexts_by_sock, &(ev.data.fd), sizeof(mosq_sock_t), context);
-								if(!context) {
+								if(context){
+									context->events = EPOLLIN;
+								}else{
 									log__printf(NULL, MOSQ_LOG_ERR, "Error in epoll accepting: no context");
 								}
-								context->events = EPOLLIN;
 							}
 						}
 						break;

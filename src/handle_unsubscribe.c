@@ -66,12 +66,6 @@ int handle__unsubscribe(struct mosquitto_db *db, struct mosquitto *context)
 		}
 	}
 
-	reason_code_max = 10;
-	reason_codes = mosquitto__malloc(reason_code_max);
-	if(!reason_codes){
-		return MOSQ_ERR_NOMEM;
-	}
-
 	while(context->in_packet.pos < context->in_packet.remaining_length){
 		sub = NULL;
 		if(packet__read_string(&context->in_packet, &sub, &slen)){
@@ -99,6 +93,12 @@ int handle__unsubscribe(struct mosquitto_db *db, struct mosquitto *context)
 		mosquitto__free(sub);
 		if(rc) return rc;
 
+		reason_code_max = 10;
+		reason_codes = mosquitto__malloc(reason_code_max);
+		if(!reason_codes){
+			return MOSQ_ERR_NOMEM;
+		}
+
 		reason_codes[reason_code_count] = reason;
 		reason_code_count++;
 		if(reason_code_count == reason_code_max){
@@ -122,4 +122,3 @@ int handle__unsubscribe(struct mosquitto_db *db, struct mosquitto *context)
 	mosquitto__free(reason_codes);
 	return rc;
 }
-

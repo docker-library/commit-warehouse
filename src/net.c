@@ -610,6 +610,7 @@ int net__socket_listen(struct mosquitto__listener *listener)
 		listener->socks = mosquitto__realloc(listener->socks, sizeof(mosq_sock_t)*listener->sock_count);
 		if(!listener->socks){
 			log__printf(NULL, MOSQ_LOG_ERR, "Error: Out of memory.");
+			freeaddrinfo(ainfo);
 			return MOSQ_ERR_NOMEM;
 		}
 		listener->socks[listener->sock_count-1] = sock;
@@ -624,6 +625,7 @@ int net__socket_listen(struct mosquitto__listener *listener)
 #endif
 
 		if(net__socket_nonblock(&sock)){
+			freeaddrinfo(ainfo);
 			return 1;
 		}
 
@@ -636,6 +638,7 @@ int net__socket_listen(struct mosquitto__listener *listener)
 			if(setsockopt(sock, SOL_SOCKET, SO_BINDTODEVICE, (void *)&ifr, sizeof(ifr)) < 0) {
 				net__print_error(MOSQ_LOG_ERR, "Error: %s");
 				COMPAT_CLOSE(sock);
+				freeaddrinfo(ainfo);
 				return 1;
 			}
 		}
@@ -644,11 +647,13 @@ int net__socket_listen(struct mosquitto__listener *listener)
 		if(bind(sock, rp->ai_addr, rp->ai_addrlen) == -1){
 			net__print_error(MOSQ_LOG_ERR, "Error: %s");
 			COMPAT_CLOSE(sock);
+			freeaddrinfo(ainfo);
 			return 1;
 		}
 
 		if(listen(sock, 100) == -1){
 			net__print_error(MOSQ_LOG_ERR, "Error: %s");
+			freeaddrinfo(ainfo);
 			COMPAT_CLOSE(sock);
 			return 1;
 		}

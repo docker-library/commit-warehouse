@@ -5,6 +5,8 @@ Broker:
   should take place, not whether usernames are defined in the password file.
   Closes #1545.
 - Strip whitespace from end of config file string options. Closes #1566.
+- Satisfy valgrind when exiting on error due to not being able to open a
+  listening socket, by calling freeaddrinfo. Closes #1565.
 
 
 1.6.8 - 20191128

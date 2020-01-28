@@ -292,6 +292,7 @@ void config__cleanup(struct mosquitto__config *config)
 	mosquitto__free(config->security_options.password_file);
 	mosquitto__free(config->security_options.psk_file);
 	mosquitto__free(config->pid_file);
+	mosquitto__free(config->user);
 	if(config->listeners){
 		for(i=0; i<config->listener_count; i++){
 			mosquitto__free(config->listeners[i].host);
@@ -536,7 +537,10 @@ int config__parse_args(struct mosquitto_db *db, struct mosquitto__config *config
 
 	/* Default to drop to mosquitto user if we are privileged and no user specified. */
 	if(!config->user){
-		config->user = "mosquitto";
+		config->user = mosquitto__strdup("mosquitto");
+		if(config->user == NULL){
+			return MOSQ_ERR_NOMEM;
+		}
 	}
 	if(db->verbose){
 		config->log_type = INT_MAX;

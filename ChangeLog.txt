@@ -9,6 +9,10 @@ Broker:
   listening socket, by calling freeaddrinfo. Closes #1565.
 - Fix config->user not being freed on exit. Closes #1564.
 
+Library:
+- Set minimum keepalive argument to `mosquitto_connect*()` to be 5 seconds.
+  Closes #1550.
+
 
 1.6.8 - 20191128
 ================

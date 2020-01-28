@@ -43,6 +43,7 @@ static int mosquitto__connect_init(struct mosquitto *mosq, const char *host, int
 
 	if(!mosq) return MOSQ_ERR_INVAL;
 	if(!host || port <= 0) return MOSQ_ERR_INVAL;
+	if(keepalive < 5) return MOSQ_ERR_INVAL;
 
 	if(mosq->id == NULL && (mosq->protocol == mosq_p_mqtt31 || mosq->protocol == mosq_p_mqtt311)){
 		mosq->id = (char *)mosquitto__calloc(24, sizeof(char));

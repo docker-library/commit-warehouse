@@ -4,6 +4,8 @@ Broker:
 - Use presence of password file as indicator for whether username checks
   should take place, not whether usernames are defined in the password file.
   Closes #1545.
+- Strip whitespace from end of config file string options. Closes #1566.
+
 
 1.6.8 - 20191128
 ================

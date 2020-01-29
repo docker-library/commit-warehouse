@@ -283,7 +283,7 @@ struct mosquitto__config {
 	int listener_count;
 	int log_dest;
 	int log_facility;
-	int log_type;
+	unsigned int log_type;
 	bool log_timestamp;
 	char *log_timestamp_format;
 	char *log_file;

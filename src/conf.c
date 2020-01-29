@@ -207,7 +207,7 @@ static void config__init_reload(struct mosquitto_db *db, struct mosquitto__confi
 	config->log_facility = LOG_DAEMON;
 	config->log_dest = MQTT3_LOG_STDERR;
 	if(db->verbose){
-		config->log_type = INT_MAX;
+		config->log_type = UINT_MAX;
 	}else{
 		config->log_type = MOSQ_LOG_ERR | MOSQ_LOG_WARNING | MOSQ_LOG_NOTICE | MOSQ_LOG_INFO;
 	}
@@ -543,7 +543,7 @@ int config__parse_args(struct mosquitto_db *db, struct mosquitto__config *config
 		}
 	}
 	if(db->verbose){
-		config->log_type = INT_MAX;
+		config->log_type = UINT_MAX;
 	}
 	return config__check(config);
 }
@@ -777,7 +777,7 @@ int config__read(struct mosquitto_db *db, struct mosquitto__config *config, bool
 		config->log_dest = cr.log_dest;
 	}
 	if(db->verbose){
-		config->log_type = INT_MAX;
+		config->log_type = UINT_MAX;
 	}else if(cr.log_type_set){
 		config->log_type = cr.log_type;
 	}

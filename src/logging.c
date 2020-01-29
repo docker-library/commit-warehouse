@@ -385,7 +385,7 @@ void log__internal(const char *fmt, ...)
 		return;
 	}
 
-	log__printf(NULL, MOSQ_LOG_INTERNAL, "%s%s%s", "\e[32m", buf, "\e[0m"); 
+	log__printf(NULL, MOSQ_LOG_INTERNAL, "%s%s%s", "\e[32m", buf, "\e[0m");
 }
 
 int mosquitto_log_vprintf(int level, const char *fmt, va_list va)

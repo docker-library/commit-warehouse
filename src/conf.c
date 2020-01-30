@@ -446,6 +446,7 @@ int config__parse_args(struct mosquitto_db *db, struct mosquitto__config *config
 	}
 
 	if(config->listener_count == 0
+			|| config->default_listener.bind_interface
 #ifdef WITH_TLS
 			|| config->default_listener.cafile
 			|| config->default_listener.capath
@@ -499,6 +500,7 @@ int config__parse_args(struct mosquitto_db *db, struct mosquitto__config *config
 		}else{
 			config->listeners[config->listener_count-1].mount_point = NULL;
 		}
+		config->listeners[config->listener_count-1].bind_interface = config->default_listener.bind_interface;
 		config->listeners[config->listener_count-1].max_connections = config->default_listener.max_connections;
 		config->listeners[config->listener_count-1].protocol = config->default_listener.protocol;
 		config->listeners[config->listener_count-1].socket_domain = config->default_listener.socket_domain;

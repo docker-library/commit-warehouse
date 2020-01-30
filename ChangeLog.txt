@@ -9,6 +9,7 @@ Broker:
   listening socket, by calling freeaddrinfo. Closes #1565.
 - Fix config->user not being freed on exit. Closes #1564.
 - Fix trailing whitespace not being trimmed on acl users. Closes #1539.
+- Fix `bind_interface` not working for the default listener. Closes #1533.
 
 Library:
 - Set minimum keepalive argument to `mosquitto_connect*()` to be 5 seconds.

@@ -293,6 +293,7 @@ void config__cleanup(struct mosquitto__config *config)
 	mosquitto__free(config->security_options.psk_file);
 	mosquitto__free(config->pid_file);
 	mosquitto__free(config->user);
+	mosquitto__free(config->log_timestamp_format);
 	if(config->listeners){
 		for(i=0; i<config->listener_count; i++){
 			mosquitto__free(config->listeners[i].host);
@@ -749,7 +750,7 @@ int config__read(struct mosquitto_db *db, struct mosquitto__config *config, bool
 	 * remain here even though it is covered in config__parse_args() because this
 	 * function may be called on its own. */
 	if(!config->user){
-		config->user = "mosquitto";
+		config->user = mosquitto__strdup("mosquitto");
 	}
 
 	db__limits_set(cr.max_inflight_bytes, cr.max_queued_messages, cr.max_queued_bytes);
@@ -2166,6 +2167,7 @@ int config__read_file_core(struct mosquitto__config *config, bool reload, struct
 #endif
 				}else if(!strcmp(token, "user")){
 					if(reload) continue; // Drop privileges user not valid for reloading.
+					mosquitto__free(config->user);
 					if(conf__parse_string(&token, "user", &config->user, saveptr)) return MOSQ_ERR_INVAL;
 				}else if(!strcmp(token, "use_username_as_clientid")){
 					if(reload) continue; // Listeners not valid for reloading.

@@ -531,9 +531,12 @@ static int aclfile__parse(struct mosquitto_db *db, struct mosquitto__security_op
 			}else if(!strcmp(token, "user")){
 				token = strtok_r(NULL, "", &saveptr);
 				if(token){
-					/* Ignore duplicate spaces */
-					while(token[0] == ' '){
-						token++;
+					token = util__trimblanks(token);
+					if(slen == 0){
+						log__printf(NULL, MOSQ_LOG_ERR, "Error: Missing username in acl_file \"%s\".", security_opts->acl_file);
+						mosquitto__free(user);
+						fclose(aclfptr);
+						return 1;
 					}
 					mosquitto__free(user);
 					user = mosquitto__strdup(token);

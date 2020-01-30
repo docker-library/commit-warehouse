@@ -16,11 +16,13 @@ TEST_OBJS = test.o \
 			property_write.o \
 			stubs.o \
 			util_topic_test.o \
+			util_trim_test.o \
 			utf8.o
 
 LIB_OBJS = memory_mosq.o \
 		   packet_datatypes.o \
 		   property_mosq.o \
+		   util_mosq.o \
 		   util_topic.o \
 		   utf8_mosq.o
 

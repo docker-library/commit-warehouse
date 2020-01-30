@@ -2379,15 +2379,10 @@ static int conf__parse_string(char **token, const char *name, char **value, char
 			return MOSQ_ERR_INVAL;
 		}
 		/* Deal with multiple spaces at the beginning of the string. */
-		while((*token)[0] == ' ' || (*token)[0] == '\t'){
-			(*token)++;
-		}
+		*token = util__trimblanks(*token);
 		if(strlen(*token) == 0){
 			log__printf(NULL, MOSQ_LOG_ERR, "Error: Empty %s value in configuration.", name);
 			return MOSQ_ERR_INVAL;
-		}
-		while((*token)[strlen(*token)-1] == ' ' || (*token)[strlen(*token)-1] == '\t'){
-			(*token)[strlen(*token)-1] = '\0';
 		}
 
 		if(mosquitto_validate_utf8(*token, strlen(*token))){

@@ -17,6 +17,7 @@ Contributors:
 #include "config.h"
 
 #include <assert.h>
+#include <ctype.h>
 #include <string.h>
 
 #ifdef WIN32
@@ -381,4 +382,22 @@ enum mosquitto_client_state mosquitto__get_state(struct mosquitto *mosq)
 	pthread_mutex_unlock(&mosq->state_mutex);
 
 	return state;
+}
+
+
+char *util__trimblanks(char *str)
+{
+	char *endptr;
+
+	if(str == NULL) return NULL;
+
+	while(isblank(str[0])){
+		str++;
+	}
+	endptr = &str[strlen(str)-1];
+	while(endptr > str && isblank(endptr[0])){
+		endptr[0] = '\0';
+		endptr--;
+	}
+	return str;
 }

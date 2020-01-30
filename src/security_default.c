@@ -485,11 +485,7 @@ static int aclfile__parse(struct mosquitto_db *db, struct mosquitto__security_op
 				}
 				token = strtok_r(NULL, "", &saveptr);
 				if(token){
-					topic = token;
-					/* Ignore duplicate spaces */
-					while(topic[0] == ' '){
-						topic++;
-					}
+					topic = util__trimblanks(token);
 				}else{
 					topic = access_s;
 					access_s = NULL;

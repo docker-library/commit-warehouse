@@ -391,11 +391,11 @@ char *util__trimblanks(char *str)
 
 	if(str == NULL) return NULL;
 
-	while(isblank(str[0])){
+	while(isspace(str[0])){
 		str++;
 	}
 	endptr = &str[strlen(str)-1];
-	while(endptr > str && isblank(endptr[0])){
+	while(endptr > str && isspace(endptr[0])){
 		endptr[0] = '\0';
 		endptr--;
 	}

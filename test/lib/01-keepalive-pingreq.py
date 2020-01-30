@@ -12,7 +12,7 @@ from mosq_test_helper import *
 port = mosq_test.get_lib_port()
 
 rc = 1
-keepalive = 4
+keepalive = 5
 connect_packet = mosq_test.gen_connect("01-keepalive-pingreq", keepalive=keepalive)
 connack_packet = mosq_test.gen_connack(rc=0)
 

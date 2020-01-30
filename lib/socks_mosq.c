@@ -185,6 +185,7 @@ int socks5__send(struct mosquitto *mosq)
 		}else{
 			slen = strlen(mosq->host);
 			if(slen > UCHAR_MAX){
+				mosquitto__free(packet);
 				return MOSQ_ERR_NOMEM;
 			}
 			packet->packet_length = 7 + slen;

@@ -59,7 +59,7 @@ RUN set -x && \
         LDFLAGS="-L/build/lws/lib -flto" \
         WITH_ADNS=no \
         WITH_DOCS=no \
-        WITH_SHARED_LIBRARIES=no \
+        WITH_SHARED_LIBRARIES=yes \
         WITH_SRV=no \
         WITH_STRIP=yes \
         WITH_TLS_PSK=no \
@@ -70,6 +70,9 @@ RUN set -x && \
     adduser -S -u 1883 -D -H -h /var/empty -s /sbin/nologin -G mosquitto -g mosquitto mosquitto 2>/dev/null && \
     mkdir -p /mosquitto/config /mosquitto/data /mosquitto/log && \
     install -d /usr/sbin/ && \
+    install -s -m755 /build/mosq/client/mosquitto_pub /usr/bin/mosquitto_pub && \
+    install -s -m755 /build/mosq/client/mosquitto_sub /usr/bin/mosquitto_sub && \
+    install -s -m644 /build/mosq/lib/libmosquitto.so.1 /usr/lib/libmosquitto.so.1 && \
     install -s -m755 /build/mosq/src/mosquitto /usr/sbin/mosquitto && \
     install -s -m755 /build/mosq/src/mosquitto_passwd /usr/bin/mosquitto_passwd && \
     install -m644 /build/mosq/mosquitto.conf /mosquitto/config/mosquitto.conf && \

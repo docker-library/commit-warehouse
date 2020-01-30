@@ -160,6 +160,9 @@ int mosquitto__hex2bin_sha1(const char *hex, unsigned char **bin)
 	}
 
 	sha = mosquitto__malloc(SHA_DIGEST_LENGTH);
+	if(!sha){
+		return MOSQ_ERR_NOMEM;
+	}
 	memcpy(sha, tmp, SHA_DIGEST_LENGTH);
 	*bin = sha;
 	return MOSQ_ERR_SUCCESS;
@@ -379,4 +382,3 @@ enum mosquitto_client_state mosquitto__get_state(struct mosquitto *mosq)
 
 	return state;
 }
-

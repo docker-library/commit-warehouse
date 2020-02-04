@@ -403,6 +403,7 @@ int net__tls_server_ctx(struct mosquitto__listener *listener)
 
 		if(dhparam == NULL || SSL_CTX_set_tmp_dh(listener->ssl_ctx, dhparam) != 1){
 			log__printf(NULL, MOSQ_LOG_ERR, "Error loading dhparamfile \"%s\".", listener->dhparamfile);
+			net__print_ssl_error(NULL);
 			return 1;
 		}
 	}
@@ -429,6 +430,7 @@ int net__load_crl_file(struct mosquitto__listener *listener)
 	if(rc < 1){
 		log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to load certificate revocation file \"%s\". Check crlfile.", listener->crlfile);
 		net__print_error(MOSQ_LOG_ERR, "Error: %s");
+		net__print_ssl_error(NULL);
 		return 1;
 	}
 	X509_STORE_set_flags(store, X509_V_FLAG_CRL_CHECK);
@@ -453,7 +455,7 @@ int net__tls_load_verify(struct mosquitto__listener *listener)
 		}else{
 			log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to load CA certificates. Check capath \"%s\".", listener->capath);
 		}
-		net__print_error(MOSQ_LOG_ERR, "Error: %s");
+		net__print_ssl_error(NULL);
 		return 1;
 	}
 	if(listener->tls_engine){
@@ -461,10 +463,12 @@ int net__tls_load_verify(struct mosquitto__listener *listener)
 		engine = ENGINE_by_id(listener->tls_engine);
 		if(!engine){
 			log__printf(NULL, MOSQ_LOG_ERR, "Error loading %s engine\n", listener->tls_engine);
+			net__print_ssl_error(NULL);
 			return 1;
 		}
 		if(!ENGINE_init(engine)){
 			log__printf(NULL, MOSQ_LOG_ERR, "Failed engine initialisation\n");
+			net__print_ssl_error(NULL);
 			ENGINE_free(engine);
 			return 1;
 		}
@@ -481,7 +485,7 @@ int net__tls_load_verify(struct mosquitto__listener *listener)
 	rc = SSL_CTX_use_certificate_chain_file(listener->ssl_ctx, listener->certfile);
 	if(rc != 1){
 		log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to load server certificate \"%s\". Check certfile.", listener->certfile);
-		net__print_error(MOSQ_LOG_ERR, "Error: %s");
+		net__print_ssl_error(NULL);
 #if !defined(OPENSSL_NO_ENGINE)
 		ENGINE_FINISH(engine);
 #endif
@@ -493,11 +497,13 @@ int net__tls_load_verify(struct mosquitto__listener *listener)
 		if(listener->tls_engine_kpass_sha1){
 			if(!ENGINE_ctrl_cmd(engine, ENGINE_SECRET_MODE, ENGINE_SECRET_MODE_SHA, NULL, NULL, 0)){
 				log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to set engine secret mode sha");
+				net__print_ssl_error(NULL);
 				ENGINE_FINISH(engine);
 				return 1;
 			}
 			if(!ENGINE_ctrl_cmd(engine, ENGINE_PIN, 0, listener->tls_engine_kpass_sha1, NULL, 0)){
 				log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to set engine pin");
+				net__print_ssl_error(NULL);
 				ENGINE_FINISH(engine);
 				return 1;
 			}
@@ -506,11 +512,13 @@ int net__tls_load_verify(struct mosquitto__listener *listener)
 		EVP_PKEY *pkey = ENGINE_load_private_key(engine, listener->keyfile, ui_method, NULL);
 		if(!pkey){
 			log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to load engine private key file \"%s\".", listener->keyfile);
+			net__print_ssl_error(NULL);
 			ENGINE_FINISH(engine);
 			return 1;
 		}
 		if(SSL_CTX_use_PrivateKey(listener->ssl_ctx, pkey) <= 0){
 			log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to use engine private key file \"%s\".", listener->keyfile);
+			net__print_ssl_error(NULL);
 			ENGINE_FINISH(engine);
 			return 1;
 		}
@@ -519,7 +527,6 @@ int net__tls_load_verify(struct mosquitto__listener *listener)
 		rc = SSL_CTX_use_PrivateKey_file(listener->ssl_ctx, listener->keyfile, SSL_FILETYPE_PEM);
 		if(rc != 1){
 			log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to load server key file \"%s\". Check keyfile.", listener->keyfile);
-			net__print_error(MOSQ_LOG_ERR, "Error: %s");
 #if !defined(OPENSSL_NO_ENGINE)
 			ENGINE_FINISH(engine);
 #endif
@@ -529,7 +536,7 @@ int net__tls_load_verify(struct mosquitto__listener *listener)
 	rc = SSL_CTX_check_private_key(listener->ssl_ctx);
 	if(rc != 1){
 		log__printf(NULL, MOSQ_LOG_ERR, "Error: Server certificate/key are inconsistent.");
-		net__print_error(MOSQ_LOG_ERR, "Error: %s");
+		net__print_ssl_error(NULL);
 #if !defined(OPENSSL_NO_ENGINE)
 		ENGINE_FINISH(engine);
 #endif
@@ -691,7 +698,7 @@ int net__socket_listen(struct mosquitto__listener *listener)
 				rc = SSL_CTX_use_psk_identity_hint(listener->ssl_ctx, listener->psk_hint);
 				if(rc == 0){
 					log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to set TLS PSK hint.");
-					net__print_error(MOSQ_LOG_ERR, "Error: %s");
+					net__print_ssl_error(NULL);
 					COMPAT_CLOSE(sock);
 					return 1;
 				}

@@ -11,6 +11,8 @@ Broker:
 - Fix trailing whitespace not being trimmed on acl users. Closes #1539.
 - Fix `bind_interface` not working for the default listener. Closes #1533.
 - Improve password file parsing in the broker and mosqitto_passwd. Closes #1584.
+- Print OpenSSL errors in more situations, like when loading certificates
+  fails. Closes #1552.
 
 Library:
 - Set minimum keepalive argument to `mosquitto_connect*()` to be 5 seconds.

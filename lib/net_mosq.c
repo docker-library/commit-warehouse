@@ -466,11 +466,13 @@ void net__print_ssl_error(struct mosquitto *mosq)
 {
 	char ebuf[256];
 	unsigned long e;
+	int num = 0;
 
 	e = ERR_get_error();
 	while(e){
-		log__printf(mosq, MOSQ_LOG_ERR, "OpenSSL Error: %s", ERR_error_string(e, ebuf));
+		log__printf(mosq, MOSQ_LOG_ERR, "OpenSSL Error[%d]: %s", num, ERR_error_string(e, ebuf));
 		e = ERR_get_error();
+		num++;
 	}
 }
 

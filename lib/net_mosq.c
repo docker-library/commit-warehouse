@@ -199,7 +199,9 @@ int net__socket_close(struct mosquitto *mosq)
 #endif
 	{
 		if(mosq->ssl){
-			SSL_shutdown(mosq->ssl);
+			if(!SSL_in_init(mosq->ssl)){
+				SSL_shutdown(mosq->ssl);
+			}
 			SSL_free(mosq->ssl);
 			mosq->ssl = NULL;
 		}

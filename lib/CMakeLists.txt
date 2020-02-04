@@ -25,6 +25,7 @@ set(C_SRC
 	loop.c
 	memory_mosq.c memory_mosq.h
 	messages_mosq.c messages_mosq.h
+	misc_mosq.c misc_mosq.h
 	mosquitto.c mosquitto.h
 	mosquitto_internal.h
 	mqtt_protocol.h

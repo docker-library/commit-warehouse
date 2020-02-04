@@ -21,6 +21,7 @@ MOSQ_OBJS=mosquitto.o \
 		  loop.o \
 		  memory_mosq.o \
 		  messages_mosq.o \
+		  misc_mosq.o \
 		  net_mosq_ocsp.o \
 		  net_mosq.o \
 		  options.o \
@@ -151,6 +152,9 @@ messages_mosq.o : messages_mosq.c messages_mosq.h
 	${CROSS_COMPILE}$(CC) $(LIB_CPPFLAGS) $(LIB_CFLAGS) -c $< -o $@
 
 memory_mosq.o : memory_mosq.c memory_mosq.h
+	${CROSS_COMPILE}$(CC) $(LIB_CPPFLAGS) $(LIB_CFLAGS) -c $< -o $@
+
+misc_mosq.o : misc_mosq.c misc_mosq.h
 	${CROSS_COMPILE}$(CC) $(LIB_CPPFLAGS) $(LIB_CFLAGS) -c $< -o $@
 
 net_mosq_ocsp.o : net_mosq_ocsp.c net_mosq.h

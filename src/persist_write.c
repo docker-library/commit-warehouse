@@ -33,6 +33,7 @@ Contributors:
 #include "memory_mosq.h"
 #include "persist.h"
 #include "time_mosq.h"
+#include "misc_mosq.h"
 #include "util_mosq.h"
 
 static int persist__client_messages_save(struct mosquitto_db *db, FILE *db_fptr, struct mosquitto *context, struct mosquitto_client_msg *queue)

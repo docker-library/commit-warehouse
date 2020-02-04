@@ -34,6 +34,7 @@ Contributors:
 #include "memory_mosq.h"
 #include "persist.h"
 #include "time_mosq.h"
+#include "misc_mosq.h"
 #include "util_mosq.h"
 
 static uint32_t db_version;

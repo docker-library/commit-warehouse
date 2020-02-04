@@ -27,6 +27,7 @@ set (MOSQ_SRCS
 	../lib/memory_mosq.c ../lib/memory_mosq.h
 	mosquitto.c
 	mosquitto_broker.h mosquitto_broker_internal.h
+	../lib/misc_mosq.c ../lib/misc_mosq.h
 	net.c
 	../lib/net_mosq_ocsp.c ../lib/net_mosq.c ../lib/net_mosq.h
 	../lib/packet_datatypes.c
@@ -188,7 +189,7 @@ install(TARGETS mosquitto RUNTIME DESTINATION "${CMAKE_INSTALL_SBINDIR}")
 install(FILES mosquitto_broker.h mosquitto_plugin.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
 if (WITH_TLS)
-	add_executable(mosquitto_passwd mosquitto_passwd.c)
+	add_executable(mosquitto_passwd mosquitto_passwd.c ../lib/misc_mosq.c)
 	target_link_libraries(mosquitto_passwd ${OPENSSL_LIBRARIES})
 	install(TARGETS mosquitto_passwd RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif (WITH_TLS)

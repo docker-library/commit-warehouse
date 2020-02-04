@@ -51,6 +51,7 @@ Contributors:
 
 #include "mosquitto_broker_internal.h"
 #include "memory_mosq.h"
+#include "misc_mosq.h"
 #include "util_mosq.h"
 
 struct mosquitto_db int_db;

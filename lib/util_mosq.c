@@ -203,96 +203,6 @@ int mosquitto__hex2bin(const char *hex, unsigned char *bin, int bin_max_len)
 }
 #endif
 
-FILE *mosquitto__fopen(const char *path, const char *mode, bool restrict_read)
-{
-#ifdef WIN32
-	char buf[4096];
-	int rc;
-	rc = ExpandEnvironmentStrings(path, buf, 4096);
-	if(rc == 0 || rc > 4096){
-		return NULL;
-	}else{
-		if (restrict_read) {
-			HANDLE hfile;
-			SECURITY_ATTRIBUTES sec;
-			EXPLICIT_ACCESS ea;
-			PACL pacl = NULL;
-			char username[UNLEN + 1];
-			int ulen = UNLEN;
-			SECURITY_DESCRIPTOR sd;
-			DWORD dwCreationDisposition;
-
-			switch(mode[0]){
-				case 'a':
-					dwCreationDisposition = OPEN_ALWAYS;
-					break;
-				case 'r':
-					dwCreationDisposition = OPEN_EXISTING;
-					break;
-				case 'w':
-					dwCreationDisposition = CREATE_ALWAYS;
-					break;
-				default:
-					return NULL;
-			}
-
-			GetUserName(username, &ulen);
-			if (!InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION)) {
-				return NULL;
-			}
-			BuildExplicitAccessWithName(&ea, username, GENERIC_ALL, SET_ACCESS, NO_INHERITANCE);
-			if (SetEntriesInAcl(1, &ea, NULL, &pacl) != ERROR_SUCCESS) {
-				return NULL;
-			}
-			if (!SetSecurityDescriptorDacl(&sd, TRUE, pacl, FALSE)) {
-				LocalFree(pacl);
-				return NULL;
-			}
-
-			sec.nLength = sizeof(SECURITY_ATTRIBUTES);
-			sec.bInheritHandle = FALSE;
-			sec.lpSecurityDescriptor = &sd;
-
-			hfile = CreateFile(buf, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
-				&sec,
-				dwCreationDisposition,
-				FILE_ATTRIBUTE_NORMAL,
-				NULL);
-
-			LocalFree(pacl);
-
-			int fd = _open_osfhandle((intptr_t)hfile, 0);
-			if (fd < 0) {
-				return NULL;
-			}
-
-			FILE *fptr = _fdopen(fd, mode);
-			if (!fptr) {
-				_close(fd);
-				return NULL;
-			}
-			return fptr;
-
-		}else {
-			return fopen(buf, mode);
-		}
-	}
-#else
-	if (restrict_read) {
-		FILE *fptr;
-		mode_t old_mask;
-
-		old_mask = umask(0077);
-		fptr = fopen(path, mode);
-		umask(old_mask);
-
-		return fptr;
-	}else{
-		return fopen(path, mode);
-	}
-#endif
-}
-
 void util__increment_receive_quota(struct mosquitto *mosq)
 {
 	if(mosq->msgs_in.inflight_quota < mosq->msgs_in.inflight_maximum){
@@ -382,22 +292,4 @@ enum mosquitto_client_state mosquitto__get_state(struct mosquitto *mosq)
 	pthread_mutex_unlock(&mosq->state_mutex);
 
 	return state;
-}
-
-
-char *util__trimblanks(char *str)
-{
-	char *endptr;
-
-	if(str == NULL) return NULL;
-
-	while(isspace(str[0])){
-		str++;
-	}
-	endptr = &str[strlen(str)-1];
-	while(endptr > str && isspace(endptr[0])){
-		endptr[0] = '\0';
-		endptr--;
-	}
-	return str;
 }

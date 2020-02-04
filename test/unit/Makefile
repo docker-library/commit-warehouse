@@ -10,16 +10,17 @@ LDADD:=$(LDADD) -lcunit
 TEST_OBJS = test.o \
 			datatype_read.o \
 			datatype_write.o \
+			misc_trim_test.o \
 			property_add.o \
 			property_read.o \
 			property_user_read.o \
 			property_write.o \
 			stubs.o \
 			util_topic_test.o \
-			util_trim_test.o \
 			utf8.o
 
 LIB_OBJS = memory_mosq.o \
+		   misc_mosq.o \
 		   packet_datatypes.o \
 		   property_mosq.o \
 		   util_mosq.o \
@@ -32,6 +33,7 @@ PERSIST_READ_TEST_OBJS = \
 
 PERSIST_READ_OBJS = \
 		memory_mosq.o \
+		misc_mosq.o \
 		packet_datatypes.o \
 		persist_read.o \
 		persist_read_v234.o \
@@ -47,6 +49,7 @@ PERSIST_WRITE_TEST_OBJS = \
 PERSIST_WRITE_OBJS = \
 		database.o \
 		memory_mosq.o \
+		misc_mosq.o \
 		packet_datatypes.o \
 		persist_read.o \
 		persist_read_v234.o \
@@ -76,6 +79,9 @@ database.o : ../../src/database.c
 	$(CROSS_COMPILE)$(CC) $(CPPFLAGS) $(CFLAGS) -DWITH_BROKER -DWITH_PERSISTENCE -c -o $@ $^
 
 memory_mosq.o : ../../lib/memory_mosq.c
+	$(CROSS_COMPILE)$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $^
+
+misc_mosq.o : ../../lib/misc_mosq.c
 	$(CROSS_COMPILE)$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $^
 
 packet_datatypes.o : ../../lib/packet_datatypes.c

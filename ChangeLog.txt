@@ -14,9 +14,13 @@ Broker:
 - Print OpenSSL errors in more situations, like when loading certificates
   fails. Closes #1552.
 
-Library:
+Client library:
 - Set minimum keepalive argument to `mosquitto_connect*()` to be 5 seconds.
   Closes #1550.
+
+Clients:
+- Fix `--remove-retained` not obeying the `-T` option for filtering out
+  topics. Closes #1585.
 
 
 1.6.8 - 20191128

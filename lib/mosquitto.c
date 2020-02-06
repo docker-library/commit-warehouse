@@ -567,7 +567,6 @@ int mosquitto_sub_topic_tokenise(const char *subtopic, char ***topics, int *coun
 	if(!(*topics)) return MOSQ_ERR_NOMEM;
 
 	start = 0;
-	stop = 0;
 	hier = 0;
 
 	for(i=0; i<len+1; i++){

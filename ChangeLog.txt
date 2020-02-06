@@ -21,6 +21,8 @@ Client library:
 Clients:
 - Fix `--remove-retained` not obeying the `-T` option for filtering out
   topics. Closes #1585.
+- Default behaviour for v5 clients using `-c` is now to use infinite length
+  sessions, as with v3 clients. Closes #1546.
 
 
 1.6.8 - 20191128

@@ -7,14 +7,14 @@ FROM ppc64le/ibmjava:latest
 MAINTAINER OrientDB LTD (info@orientdb.com)
 
 # Override the orientdb download location with e.g.:
-#   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
+#   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=https://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 
-ENV ORIENTDB_VERSION 3.0.27
-ENV ORIENTDB_DOWNLOAD_MD5 58a6a7ea6ac1567c47d8c371f6366a70
-ENV ORIENTDB_DOWNLOAD_SHA1 f0380b902798113271218fddbf82a33d6063dfc0
+ENV ORIENTDB_VERSION 3.0.28
+ENV ORIENTDB_DOWNLOAD_MD5 931e22bb22e10af99f18144cbee04551
+ENV ORIENTDB_DOWNLOAD_SHA1 fc9f93773576fbf7493dbe8f8c6b784d0165d028
 
-ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
+ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-https://repo1.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
 
 RUN apt-get update \

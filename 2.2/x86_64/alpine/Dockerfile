@@ -7,14 +7,14 @@ FROM openjdk:8-jdk-alpine
 MAINTAINER OrientDB LTD (info@orientdb.com)
 
 # Override the orientdb download location with e.g.:
-#   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=http://repo1.maven.org/maven2/com/orientechnologies/ .
+#   docker build -t mine --build-arg ORIENTDB_DOWNLOAD_SERVER=https://repo1.maven.org/maven2/com/orientechnologies/ .
 ARG ORIENTDB_DOWNLOAD_SERVER
 
 ENV ORIENTDB_VERSION 2.2.37
 ENV ORIENTDB_DOWNLOAD_MD5 cb80556ef3b0260d0ee5de88ea73fb9d
 ENV ORIENTDB_DOWNLOAD_SHA1 469c402dde029f265fe905de2c08b43960e81f07
 
-ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-http://central.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
+ENV ORIENTDB_DOWNLOAD_URL ${ORIENTDB_DOWNLOAD_SERVER:-https://repo1.maven.org/maven2/com/orientechnologies}/orientdb-community/$ORIENTDB_VERSION/orientdb-community-$ORIENTDB_VERSION.tar.gz
 
 RUN apk add --update tar curl \
     && rm -rf /var/cache/apk/*

@@ -1,3 +1,6 @@
+1.6.9 - 20200227
+================
+
 Broker:
 - Fix session expiry with very large expiry intervals. Closes #1525.
 - Check ACL patterns for validity when loading. Closes #1539.
@@ -13,6 +16,7 @@ Broker:
 - Improve password file parsing in the broker and mosqitto_passwd. Closes #1584.
 - Print OpenSSL errors in more situations, like when loading certificates
   fails. Closes #1552.
+- Fix `mosquitto_client_protocol() returning incorrect values.
 
 Client library:
 - Set minimum keepalive argument to `mosquitto_connect*()` to be 5 seconds.

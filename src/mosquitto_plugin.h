@@ -29,6 +29,7 @@ extern "C" {
 #define MOSQ_ACL_SUBSCRIBE 0x04
 
 #include <stdbool.h>
+#include <stdint.h>
 
 struct mosquitto;
 

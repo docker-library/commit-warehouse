@@ -273,6 +273,9 @@ mosquitto_passwd.o : mosquitto_passwd.c
 plugin_defer.so : plugin_defer.c mosquitto_plugin.h mosquitto_broker.h mosquitto_broker_internal.h
 	${CROSS_COMPILE}${CC} -I. -I../lib -fPIC -shared $< -o $@
 
+plugin_debug.so : plugin_debug.c mosquitto_plugin.h mosquitto_broker.h mosquitto_broker_internal.h
+	${CROSS_COMPILE}${CC} -I. -I../lib -fPIC -shared $< -o $@
+
 install : all
 	$(INSTALL) -d "${DESTDIR}$(prefix)/sbin"
 	$(INSTALL) ${STRIP_OPTS} mosquitto "${DESTDIR}${prefix}/sbin/mosquitto"

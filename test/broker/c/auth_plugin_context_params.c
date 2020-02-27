@@ -65,7 +65,7 @@ int mosquitto_auth_unpwd_check(void *user_data, struct mosquitto *client, const 
 		//return MOSQ_ERR_AUTH;
 	}
 
-	if(mosquitto_client_protocol(client) != 2){
+	if(mosquitto_client_protocol(client) != mp_mqtt){
 		fprintf(stderr, "mosquitto_auth_unpwd_check protocol error: %d\n", mosquitto_client_protocol(client));
 		return MOSQ_ERR_AUTH;
 	}

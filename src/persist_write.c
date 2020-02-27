@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010-2018 Roger Light <roger@atchoo.org>
+Copyright (c) 2010-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -33,6 +33,7 @@ Contributors:
 #include "memory_mosq.h"
 #include "persist.h"
 #include "time_mosq.h"
+#include "misc_mosq.h"
 #include "util_mosq.h"
 
 static int persist__client_messages_save(struct mosquitto_db *db, FILE *db_fptr, struct mosquitto *context, struct mosquitto_client_msg *queue)

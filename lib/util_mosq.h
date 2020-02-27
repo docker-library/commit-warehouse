@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2009-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,6 @@ int mosquitto__check_keepalive(struct mosquitto_db *db, struct mosquitto *mosq);
 int mosquitto__check_keepalive(struct mosquitto *mosq);
 #endif
 uint16_t mosquitto__mid_generate(struct mosquitto *mosq);
-FILE *mosquitto__fopen(const char *path, const char *mode, bool restrict_read);
 
 int mosquitto__set_state(struct mosquitto *mosq, enum mosquitto_client_state state);
 enum mosquitto_client_state mosquitto__get_state(struct mosquitto *mosq);
@@ -47,4 +46,6 @@ void util__increment_receive_quota(struct mosquitto *mosq);
 void util__increment_send_quota(struct mosquitto *mosq);
 void util__decrement_receive_quota(struct mosquitto *mosq);
 void util__decrement_send_quota(struct mosquitto *mosq);
+
+
 #endif

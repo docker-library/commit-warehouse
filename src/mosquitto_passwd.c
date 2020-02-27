@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2012-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -49,8 +49,17 @@ Contributors:
 #  include <sys/stat.h>
 #endif
 
-#define MAX_BUFFER_LEN 1024
+#define MAX_BUFFER_LEN 65536
 #define SALT_LEN 12
+
+#include "misc_mosq.h"
+
+struct cb_helper {
+	const char *line;
+	const char *username;
+	const char *password;
+	bool found;
+};
 
 #ifdef WIN32
 static FILE *mpw_tmpfile(void)
@@ -199,92 +208,158 @@ int output_new_password(FILE *fptr, const char *username, const char *password)
 	return 0;
 }
 
-int delete_pwuser(FILE *fptr, FILE *ftmp, const char *username)
-{
-	char buf[MAX_BUFFER_LEN];
-	char lbuf[MAX_BUFFER_LEN], *token;
-	bool found = false;
-	int line = 0;
 
-	while(!feof(fptr) && fgets(buf, MAX_BUFFER_LEN, fptr)){
+static int pwfile_iterate(FILE *fptr, FILE *ftmp,
+		int (*cb)(FILE *, FILE *, const char *, const char *, const char *, struct cb_helper *),
+		struct cb_helper *helper)
+{
+	char *buf;
+	int buflen = 1024;
+	char *lbuf;
+	int lbuflen;
+	int rc = 1;
+	int line = 0;
+	char *username, *password;
+
+	buf = malloc(buflen);
+	if(buf == NULL){
+		fprintf(stderr, "Error: Out of memory.\n");
+		return 1;
+	}
+	lbuflen = buflen;
+	lbuf = malloc(lbuflen);
+	if(lbuf == NULL){
+		fprintf(stderr, "Error: Out of memory.\n");
+		free(buf);
+		return 1;
+	}
+
+	while(!feof(fptr) && fgets_extending(&buf, &buflen, fptr)){
+		if(lbuflen != buflen){
+			free(lbuf);
+			lbuflen = buflen;
+			lbuf = malloc(lbuflen);
+			if(lbuf == NULL){
+				fprintf(stderr, "Error: Out of memory.\n");
+				free(buf);
+				return 1;
+			}
+		}
+		memcpy(lbuf, buf, buflen);
 		line++;
-		memcpy(lbuf, buf, MAX_BUFFER_LEN);
-		token = strtok(lbuf, ":");
-		if(!token){
+		username = strtok(buf, ":");
+		password = strtok(NULL, ":");
+		if(username == NULL || password == NULL){
 			fprintf(stderr, "Error: Corrupt password file at line %d.\n", line);
+			free(lbuf);
+			free(buf);
+			return 1;
+		}
+		username = misc__trimblanks(username);
+		password = misc__trimblanks(password);
+
+		if(strlen(username) == 0 || strlen(password) == 0){
+			fprintf(stderr, "Error: Corrupt password file at line %d.\n", line);
+			free(lbuf);
+			free(buf);
 			return 1;
 		}
 
-		if(strcmp(username, token)){
-			fprintf(ftmp, "%s", buf);
-		}else{
-			found = true;
+		rc = cb(fptr, ftmp, username, password, lbuf, helper);
+		if(rc){
+			break;
 		}
 	}
-	if(!found){
+	free(lbuf);
+	free(buf);
+
+	return rc;
+}
+
+
+/* ======================================================================
+ * Delete a user from the password file
+ * ====================================================================== */
+static int delete_pwuser_cb(FILE *fptr, FILE *ftmp, const char *username, const char *password, const char *line, struct cb_helper *helper)
+{
+	if(strcmp(username, helper->username)){
+		/* If this isn't the username to delete, write it to the new file */
+		fprintf(ftmp, "%s", line);
+	}else{
+		/* Don't write the matching username to the file. */
+		helper->found = true;
+	}
+	return 0;
+}
+
+int delete_pwuser(FILE *fptr, FILE *ftmp, const char *username)
+{
+	struct cb_helper helper;
+	int rc;
+
+	memset(&helper, 0, sizeof(helper));
+	helper.username = username;
+	rc = pwfile_iterate(fptr, ftmp, delete_pwuser_cb, &helper);
+
+	if(helper.found == false){
 		fprintf(stderr, "Warning: User %s not found in password file.\n", username);
 		return 1;
 	}
-	return 0;
+	return rc;
+}
+
+
+
+/* ======================================================================
+ * Update a plain text password file to use hashes
+ * ====================================================================== */
+static int update_file_cb(FILE *fptr, FILE *ftmp, const char *username, const char *password, const char *line, struct cb_helper *helper)
+{
+	return output_new_password(ftmp, username, password);
 }
 
 int update_file(FILE *fptr, FILE *ftmp)
 {
-	char buf[MAX_BUFFER_LEN];
-	char lbuf[MAX_BUFFER_LEN];
-	char *username, *password;
-	int rc;
-	int len;
+	return pwfile_iterate(fptr, ftmp, update_file_cb, NULL);
+}
 
-	while(!feof(fptr) && fgets(buf, MAX_BUFFER_LEN, fptr)){
-		memcpy(lbuf, buf, MAX_BUFFER_LEN);
-		username = strtok(lbuf, ":");
-		password = strtok(NULL, ":");
-		if(password){
-			len = strlen(password);
-			while(len && (password[len-1] == '\n' || password[len-1] == '\r')){
-				password[len-1] = '\0';
-				len = strlen(password);
-			}
-			rc = output_new_password(ftmp, username, password);
-			if(rc) return rc;
-		}else{
-			fprintf(ftmp, "%s", username);
-		}
+
+/* ======================================================================
+ * Update an existing user password / create a new password
+ * ====================================================================== */
+static int update_pwuser_cb(FILE *fptr, FILE *ftmp, const char *username, const char *password, const char *line, struct cb_helper *helper)
+{
+	int rc = 0;
+
+	printf("%s\n", username);
+	if(strcmp(username, helper->username)){
+		/* If this isn't the matching user, then writing out the exiting line */
+		printf("%s\n", line);
+		fprintf(ftmp, "%s", line);
+	}else{
+		/* Write out a new line for our matching username */
+		helper->found = true;
+		rc = output_new_password(ftmp, username, password);
 	}
-	return 0;
+	return rc;
 }
 
 int update_pwuser(FILE *fptr, FILE *ftmp, const char *username, const char *password)
 {
-	char buf[MAX_BUFFER_LEN];
-	char lbuf[MAX_BUFFER_LEN], *token;
-	bool found = false;
-	int rc = 1;
-	int line = 0;
+	struct cb_helper helper;
+	int rc;
 
-	while(!feof(fptr) && fgets(buf, MAX_BUFFER_LEN, fptr)){
-		line++;
-		memcpy(lbuf, buf, MAX_BUFFER_LEN);
-		token = strtok(lbuf, ":");
-		if(!token){
-			fprintf(stderr, "Error: Corrupt password file at line %d.\n", line);
-			return 1;
-		}
+	memset(&helper, 0, sizeof(helper));
+	helper.username = username;
+	rc = pwfile_iterate(fptr, ftmp, update_pwuser_cb, &helper);
 
-		if(strcmp(username, token)){
-			fprintf(ftmp, "%s", buf);
-		}else{
-			rc = output_new_password(ftmp, username, password);
-			found = true;
-		}
-	}
-	if(found){
+	if(helper.found){
 		return rc;
 	}else{
 		return output_new_password(ftmp, username, password);
 	}
 }
+
 
 int gets_quiet(char *s, int len)
 {
@@ -503,6 +578,14 @@ int main(int argc, char *argv[])
 		username = argv[2];
 	}else{
 		print_usage();
+		return 1;
+	}
+	if(username && strlen(username) > 65535){
+		fprintf(stderr, "Error: Username must be less than 65536 characters long.\n");
+		return 1;
+	}
+	if(password_cmd && strlen(password_cmd) > 65535){
+		fprintf(stderr, "Error: Password must be less than 65536 characters long.\n");
 		return 1;
 	}
 

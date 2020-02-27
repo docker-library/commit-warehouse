@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2014-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -39,24 +39,24 @@ Contributors:
 #include "send_mosq.h"
 #include "util_mosq.h"
 
-#define SOCKS_AUTH_NONE 0x00
-#define SOCKS_AUTH_GSS 0x01
-#define SOCKS_AUTH_USERPASS 0x02
-#define SOCKS_AUTH_NO_ACCEPTABLE 0xFF
+#define SOCKS_AUTH_NONE 0x00U
+#define SOCKS_AUTH_GSS 0x01U
+#define SOCKS_AUTH_USERPASS 0x02U
+#define SOCKS_AUTH_NO_ACCEPTABLE 0xFFU
 
-#define SOCKS_ATYPE_IP_V4 1 /* four bytes */
-#define SOCKS_ATYPE_DOMAINNAME 3 /* one byte length, followed by fqdn no null, 256 max chars */
-#define SOCKS_ATYPE_IP_V6 4 /* 16 bytes */
+#define SOCKS_ATYPE_IP_V4 1U /* four bytes */
+#define SOCKS_ATYPE_DOMAINNAME 3U /* one byte length, followed by fqdn no null, 256 max chars */
+#define SOCKS_ATYPE_IP_V6 4U /* 16 bytes */
 
-#define SOCKS_REPLY_SUCCEEDED 0x00
-#define SOCKS_REPLY_GENERAL_FAILURE 0x01
-#define SOCKS_REPLY_CONNECTION_NOT_ALLOWED 0x02
-#define SOCKS_REPLY_NETWORK_UNREACHABLE 0x03
-#define SOCKS_REPLY_HOST_UNREACHABLE 0x04
-#define SOCKS_REPLY_CONNECTION_REFUSED 0x05
-#define SOCKS_REPLY_TTL_EXPIRED 0x06
-#define SOCKS_REPLY_COMMAND_NOT_SUPPORTED 0x07
-#define SOCKS_REPLY_ADDRESS_TYPE_NOT_SUPPORTED 0x08
+#define SOCKS_REPLY_SUCCEEDED 0x00U
+#define SOCKS_REPLY_GENERAL_FAILURE 0x01U
+#define SOCKS_REPLY_CONNECTION_NOT_ALLOWED 0x02U
+#define SOCKS_REPLY_NETWORK_UNREACHABLE 0x03U
+#define SOCKS_REPLY_HOST_UNREACHABLE 0x04U
+#define SOCKS_REPLY_CONNECTION_REFUSED 0x05U
+#define SOCKS_REPLY_TTL_EXPIRED 0x06U
+#define SOCKS_REPLY_COMMAND_NOT_SUPPORTED 0x07U
+#define SOCKS_REPLY_ADDRESS_TYPE_NOT_SUPPORTED 0x08U
 
 int mosquitto_socks5_set(struct mosquitto *mosq, const char *host, int port, const char *username, const char *password)
 {
@@ -185,6 +185,7 @@ int socks5__send(struct mosquitto *mosq)
 		}else{
 			slen = strlen(mosq->host);
 			if(slen > UCHAR_MAX){
+				mosquitto__free(packet);
 				return MOSQ_ERR_NOMEM;
 			}
 			packet->packet_length = 7 + slen;
@@ -397,13 +398,6 @@ int socks5__read(struct mosquitto *mosq)
 			}else{
 				packet__cleanup(&mosq->in_packet);
 				return MOSQ_ERR_PROTOCOL;
-			}
-			payload = mosquitto__realloc(mosq->in_packet.payload, mosq->in_packet.packet_length);
-			if(payload){
-				mosq->in_packet.payload = payload;
-			}else{
-				packet__cleanup(&mosq->in_packet);
-				return MOSQ_ERR_NOMEM;
 			}
 			payload = mosquitto__realloc(mosq->in_packet.payload, mosq->in_packet.packet_length);
 			if(payload){

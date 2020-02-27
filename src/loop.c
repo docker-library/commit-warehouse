@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2009-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -498,10 +498,11 @@ int mosquitto_main_loop(struct mosquitto_db *db, mosq_sock_t *listensock, int li
 								}
 								context = NULL;
 								HASH_FIND(hh_sock, db->contexts_by_sock, &(ev.data.fd), sizeof(mosq_sock_t), context);
-								if(!context) {
+								if(context){
+									context->events = EPOLLIN;
+								}else{
 									log__printf(NULL, MOSQ_LOG_ERR, "Error in epoll accepting: no context");
 								}
-								context->events = EPOLLIN;
 							}
 						}
 						break;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2009-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -974,7 +974,6 @@ int db__message_write(struct mosquitto_db *db, struct mosquitto *context)
 
 	DL_FOREACH_SAFE(context->msgs_in.inflight, tail, tmp){
 		msg_count++;
-		expiry_interval = 0;
 		if(tail->store->message_expiry_time){
 			if(now == 0){
 				now = time(NULL);
@@ -983,19 +982,9 @@ int db__message_write(struct mosquitto_db *db, struct mosquitto *context)
 				/* Message is expired, must not send. */
 				db__message_remove(db, &context->msgs_in, tail);
 				continue;
-			}else{
-				expiry_interval = tail->store->message_expiry_time - now;
 			}
 		}
 		mid = tail->mid;
-		retries = tail->dup;
-		retain = tail->retain;
-		topic = tail->store->topic;
-		qos = tail->qos;
-		payloadlen = tail->store->payloadlen;
-		payload = UHPA_ACCESS_PAYLOAD(tail->store);
-		cmsg_props = tail->properties;
-		store_props = tail->store->properties;
 
 		switch(tail->state){
 			case mosq_ms_send_pubrec:
@@ -1032,7 +1021,6 @@ int db__message_write(struct mosquitto_db *db, struct mosquitto *context)
 
 	DL_FOREACH_SAFE(context->msgs_out.inflight, tail, tmp){
 		msg_count++;
-		expiry_interval = 0;
 		if(tail->store->message_expiry_time){
 			if(now == 0){
 				now = time(NULL);
@@ -1044,6 +1032,8 @@ int db__message_write(struct mosquitto_db *db, struct mosquitto *context)
 			}else{
 				expiry_interval = tail->store->message_expiry_time - now;
 			}
+		}else{
+			expiry_interval = 0;
 		}
 		mid = tail->mid;
 		retries = tail->dup;

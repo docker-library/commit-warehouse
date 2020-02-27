@@ -27,6 +27,7 @@ set (MOSQ_SRCS
 	../lib/memory_mosq.c ../lib/memory_mosq.h
 	mosquitto.c
 	mosquitto_broker.h mosquitto_broker_internal.h
+	../lib/misc_mosq.c ../lib/misc_mosq.h
 	net.c
 	../lib/net_mosq_ocsp.c ../lib/net_mosq.c ../lib/net_mosq.h
 	../lib/packet_datatypes.c
@@ -105,6 +106,9 @@ if (WITH_SYS_TREE)
 	add_definitions("-DWITH_SYS_TREE")
 endif (WITH_SYS_TREE)
 
+option(WITH_ADNS
+	"Include ADNS support?" OFF)
+
 if (CMAKE_SYSTEM_NAME STREQUAL Linux)
 	option(WITH_SYSTEMD
 		"Include systemd support?" OFF)
@@ -130,17 +134,18 @@ add_definitions (-DWITH_BROKER)
 if (WITH_DLT)
     message(STATUS "DLT_LIBDIR = ${DLT_LIBDIR}")
     link_directories(${DLT_LIBDIR})
-    set (MOSQ_LIBS ${DLT_LIBRARIES})
+    set (MOSQ_LIBS ${MOSQ_LIBS} ${DLT_LIBRARIES})
 endif (WITH_DLT)
 
 set (MOSQ_LIBS ${MOSQ_LIBS} ${OPENSSL_LIBRARIES})
 # Check for getaddrinfo_a
 include(CheckLibraryExists)
 check_library_exists(anl getaddrinfo_a  "" HAVE_GETADDRINFO_A)
-if (HAVE_GETADDRINFO_A)
+if (HAVE_GETADDRINFO_A AND WITH_ADNS)
+	add_definitions("-DWITH_ADNS")
 	add_definitions(-DHAVE_GETADDRINFO_A)
 	set (MOSQ_LIBS ${MOSQ_LIBS} anl)
-endif (HAVE_GETADDRINFO_A)
+endif (HAVE_GETADDRINFO_A AND WITH_ADNS)
 
 
 if (UNIX)
@@ -188,7 +193,7 @@ install(TARGETS mosquitto RUNTIME DESTINATION "${CMAKE_INSTALL_SBINDIR}")
 install(FILES mosquitto_broker.h mosquitto_plugin.h DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
 if (WITH_TLS)
-	add_executable(mosquitto_passwd mosquitto_passwd.c)
+	add_executable(mosquitto_passwd mosquitto_passwd.c ../lib/misc_mosq.c)
 	target_link_libraries(mosquitto_passwd ${OPENSSL_LIBRARIES})
 	install(TARGETS mosquitto_passwd RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif (WITH_TLS)

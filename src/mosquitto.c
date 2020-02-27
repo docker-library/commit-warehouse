@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2009-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -51,6 +51,7 @@ Contributors:
 
 #include "mosquitto_broker_internal.h"
 #include "memory_mosq.h"
+#include "misc_mosq.h"
 #include "util_mosq.h"
 
 struct mosquitto_db int_db;
@@ -332,6 +333,10 @@ int main(int argc, char *argv[])
 #endif
 		}
 	}
+	if(listensock == NULL){
+		log__printf(NULL, MOSQ_LOG_ERR, "Error: Unable to start any listening sockets, exiting.");
+		return 1;
+	}
 
 	rc = drop_privileges(&config, false);
 	if(rc != MOSQ_ERR_SUCCESS) return rc;
@@ -416,18 +421,16 @@ int main(int argc, char *argv[])
 
 	db__close(&int_db);
 
-	if(listensock){
-		for(i=0; i<listensock_count; i++){
-			if(listensock[i] != INVALID_SOCKET){
+	for(i=0; i<listensock_count; i++){
+		if(listensock[i] != INVALID_SOCKET){
 #ifndef WIN32
-				close(listensock[i]);
+			close(listensock[i]);
 #else
-				closesocket(listensock[i]);
+			closesocket(listensock[i]);
 #endif
-			}
 		}
-		mosquitto__free(listensock);
 	}
+	mosquitto__free(listensock);
 
 	mosquitto_security_module_cleanup(&int_db);
 

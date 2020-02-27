@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2019-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -31,7 +31,13 @@ static time_t last_check = 0;
 
 static int session_expiry__cmp(struct session_expiry_list *i1, struct session_expiry_list *i2)
 {
-	return i1->context->session_expiry_interval - i2->context->session_expiry_interval;
+	if(i1->context->session_expiry_time == i2->context->session_expiry_time){
+		return 0;
+	}else if(i1->context->session_expiry_time > i2->context->session_expiry_time){
+		return 1;
+	}else{
+		return -1;
+	}
 }
 
 

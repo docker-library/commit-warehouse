@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 	mosq = mosquitto_new("01-keepalive-pingreq", true, NULL);
 	mosquitto_connect_callback_set(mosq, on_connect);
 
-	rc = mosquitto_connect(mosq, "localhost", port, 4);
+	rc = mosquitto_connect(mosq, "localhost", port, 5);
 
 	while(run == -1){
 		mosquitto_loop(mosq, -1, 1);

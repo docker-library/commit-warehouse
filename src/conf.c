@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2009-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -42,6 +42,7 @@ Contributors:
 
 #include "mosquitto_broker_internal.h"
 #include "memory_mosq.h"
+#include "misc_mosq.h"
 #include "tls_mosq.h"
 #include "util_mosq.h"
 #include "mqtt_protocol.h"
@@ -70,35 +71,6 @@ static int conf__parse_string(char **token, const char *name, char **value, char
 static int config__read_file(struct mosquitto__config *config, bool reload, const char *file, struct config_recurse *config_tmp, int level, int *lineno);
 static int config__check(struct mosquitto__config *config);
 static void config__cleanup_plugins(struct mosquitto__config *config);
-
-static char *fgets_extending(char **buf, int *buflen, FILE *stream)
-{
-	char *rc;
-	char endchar;
-	int offset = 0;
-	char *newbuf;
-
-	do{
-		rc = fgets(&((*buf)[offset]), *buflen-offset, stream);
-		if(feof(stream)){
-			return rc;
-		}
-
-		endchar = (*buf)[strlen(*buf)-1];
-		if(endchar == '\n'){
-			return rc;
-		}
-		/* No EOL char found, so extend buffer */
-		offset = *buflen-1;
-		*buflen += 1000;
-		newbuf = realloc(*buf, *buflen);
-		if(!newbuf){
-			return NULL;
-		}
-		*buf = newbuf;
-	}while(1);
-}
-
 
 static void conf__set_cur_security_options(struct mosquitto__config *config, struct mosquitto__listener *cur_listener, struct mosquitto__security_options **security_options)
 {
@@ -207,7 +179,7 @@ static void config__init_reload(struct mosquitto_db *db, struct mosquitto__confi
 	config->log_facility = LOG_DAEMON;
 	config->log_dest = MQTT3_LOG_STDERR;
 	if(db->verbose){
-		config->log_type = INT_MAX;
+		config->log_type = UINT_MAX;
 	}else{
 		config->log_type = MOSQ_LOG_ERR | MOSQ_LOG_WARNING | MOSQ_LOG_NOTICE | MOSQ_LOG_INFO;
 	}
@@ -292,6 +264,8 @@ void config__cleanup(struct mosquitto__config *config)
 	mosquitto__free(config->security_options.password_file);
 	mosquitto__free(config->security_options.psk_file);
 	mosquitto__free(config->pid_file);
+	mosquitto__free(config->user);
+	mosquitto__free(config->log_timestamp_format);
 	if(config->listeners){
 		for(i=0; i<config->listener_count; i++){
 			mosquitto__free(config->listeners[i].host);
@@ -444,6 +418,7 @@ int config__parse_args(struct mosquitto_db *db, struct mosquitto__config *config
 	}
 
 	if(config->listener_count == 0
+			|| config->default_listener.bind_interface
 #ifdef WITH_TLS
 			|| config->default_listener.cafile
 			|| config->default_listener.capath
@@ -497,6 +472,7 @@ int config__parse_args(struct mosquitto_db *db, struct mosquitto__config *config
 		}else{
 			config->listeners[config->listener_count-1].mount_point = NULL;
 		}
+		config->listeners[config->listener_count-1].bind_interface = config->default_listener.bind_interface;
 		config->listeners[config->listener_count-1].max_connections = config->default_listener.max_connections;
 		config->listeners[config->listener_count-1].protocol = config->default_listener.protocol;
 		config->listeners[config->listener_count-1].socket_domain = config->default_listener.socket_domain;
@@ -536,10 +512,13 @@ int config__parse_args(struct mosquitto_db *db, struct mosquitto__config *config
 
 	/* Default to drop to mosquitto user if we are privileged and no user specified. */
 	if(!config->user){
-		config->user = "mosquitto";
+		config->user = mosquitto__strdup("mosquitto");
+		if(config->user == NULL){
+			return MOSQ_ERR_NOMEM;
+		}
 	}
 	if(db->verbose){
-		config->log_type = INT_MAX;
+		config->log_type = UINT_MAX;
 	}
 	return config__check(config);
 }
@@ -745,7 +724,7 @@ int config__read(struct mosquitto_db *db, struct mosquitto__config *config, bool
 	 * remain here even though it is covered in config__parse_args() because this
 	 * function may be called on its own. */
 	if(!config->user){
-		config->user = "mosquitto";
+		config->user = mosquitto__strdup("mosquitto");
 	}
 
 	db__limits_set(cr.max_inflight_bytes, cr.max_queued_messages, cr.max_queued_bytes);
@@ -773,7 +752,7 @@ int config__read(struct mosquitto_db *db, struct mosquitto__config *config, bool
 		config->log_dest = cr.log_dest;
 	}
 	if(db->verbose){
-		config->log_type = INT_MAX;
+		config->log_type = UINT_MAX;
 	}else if(cr.log_type_set){
 		config->log_type = cr.log_type;
 	}
@@ -2162,6 +2141,7 @@ int config__read_file_core(struct mosquitto__config *config, bool reload, struct
 #endif
 				}else if(!strcmp(token, "user")){
 					if(reload) continue; // Drop privileges user not valid for reloading.
+					mosquitto__free(config->user);
 					if(conf__parse_string(&token, "user", &config->user, saveptr)) return MOSQ_ERR_INVAL;
 				}else if(!strcmp(token, "use_username_as_clientid")){
 					if(reload) continue; // Listeners not valid for reloading.
@@ -2373,9 +2353,12 @@ static int conf__parse_string(char **token, const char *name, char **value, char
 			return MOSQ_ERR_INVAL;
 		}
 		/* Deal with multiple spaces at the beginning of the string. */
-		while((*token)[0] == ' ' || (*token)[0] == '\t'){
-			(*token)++;
+		*token = misc__trimblanks(*token);
+		if(strlen(*token) == 0){
+			log__printf(NULL, MOSQ_LOG_ERR, "Error: Empty %s value in configuration.", name);
+			return MOSQ_ERR_INVAL;
 		}
+
 		if(mosquitto_validate_utf8(*token, strlen(*token))){
 			log__printf(NULL, MOSQ_LOG_ERR, "Error: Malformed UTF-8 in configuration.");
 			return MOSQ_ERR_INVAL;

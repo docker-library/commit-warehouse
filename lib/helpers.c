@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2016-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -27,7 +27,6 @@ struct userdata__callback {
 	int (*callback)(struct mosquitto *, void *, const struct mosquitto_message *);
 	void *userdata;
 	int qos;
-	int rc;
 };
 
 struct userdata__simple {
@@ -168,7 +167,6 @@ libmosq_EXPORT int mosquitto_subscribe_callback(
 
 	cb_userdata.topic = topic;
 	cb_userdata.qos = qos;
-	cb_userdata.rc = 0;
 	cb_userdata.userdata = userdata;
 	cb_userdata.callback = callback;
 
@@ -214,14 +212,6 @@ libmosq_EXPORT int mosquitto_subscribe_callback(
 	}
 	rc = mosquitto_loop_forever(mosq, -1, 1);
 	mosquitto_destroy(mosq);
-	if(cb_userdata.rc){
-		rc = cb_userdata.rc;
-	}
-	//if(!rc && cb_userdata.max_msg_count == 0){
-		//return MOSQ_ERR_SUCCESS;
-	//}else{
-		//return rc;
-	//}
-	return MOSQ_ERR_SUCCESS;
+	return rc;
 }
 

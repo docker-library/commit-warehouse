@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2009-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -199,7 +199,9 @@ int net__socket_close(struct mosquitto *mosq)
 #endif
 	{
 		if(mosq->ssl){
-			SSL_shutdown(mosq->ssl);
+			if(!SSL_in_init(mosq->ssl)){
+				SSL_shutdown(mosq->ssl);
+			}
 			SSL_free(mosq->ssl);
 			mosq->ssl = NULL;
 		}
@@ -466,11 +468,13 @@ void net__print_ssl_error(struct mosquitto *mosq)
 {
 	char ebuf[256];
 	unsigned long e;
+	int num = 0;
 
 	e = ERR_get_error();
 	while(e){
-		log__printf(mosq, MOSQ_LOG_ERR, "OpenSSL Error: %s", ERR_error_string(e, ebuf));
+		log__printf(mosq, MOSQ_LOG_ERR, "OpenSSL Error[%d]: %s", num, ERR_error_string(e, ebuf));
 		e = ERR_get_error();
+		num++;
 	}
 }
 

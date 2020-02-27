@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2010-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -72,6 +72,7 @@ ssize_t net__read(struct mosquitto *mosq, void *buf, size_t count);
 ssize_t net__write(struct mosquitto *mosq, void *buf, size_t count);
 
 #ifdef WITH_TLS
+void net__print_ssl_error(struct mosquitto *mosq);
 int net__socket_apply_tls(struct mosquitto *mosq);
 int net__socket_connect_tls(struct mosquitto *mosq);
 int mosquitto__verify_ocsp_status_cb(SSL * ssl, void *arg);

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2018 Roger Light <roger@atchoo.org>
+Copyright (c) 2009-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -153,6 +153,6 @@ enum mqtt5_sub_options {
 	MQTT_SUB_OPT_SEND_RETAIN_NEVER = 0x20,
 };
 
-#define MQTT_MAX_PAYLOAD 268435455
+#define MQTT_MAX_PAYLOAD 268435455U
 
 #endif

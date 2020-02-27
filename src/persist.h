@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2010-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -130,6 +130,8 @@ struct P_retain{
 
 int persist__read_string_len(FILE *db_fptr, char **str, uint16_t len);
 int persist__read_string(FILE *db_fptr, char **str);
+
+int persist__chunk_header_read(FILE *db_fptr, int *chunk, int *length);
 
 int persist__chunk_header_read_v234(FILE *db_fptr, int *chunk, int *length);
 int persist__chunk_cfg_read_v234(FILE *db_fptr, struct PF_cfg *chunk);

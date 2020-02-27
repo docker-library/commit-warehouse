@@ -31,6 +31,7 @@ OBJS=	mosquitto.o \
 		logging.o \
 		loop.o \
 		memory_mosq.o \
+		misc_mosq.o \
 		net.o \
 		net_mosq.o \
 		net_mosq_ocsp.o \
@@ -141,6 +142,9 @@ loop.o : loop.c mosquitto_broker_internal.h
 	${CROSS_COMPILE}${CC} $(BROKER_CPPFLAGS) $(BROKER_CFLAGS) -c $< -o $@
 
 memory_mosq.o : ../lib/memory_mosq.c ../lib/memory_mosq.h
+	${CROSS_COMPILE}${CC} $(BROKER_CPPFLAGS) $(BROKER_CFLAGS) -c $< -o $@
+
+misc_mosq.o : ../lib/misc_mosq.c ../lib/misc_mosq.h
 	${CROSS_COMPILE}${CC} $(BROKER_CPPFLAGS) $(BROKER_CFLAGS) -c $< -o $@
 
 net.o : net.c mosquitto_broker_internal.h
@@ -260,13 +264,16 @@ will_delay.o : will_delay.c mosquitto_broker_internal.h
 will_mosq.o : ../lib/will_mosq.c ../lib/will_mosq.h
 	${CROSS_COMPILE}${CC} $(BROKER_CPPFLAGS) $(BROKER_CFLAGS) -c $< -o $@
 
-mosquitto_passwd : mosquitto_passwd.o
+mosquitto_passwd : mosquitto_passwd.o misc_mosq.o
 	${CROSS_COMPILE}${CC} ${LDFLAGS} $^ -o $@ $(PASSWD_LDADD)
 
 mosquitto_passwd.o : mosquitto_passwd.c
-	${CROSS_COMPILE}${CC} -I.. $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	${CROSS_COMPILE}${CC} -I.. -I../lib $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 plugin_defer.so : plugin_defer.c mosquitto_plugin.h mosquitto_broker.h mosquitto_broker_internal.h
+	${CROSS_COMPILE}${CC} -I. -I../lib -fPIC -shared $< -o $@
+
+plugin_debug.so : plugin_debug.c mosquitto_plugin.h mosquitto_broker.h mosquitto_broker_internal.h
 	${CROSS_COMPILE}${CC} -I. -I../lib -fPIC -shared $< -o $@
 
 install : all

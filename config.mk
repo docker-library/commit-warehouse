@@ -109,7 +109,7 @@ WITH_COVERAGE:=no
 
 # Also bump lib/mosquitto.h, CMakeLists.txt,
 # installer/mosquitto.nsi, installer/mosquitto64.nsi
-VERSION=1.6.8
+VERSION=1.6.9
 
 # Client library SO version. Bump if incompatible API/ABI changes are made.
 SOVERSION=1
@@ -135,7 +135,10 @@ endif
 
 STATIC_LIB_DEPS:=
 
-LIB_CPPFLAGS=$(CPPFLAGS) -I. -I.. -I../lib -I../src/deps
+LIB_CPPFLAGS=$(CPPFLAGS) -I. -I.. -I../lib
+ifeq ($(WITH_BUNDLED_DEPS),yes)
+	LIB_CPPFLAGS:=$(LIB_CPPFLAGS) -I../src/deps
+endif
 LIB_CFLAGS:=$(CFLAGS)
 LIB_CXXFLAGS:=$(CXXFLAGS)
 LIB_LDFLAGS:=$(LDFLAGS)

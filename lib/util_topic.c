@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2018 Roger Light <roger@atchoo.org>
+Copyright (c) 2009-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -219,6 +219,9 @@ int mosquitto_topic_matches_sub2(const char *sub, size_t sublen, const char *top
 				spos++;
 				sub++;
 				while(topic[0] != 0 && topic[0] != '/'){
+					if(topic[0] == '+' || topic[0] == '#'){
+						return MOSQ_ERR_INVAL;
+					}
 					topic++;
 				}
 				if(topic[0] == 0 && sub[0] == 0){
@@ -234,6 +237,12 @@ int mosquitto_topic_matches_sub2(const char *sub, size_t sublen, const char *top
 				if(sub[1] != 0){
 					return MOSQ_ERR_INVAL;
 				}else{
+					while(topic[0] != 0){
+						if(topic[0] == '+' || topic[0] == '#'){
+							return MOSQ_ERR_INVAL;
+						}
+						topic++;
+					}
 					*result = true;
 					return MOSQ_ERR_SUCCESS;
 				}
@@ -291,6 +300,12 @@ int mosquitto_topic_matches_sub2(const char *sub, size_t sublen, const char *top
 	}
 	if((topic[0] != 0 || sub[0] != 0)){
 		*result = false;
+	}
+	while(topic[0] != 0){
+		if(topic[0] == '+' || topic[0] == '#'){
+			return MOSQ_ERR_INVAL;
+		}
+		topic++;
 	}
 
 	return MOSQ_ERR_SUCCESS;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010-2019 Roger Light <roger@atchoo.org>
+Copyright (c) 2010-2020 Roger Light <roger@atchoo.org>
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the Eclipse Public License v1.0
@@ -48,7 +48,7 @@ extern "C" {
 
 #define LIBMOSQUITTO_MAJOR 1
 #define LIBMOSQUITTO_MINOR 6
-#define LIBMOSQUITTO_REVISION 8
+#define LIBMOSQUITTO_REVISION 9
 /* LIBMOSQUITTO_VERSION_NUMBER looks like 1002001 for e.g. version 1.2.1. */
 #define LIBMOSQUITTO_VERSION_NUMBER (LIBMOSQUITTO_MAJOR*1000000+LIBMOSQUITTO_MINOR*1000+LIBMOSQUITTO_REVISION)
 
@@ -62,8 +62,8 @@ extern "C" {
 #define MOSQ_LOG_SUBSCRIBE		(1<<5)
 #define MOSQ_LOG_UNSUBSCRIBE	(1<<6)
 #define MOSQ_LOG_WEBSOCKETS		(1<<7)
-#define MOSQ_LOG_INTERNAL		0x80000000
-#define MOSQ_LOG_ALL			0x7FFFFFFF
+#define MOSQ_LOG_INTERNAL		0x80000000U
+#define MOSQ_LOG_ALL			0xFFFFFFFFU
 
 /* Error values */
 enum mosq_err_t {

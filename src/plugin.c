@@ -65,7 +65,14 @@ void *mosquitto_client_certificate(const struct mosquitto *client)
 
 int mosquitto_client_protocol(const struct mosquitto *client)
 {
-	return client->protocol;
+#ifdef WITH_WEBSOCKETS
+	if(client->wsi){
+		return mp_websockets;
+	}else
+#endif
+	{
+		return mp_mqtt;
+	}
 }
 
 

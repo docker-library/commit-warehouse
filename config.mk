@@ -109,7 +109,7 @@ WITH_COVERAGE:=no
 
 # Also bump lib/mosquitto.h, CMakeLists.txt,
 # installer/mosquitto.nsi, installer/mosquitto64.nsi
-VERSION=1.6.8
+VERSION=1.6.9
 
 # Client library SO version. Bump if incompatible API/ABI changes are made.
 SOVERSION=1

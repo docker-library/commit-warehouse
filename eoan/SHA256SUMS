@@ -1,0 +1,6 @@
+9aa0ec8327e67ed8d18c4e94d475e37b6e2b5c736621bec1e0285e17b60eaa64 *ubuntu-eoan-core-cloudimg-amd64-root.tar.gz
+c9c60310cfb1461c5b4e3e441ce4d41592f7012d2b6b07841f0e0af14e949511 *ubuntu-eoan-core-cloudimg-arm64-root.tar.gz
+59729e70652ebf6f489ec02124c33f67f039cf74249214b4a53b2482ede49768 *ubuntu-eoan-core-cloudimg-armhf-root.tar.gz
+b1540acf42b4ad98a59fab555bdbe5ac62d558a2e4b5fcd95cee7cd0343a2288 *ubuntu-eoan-core-cloudimg-i386-root.tar.gz
+04d3fa6c92bc1762867fe84b72d4c0e016791cad4554f100221310d18bfd61e3 *ubuntu-eoan-core-cloudimg-ppc64el-root.tar.gz
+820ad633034f64c2e4f9dc5a470e4b378e53bdff38f0df70831afd174778faca *ubuntu-eoan-core-cloudimg-s390x-root.tar.gz

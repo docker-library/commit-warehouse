@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM s390x/debian:buster-slim
 
 RUN set -eux; \
 	apt-get update; \

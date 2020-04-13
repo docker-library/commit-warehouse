@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM arm32v5/debian:buster-slim
 
 RUN set -eux; \
 	apt-get update; \

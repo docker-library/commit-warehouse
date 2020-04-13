@@ -1,4 +1,4 @@
-FROM alpine:3.11
+FROM arm32v6/alpine:3.11
 
 RUN apk add --no-cache \
 		bzip2 \
